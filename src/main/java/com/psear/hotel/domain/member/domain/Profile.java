@@ -1,4 +1,4 @@
-package com.psear.hotel.domain.profile.domain;
+package com.psear.hotel.domain.member.domain;
 
 import com.psear.hotel.domain.model.BaseEntity;
 import jakarta.persistence.Column;
