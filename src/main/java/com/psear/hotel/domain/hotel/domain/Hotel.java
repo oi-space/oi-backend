@@ -13,7 +13,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @Entity
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 public class Hotel extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String name;

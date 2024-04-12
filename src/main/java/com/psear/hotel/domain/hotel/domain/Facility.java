@@ -13,7 +13,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @Entity
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 public class Facility extends BaseEntity {
     private Boolean parkingLot;
     private Boolean barbecue;
