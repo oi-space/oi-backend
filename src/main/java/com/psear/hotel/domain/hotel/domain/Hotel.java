@@ -70,23 +70,15 @@ public class Hotel extends BaseEntity {
     @OneToMany(mappedBy = "hotel", cascade = {CascadeType.PERSIST,
             CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private List<HotelImage> imageList = new ArrayList<>();
+    private List<HotelImage> images = new ArrayList<>();
 
     public void addImage(HotelImage image){
-        this.imageList.add(image);
+        this.images.add(image);
     }
 
     public void removeImage(HotelImage image){
-        if(imageList.contains(image)){
-            this.imageList.remove(image);
+        if(images.contains(image)){
+            this.images.remove(image);
         }
-    }
-
-    public void setFacility(Facility facility){
-        if(this.facility!= null){
-            this.facility.removeHotel();
-        }
-        facility.setHotel(this);
-        this.facility = facility;
     }
 }

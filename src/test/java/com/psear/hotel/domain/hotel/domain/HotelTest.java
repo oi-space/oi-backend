@@ -43,7 +43,7 @@ class HotelTest {
         createHotelImage();
 
         Assertions.assertThat(em.contains(hotel)).isTrue();
-        Assertions.assertThat(hotel.getImageList().size()).isEqualTo(2);
+        Assertions.assertThat(hotel.getImages().size()).isEqualTo(2);
     }
 
     private User createUser(){

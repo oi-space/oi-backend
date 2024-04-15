@@ -7,7 +7,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,8 +17,6 @@ import lombok.ToString;
 @Setter
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @ToString(of = {"parkingLot", "barbecue", "wifi"})
 public class Facility extends BaseEntity {
     // TODO : 추후 추가 예정
@@ -30,7 +27,19 @@ public class Facility extends BaseEntity {
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Hotel hotel;
 
-    public void removeHotel() {
-        hotel = null;
+    @Builder
+    public Facility(Boolean parkingLot, Boolean barbecue, Boolean wifi, Hotel hotel) {
+        this.parkingLot = parkingLot;
+        this.barbecue = barbecue;
+        this.wifi = wifi;
+        setHotel(hotel);
+    }
+
+    public void setHotel(Hotel hotel){
+        if(this.hotel.getFacility() != null){
+            this.hotel.setFacility(null);
+        }
+        this.hotel = hotel;
+        this.hotel.setFacility(this);
     }
 }
