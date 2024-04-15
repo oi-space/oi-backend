@@ -36,7 +36,7 @@ public class Facility extends BaseEntity {
     }
 
     public void setHotel(Hotel hotel){
-        if(this.hotel.getFacility() != null){
+        if(this.hotel != null){
             this.hotel.setFacility(null);
         }
         this.hotel = hotel;

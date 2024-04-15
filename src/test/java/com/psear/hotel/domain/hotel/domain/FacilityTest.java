@@ -35,11 +35,9 @@ class FacilityTest {
     public void setUp(){
         em = testEntityManager.getEntityManager();
         user = createUser();
-        facility = createFacility();
-        user.setProfile(createProfile(user));
-
         hotel = createHotel();
-        hotel.setFacility(createFacility());
+        facility = createFacility();
+        em.persist(createProfile(user));
         em.persist(hotel);
     }
 
@@ -67,6 +65,7 @@ class FacilityTest {
                 .parkingLot(true)
                 .barbecue(true)
                 .wifi(true)
+                .hotel(hotel)
                 .build();
     }
     private Hotel createHotel(){

@@ -1,6 +1,7 @@
 package com.psear.hotel.domain.member.domain;
 
 import com.psear.hotel.domain.model.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
@@ -23,7 +24,7 @@ import lombok.ToString;
 @Builder
 @ToString(of = {"username", "description", "phone"})
 public class Profile extends BaseEntity {
-    @OneToOne(optional = false, fetch = FetchType.LAZY)
+    @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
