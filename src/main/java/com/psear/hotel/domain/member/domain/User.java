@@ -6,12 +6,11 @@ import com.psear.hotel.domain.model.RoleEnumConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
+import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Setter
@@ -29,8 +28,9 @@ public class User extends BaseEntity {
     private RoleEnum role = RoleEnum.ROLE_USER;
 
     @Builder
-    public User(String email, String password) {
+    public User(String email, String password, RoleEnum role) {
         this.email = email;
         this.password = password;
+        this.role = Optional.ofNullable(role).orElse(this.role);
     }
 }
