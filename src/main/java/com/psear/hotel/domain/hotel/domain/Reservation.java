@@ -17,7 +17,6 @@ public class Reservation extends BaseEntity {
     private String roomId;
     private String userId;
     private String price;
-    private String createdAt;
     private String startAt;
     private String endAt;
     private String Field;
