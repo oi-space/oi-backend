@@ -10,20 +10,20 @@ import lombok.Getter;
 @Getter
 public enum HotelCategoryEnum {
     // TODO : 추후 추가 예정
-    호텔("hotel"),
-    펜션("pension");
+    호텔(0),
+    펜션(1);
 
-    private static final Map<String, HotelCategoryEnum> valueToName =
+    private static final Map<Integer, HotelCategoryEnum> valueToName =
             Collections.unmodifiableMap(Stream.of(values())
                     .collect(Collectors.toMap(HotelCategoryEnum::getName, Function.identity())));
 
-    private final String name;
+    private final Integer name;
 
-    HotelCategoryEnum(String name){
+    HotelCategoryEnum(Integer name){
         this.name = name;
     }
 
-    public static HotelCategoryEnum getByValue(String value){
+    public static HotelCategoryEnum getByValue(Integer value){
         return valueToName.get(value);
     }
 }

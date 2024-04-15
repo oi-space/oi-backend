@@ -4,14 +4,14 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 @Converter
-public class HotelCategoryConverter implements AttributeConverter<HotelCategoryEnum, String> {
+public class HotelCategoryConverter implements AttributeConverter<HotelCategoryEnum, Integer> {
     @Override
-    public String convertToDatabaseColumn(HotelCategoryEnum achievementEnum) {
-        return achievementEnum.getName();
+    public Integer convertToDatabaseColumn(HotelCategoryEnum hotelCategoryEnum) {
+        return hotelCategoryEnum.getName();
     }
 
     @Override
-    public HotelCategoryEnum convertToEntityAttribute(String value) {
+    public HotelCategoryEnum convertToEntityAttribute(Integer value) {
         return HotelCategoryEnum.getByValue(value);
     }
 

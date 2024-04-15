@@ -59,7 +59,7 @@ public class Hotel extends BaseEntity {
     private String certUrl;
     @Column(nullable = false)
     private String visitGuidance;
-    @ManyToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY,optional = false)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
@@ -77,7 +77,9 @@ public class Hotel extends BaseEntity {
     }
 
     public void removeImage(HotelImage image){
-        this.imageList.remove(image);
+        if(image.getHotel() !=null){
+            this.imageList.remove(image);
+        }
     }
 
     public void setFacility(Facility facility){
