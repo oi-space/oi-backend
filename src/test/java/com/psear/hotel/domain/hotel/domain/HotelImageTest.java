@@ -1,5 +1,6 @@
 package com.psear.hotel.domain.hotel.domain;
 
+
 import com.psear.hotel.domain.member.domain.User;
 import com.psear.hotel.global.config.QueryDslConfig;
 import jakarta.persistence.EntityManager;
@@ -18,12 +19,12 @@ import org.springframework.context.annotation.Import;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({QueryDslConfig.class})
-@DisplayName("Hotel 엔티티 테스트")
-class HotelTest {
+@DisplayName("HotelImage 엔티티 테스트")
+class HotelImageTest {
     @Autowired
     TestEntityManager testEntityManager;
     EntityManager em;
-    Hotel hotel;
+    HotelImage hotelImage;
     @BeforeEach
     public void setUp(){
         em = testEntityManager.getEntityManager();
@@ -34,16 +35,11 @@ class HotelTest {
     }
 
     @Test
-    @DisplayName("Hotel 생성 테스트")
     public void save(){
-        hotel = createHotel();
-        em.persist(hotel);
+        hotelImage = createHotelImage();
+        em.persist(hotelImage);
 
-        createHotelImage();
-        createHotelImage();
-
-        Assertions.assertThat(em.contains(hotel)).isTrue();
-        Assertions.assertThat(hotel.getImageList().size()).isEqualTo(2);
+        Assertions.assertThat(em.contains(hotelImage)).isTrue();
     }
 
     private User createUser(){
@@ -51,6 +47,7 @@ class HotelTest {
     }
 
     private HotelImage createHotelImage(){
+        Hotel hotel = createHotel();
         return HotelImage.builder()
                 .imageUrl(getRandomUUID())
                 .hotel(hotel)

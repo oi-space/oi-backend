@@ -11,6 +11,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -58,4 +61,16 @@ public class Hotel extends BaseEntity {
     @ManyToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
+    @OneToMany(mappedBy = "hotel", cascade = {CascadeType.PERSIST,
+            CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<HotelImage> imageList = new ArrayList<>();
+
+    public void addImage(HotelImage image){
+        this.imageList.add(image);
+    }
+
+    public void removeImage(HotelImage image){
+        this.imageList.remove(image);
+    }
 }
