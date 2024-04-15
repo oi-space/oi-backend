@@ -7,7 +7,7 @@ import jakarta.persistence.Converter;
 public class HotelCategoryConverter implements AttributeConverter<HotelCategoryEnum, Integer> {
     @Override
     public Integer convertToDatabaseColumn(HotelCategoryEnum hotelCategoryEnum) {
-        return hotelCategoryEnum.getName();
+        return hotelCategoryEnum.getValue();
     }
 
     @Override

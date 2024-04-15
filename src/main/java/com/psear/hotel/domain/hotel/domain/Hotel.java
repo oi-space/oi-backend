@@ -77,7 +77,7 @@ public class Hotel extends BaseEntity {
     }
 
     public void removeImage(HotelImage image){
-        if(image.getHotel() !=null){
+        if(imageList.contains(image)){
             this.imageList.remove(image);
         }
     }

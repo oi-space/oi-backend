@@ -61,7 +61,7 @@ class HotelImageTest {
     private Hotel createHotel(){
         Hotel hotel =Hotel.builder()
                 .name("업체명")
-                .category(HotelCategoryEnum.호텔)
+                .category(HotelCategoryEnum.HOTEL)
                 .description("설명")
                 .notice("공지")
                 .province("서울특별시")
