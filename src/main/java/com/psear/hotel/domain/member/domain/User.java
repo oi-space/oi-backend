@@ -6,6 +6,7 @@ import com.psear.hotel.domain.model.RoleEnumConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,14 +26,11 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     @Convert(converter = RoleEnumConverter.class)
     private RoleEnum role = RoleEnum.ROLE_USER;
-//
-//    @OneToOne(mappedBy = "user", cascade = {CascadeType.PERSIST,
-//            CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
-//    private Profile profile ;
 
     @Builder
-    public User(String email, String password) {
+    public User(String email, String password, RoleEnum role) {
         this.email = email;
         this.password = password;
+        this.role = Optional.ofNullable(role).orElse(this.role);
     }
 }
