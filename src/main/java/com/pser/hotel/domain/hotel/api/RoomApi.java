@@ -28,8 +28,16 @@ public class RoomApi {
     }
 
     @GetMapping("/rooms/{roomId}")
-    public ResponseEntity<ApiResponse<RoomResponseDto> roomDetails(@PathVariable Long roomId){
+    public ResponseEntity<ApiResponse<RoomResponseDto>> roomDetails(@PathVariable Long roomId){
         RoomResponseDto res = new RoomResponseDto();
         return ResponseEntity.ok(ApiResponse.success(res));
+    }
+
+    @GetMapping("/rooms/search")
+    public ResponseEntity<ApiResponse<Page<RoomResponseDto>>> searchRoom(@PageableDefault Pageable pageable) {
+        List<RoomResponseDto> fetch = List.of();
+        long count = 0;
+        Page<RoomResponseDto> result = new PageImpl<>(fetch, pageable, count);
+        return  ResponseEntity.ok(ApiResponse.success(result));
     }
 }
