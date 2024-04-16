@@ -74,17 +74,6 @@ public class Room extends BaseEntity {
 
     @PrePersist
     private void validate() {
-        validateCheckInOut();
-        validateCapacity();
-    }
-
-    private void validateCheckInOut() {
-        if (checkIn.isAfter(checkOut)) {
-            throw new IllegalArgumentException("체크인 시간이 체크아웃 시간 이후일 수 없습니다");
-        }
-    }
-
-    private void validateCapacity() {
         if (standardCapacity > maxCapacity) {
             throw new IllegalArgumentException("기준 인원이 최대 인원보다 클 수 없습니다");
         }
