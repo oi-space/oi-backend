@@ -1,10 +1,13 @@
 package com.pser.hotel.domain.hotel.dao;
 
+import static com.pser.hotel.domain.hotel.domain.QRoom.room;
+
 import com.pser.hotel.domain.hotel.domain.QRoom;
 import com.pser.hotel.domain.hotel.dto.QRoomResponseDto;
 import com.pser.hotel.domain.hotel.dto.RoomResponseDto;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +41,6 @@ public class RoomDaoImpl implements RoomDaoCustom {
     }
 
     public Long searchForCount(RoomSearchRequest request) {
-        QRoom room = QRoom.room;
         Long count = queryFactory
                 .select(room.count())
                 .from(room)
@@ -53,6 +55,26 @@ public class RoomDaoImpl implements RoomDaoCustom {
     }
 
     private BooleanBuilder searchCondition(RoomSearchRequest request) {
-        return null;
+        return new BooleanBuilder()
+                .and(keywordContains(request.getKeyword()));
+    }
+
+    private BooleanBuilder keywordContains(String keyword) {
+        return new BooleanBuilder()
+                .or(nameContains(keyword))
+                .or(descriptionContains(keyword))
+                .or(precautionContains(keyword));
+    }
+
+    private BooleanExpression nameContains(String keyword) {
+        return keyword != null ? room.name.contains(keyword) : null;
+    }
+
+    private BooleanExpression descriptionContains(String keyword) {
+        return keyword != null ? room.description.contains(keyword) : null;
+    }
+
+    private BooleanExpression precautionContains(String keyword) {
+        return keyword != null ? room.precaution.contains(keyword) : null;
     }
 }
