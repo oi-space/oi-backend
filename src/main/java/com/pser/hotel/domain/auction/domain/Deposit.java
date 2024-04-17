@@ -3,6 +3,7 @@ package com.pser.hotel.domain.auction.domain;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.domain.model.BaseEntity;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
@@ -35,9 +36,13 @@ public class Deposit extends BaseEntity {
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Auction auction;
 
+    @Column(nullable = false)
+    private String tid;
+
     @Builder
-    public Deposit(User user, Auction auction) {
+    public Deposit(User user, Auction auction, String tid) {
         this.user = user;
         this.auction = auction;
+        this.tid = tid;
     }
 }
