@@ -22,33 +22,33 @@ public class Amenity extends BaseEntity {
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Room room;
 
-    private boolean heatingSystem = false;
+    private Boolean heatingSystem = false;
 
-    private boolean tv = false;
+    private Boolean tv = false;
 
-    private boolean refrigerator = false;
+    private Boolean refrigerator = false;
 
-    private boolean airConditioner = false;
+    private Boolean airConditioner = false;
 
-    private boolean washer = false;
+    private Boolean washer = false;
 
-    private boolean terrace = false;
+    private Boolean terrace = false;
 
-    private boolean coffeeMachine = false;
+    private Boolean coffeeMachine = false;
 
-    private boolean internet = false;
+    private Boolean internet = false;
 
-    private boolean kitchen = false;
+    private Boolean kitchen = false;
 
-    private boolean bathtub = false;
+    private Boolean bathtub = false;
 
-    private boolean iron = false;
+    private Boolean iron = false;
 
-    private boolean pool = false;
+    private Boolean pool = false;
 
-    private boolean pet = false;
+    private Boolean pet = false;
 
-    private boolean inAnnex = false;
+    private Boolean inAnnex = false;
 
     @Builder
     public Amenity(Room room, Boolean heatingSystem, Boolean tv, Boolean refrigerator, Boolean airConditioner,
