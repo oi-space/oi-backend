@@ -1,20 +1,48 @@
 package com.pser.hotel.domain.hotel.util;
 
 
+import com.pser.hotel.domain.hotel.domain.Amenity;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 public class Utils {
+    private static Random rnd = new Random();
 
-    public static Room createRoom() {
+    public static Amenity createAmenity(Room room) {
+        return Amenity.builder()
+                .airConditioner(rnd.nextBoolean()).iron(rnd.nextBoolean())
+                .pet(rnd.nextBoolean()).tv(rnd.nextBoolean()).pool(rnd.nextBoolean())
+                .inAnnex(rnd.nextBoolean()).kitchen(rnd.nextBoolean())
+                .bathtub(rnd.nextBoolean()).heatingSystem(rnd.nextBoolean())
+                .coffeeMachine(rnd.nextBoolean()).refrigerator(rnd.nextBoolean()).terrace(rnd.nextBoolean())
+                .internet(rnd.nextBoolean())
+                .room(room)
+                .build();
+    }
+
+    public static List<Room> createRooms(Hotel hotel, int count) {
+        List<Room> result = new ArrayList<>();
+        IntStream.rangeClosed(1, count)
+                .forEach(e -> {
+                    Room room = createRoom(hotel);
+                    createAmenity(room);
+                    result.add(room);
+                });
+        return result;
+    }
+
+    public static Room createRoom(Hotel hotel) {
         String uuid = UUID.randomUUID().toString().substring(1, 10);
         return Room.builder()
-                .hotel(createHotel())
+                .hotel(hotel)
                 .name(String.format("객실 이름_%s", uuid))
                 .description(String.format("객실 이름_%s", uuid))
                 .precaution(String.format("객실 이름_%s", uuid))
@@ -33,7 +61,7 @@ public class Utils {
         return User.builder().email(String.format("이메일_%s", uuid)).password("123").build();
     }
 
-    public static Hotel createHotel() {
+    public static Hotel createHotel(User user) {
         String uuid = UUID.randomUUID().toString().substring(1, 10);
         Hotel hotel = Hotel.builder()
                 .name(String.format("업체명_%s", uuid))
@@ -50,7 +78,7 @@ public class Utils {
                 .businessNumber("123456-123456")
                 .certUrl("cert.url")
                 .visitGuidance("가산디지털단지역 도보 5분")
-                .user(createUser())
+                .user(user)
                 .build();
         return hotel;
     }
