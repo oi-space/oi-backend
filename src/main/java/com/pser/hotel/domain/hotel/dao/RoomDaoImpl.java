@@ -1,10 +1,10 @@
 package com.pser.hotel.domain.hotel.dao;
 
 import com.pser.hotel.domain.hotel.domain.QRoom;
+import com.pser.hotel.domain.hotel.dto.QRoomResponseDto;
 import com.pser.hotel.domain.hotel.dto.RoomResponseDto;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,11 @@ public class RoomDaoImpl implements RoomDaoCustom {
     @Override
     public Page<RoomResponseDto> search(RoomSearchRequest request, Pageable pageable) {
         QRoom room = QRoom.room;
-        List<Tuple> fetch = queryFactory.select()
+        List<RoomResponseDto> fetch = queryFactory.select(
+                        new QRoomResponseDto(
+                                room.name
+                        )
+                )
                 .from(room)
                 .where(
                         searchCondition(request)
