@@ -4,6 +4,7 @@ import com.pser.hotel.domain.hotel.dto.RoomRequestDto;
 import com.pser.hotel.domain.hotel.dto.RoomResponseDto;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
 import com.pser.hotel.global.common.response.ApiResponse;
+import java.net.URI;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -51,7 +52,7 @@ public class RoomApi {
 
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> roomSave(@RequestBody RoomRequestDto request, Long userId) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.created(URI.create("/rooms/" + 1)).build();
     }
 
     @PatchMapping("/{roomId}")
