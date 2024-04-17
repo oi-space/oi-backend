@@ -4,7 +4,6 @@ import com.pser.hotel.domain.hotel.dto.RoomRequestDto;
 import com.pser.hotel.domain.hotel.dto.RoomResponseDto;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
 import com.pser.hotel.global.common.response.ApiResponse;
-import java.security.Principal;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -51,18 +50,18 @@ public class RoomApi {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> roomSave(@RequestBody RoomRequestDto request, Principal principal) {
+    public ResponseEntity<ApiResponse<Void>> roomSave(@RequestBody RoomRequestDto request, Long userId) {
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{roomId}")
     public ResponseEntity<ApiResponse<Void>> roomUpdate(@RequestBody RoomRequestDto dto, @PathVariable Long roomId,
-                                                        Principal principal) {
+                                                        Long userId) {
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{roomId}")
-    public ResponseEntity<ApiResponse<Void>> roomDelete(@PathVariable Long roomId, Principal principal) {
+    public ResponseEntity<ApiResponse<Void>> roomDelete(@PathVariable Long roomId, Long userId) {
         return ResponseEntity.ok().build();
     }
 
