@@ -59,7 +59,7 @@ public class Room extends BaseEntity {
     @Min(0)
     private int totalRooms;
 
-    @OneToOne(optional = false, mappedBy = "hotel", cascade = {CascadeType.PERSIST,
+    @OneToOne(optional = false, mappedBy = "room", cascade = {CascadeType.PERSIST,
             CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
     private Amenity amenity;
 
