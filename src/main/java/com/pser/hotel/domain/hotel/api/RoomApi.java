@@ -51,12 +51,13 @@ public class RoomApi {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> roomSave(@RequestBody RoomRequestDto request) {
+    public ResponseEntity<ApiResponse<Void>> roomSave(@RequestBody RoomRequestDto request, Principal principal) {
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{roomId}")
-    public ResponseEntity<ApiResponse<Void>> roomUpdate(@RequestBody RoomRequestDto dto, @PathVariable Long roomId) {
+    public ResponseEntity<ApiResponse<Void>> roomUpdate(@RequestBody RoomRequestDto dto, @PathVariable Long roomId,
+                                                        Principal principal) {
         return ResponseEntity.ok().build();
     }
 
