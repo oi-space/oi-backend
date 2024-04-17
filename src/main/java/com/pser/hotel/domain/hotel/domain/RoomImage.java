@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,4 +26,10 @@ public class RoomImage extends BaseEntity {
     @Column(nullable = false)
     @URL
     private String imageUrl;
+
+    @Builder
+    public RoomImage(Room room, String imageUrl) {
+        this.room = room;
+        this.imageUrl = imageUrl;
+    }
 }
