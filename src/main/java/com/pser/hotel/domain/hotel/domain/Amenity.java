@@ -1,12 +1,12 @@
 package com.pser.hotel.domain.hotel.domain;
 
 import com.pser.hotel.domain.model.BaseEntity;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 public class Amenity extends BaseEntity {
-    @ManyToOne(cascade = {CascadeType.PERSIST}, optional = false)
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Room room;
 
