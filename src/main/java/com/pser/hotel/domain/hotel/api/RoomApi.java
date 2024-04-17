@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,18 +52,29 @@ public class RoomApi {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> roomSave(@RequestBody RoomRequestDto request, Long userId) {
+    public ResponseEntity<ApiResponse<Void>> roomSave(@RequestBody RoomRequestDto request,
+                                                      @RequestHeader("user-id") Long userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException();
+        }
         return ResponseEntity.created(URI.create("/rooms/" + 1)).build();
     }
 
     @PatchMapping("/{roomId}")
     public ResponseEntity<ApiResponse<Void>> roomUpdate(@RequestBody RoomRequestDto dto, @PathVariable Long roomId,
-                                                        Long userId) {
+                                                        @RequestHeader("user-id") Long userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException();
+        }
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{roomId}")
-    public ResponseEntity<ApiResponse<Void>> roomDelete(@PathVariable Long roomId, Long userId) {
+    public ResponseEntity<ApiResponse<Void>> roomDelete(@PathVariable Long roomId,
+                                                        @RequestHeader("user-id") Long userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException();
+        }
         return ResponseEntity.ok().build();
     }
 
