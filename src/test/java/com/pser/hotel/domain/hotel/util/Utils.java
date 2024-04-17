@@ -4,8 +4,11 @@ package com.pser.hotel.domain.hotel.util;
 import com.pser.hotel.domain.hotel.domain.Amenity;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
+import com.pser.hotel.domain.hotel.domain.Reservation;
+import com.pser.hotel.domain.hotel.domain.ReservationEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.member.domain.User;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,5 +84,36 @@ public class Utils {
                 .user(user)
                 .build();
         return hotel;
+    }
+
+    public static Reservation createReservation(User user, Room room) {
+        return Reservation.builder()
+                .price(1000)
+                .startAt(LocalDate.of(2024, 4, 17))
+                .endAt(LocalDate.of(2024, 4, 17))
+                .reservationCapacity(5)
+                .adultCapacity(3)
+                .childCapacity(2)
+                .status(ReservationEnum.BEFORE_ENTRANCE)
+                .tid("test_tid")
+                .user(user)
+                .room(room)
+                .build();
+    }
+
+    public static Reservation createReservation(User user, Room room, int reservationCapacity, int adultCapacity,
+                                                int childCapacity) {
+        return Reservation.builder()
+                .price(1000)
+                .startAt(LocalDate.of(2024, 4, 17))
+                .endAt(LocalDate.of(2024, 4, 17))
+                .reservationCapacity(reservationCapacity)
+                .adultCapacity(adultCapacity)
+                .childCapacity(childCapacity)
+                .status(ReservationEnum.BEFORE_ENTRANCE)
+                .tid("test_tid")
+                .user(user)
+                .room(room)
+                .build();
     }
 }
