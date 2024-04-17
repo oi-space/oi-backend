@@ -1,6 +1,5 @@
 package com.pser.hotel.domain.hotel.api;
 
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -84,8 +83,8 @@ class RoomApiTest {
     @DisplayName("객실 저장 테스트")
     public void roomSave() throws Exception {
         RoomRequestDto dto = createRoomRequestDto();
-        given(principal.getName()).willReturn(user.getEmail());
         mockMvc.perform(post("/rooms")
+                        .header("user-id", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(String.format(
                                 "{\"hotelId\" : \"%d\", \"name\" : \"%s\", \"description\" : \"%s\","
@@ -102,7 +101,6 @@ class RoomApiTest {
                                 dto.getWasher(), dto.getTerrace(),
                                 dto.getCoffeeMachine(), dto.getInternet(), dto.getKitchen(), dto.getBathtub(), dto.getIron(),
                                 dto.getPool(), dto.getPet(), dto.getInAnnex()))
-                        .principal(principal)
                 )
                 .andExpect(status().isOk());
     }
@@ -111,8 +109,8 @@ class RoomApiTest {
     @DisplayName("객실 수정 테스트")
     public void roomUpdate() throws Exception {
         RoomRequestDto dto = createRoomRequestDto();
-        given(principal.getName()).willReturn(user.getEmail());
         mockMvc.perform(patch("/rooms/1")
+                        .header("user-id", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(String.format(
                                 "{\"hotelId\" : \"%d\", \"name\" : \"%s\", \"description\" : \"%s\","
@@ -129,7 +127,6 @@ class RoomApiTest {
                                 dto.getWasher(), dto.getTerrace(),
                                 dto.getCoffeeMachine(), dto.getInternet(), dto.getKitchen(), dto.getBathtub(), dto.getIron(),
                                 dto.getPool(), dto.getPet(), dto.getInAnnex()))
-                        .principal(principal)
                 )
                 .andExpect(status().isOk());
     }
@@ -138,7 +135,7 @@ class RoomApiTest {
     @DisplayName("객실 삭제 테스트")
     public void roomDelete() throws Exception {
         mockMvc.perform(delete("/rooms/1")
-                        .principal(principal))
+                        .header("user-id", 1))
                 .andExpect(status().isOk());
     }
 
