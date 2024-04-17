@@ -13,7 +13,7 @@ import org.hibernate.validator.constraints.Length;
 @Entity
 @NoArgsConstructor
 public class Review extends BaseEntity {
-    private String grade;
+    private int grade;
 
     @Length(min = 10, max = 500) // 상세 내용의 길이를 제한
     private String detail;
@@ -22,7 +22,7 @@ public class Review extends BaseEntity {
     private Reservation reservation;
 
     @Builder
-    public Review(String grade, String detail, Reservation reservation) {
+    public Review(int grade, String detail, Reservation reservation) {
         this.grade = grade;
         this.detail = detail;
         this.reservation = reservation;
