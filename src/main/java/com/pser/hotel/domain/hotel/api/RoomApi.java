@@ -1,6 +1,7 @@
 package com.pser.hotel.domain.hotel.api;
 
 import com.pser.hotel.domain.hotel.dto.RoomResponseDto;
+import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
 import com.pser.hotel.global.common.response.ApiResponse;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -13,31 +14,33 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping
+@RequestMapping("/rooms")
 @RestController
 public class RoomApi {
     // TODO : RoomService DI 예정
 
-    @GetMapping("/rooms")
-    public ResponseEntity<ApiResponse<Page<RoomResponseDto>>> roomList(@PageableDefault Pageable pageable){
+    @GetMapping
+    public ResponseEntity<ApiResponse<Page<RoomResponseDto>>> roomList(@PageableDefault Pageable pageable) {
         List<RoomResponseDto> fetch = List.of();
         long count = 0;
-        Page<RoomResponseDto> result = new PageImpl<>(fetch, pageable,count);
+        Page<RoomResponseDto> result = new PageImpl<>(fetch, pageable, count);
 
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 
-    @GetMapping("/rooms/{roomId}")
-    public ResponseEntity<ApiResponse<RoomResponseDto>> roomDetails(@PathVariable Long roomId){
-        RoomResponseDto res = new RoomResponseDto();
+    @GetMapping("/{roomId}")
+    public ResponseEntity<ApiResponse<RoomResponseDto>> roomDetails(@PathVariable Long roomId) {
+        RoomResponseDto res = new RoomResponseDto("TEST_NAME");
         return ResponseEntity.ok(ApiResponse.success(res));
     }
 
-    @GetMapping("/rooms/search")
-    public ResponseEntity<ApiResponse<Page<RoomResponseDto>>> searchRoom(@PageableDefault Pageable pageable) {
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<Page<RoomResponseDto>>> searchRoom(
+            RoomSearchRequest request, @PageableDefault Pageable pageable) {
         List<RoomResponseDto> fetch = List.of();
         long count = 0;
         Page<RoomResponseDto> result = new PageImpl<>(fetch, pageable, count);
-        return  ResponseEntity.ok(ApiResponse.success(result));
+
+        return ResponseEntity.ok(ApiResponse.success(result));
     }
 }
