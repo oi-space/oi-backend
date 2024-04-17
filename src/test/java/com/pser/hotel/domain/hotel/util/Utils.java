@@ -3,6 +3,7 @@ package com.pser.hotel.domain.hotel.util;
 
 import com.pser.hotel.domain.auction.domain.Auction;
 import com.pser.hotel.domain.auction.domain.AuctionStatusEnum;
+import com.pser.hotel.domain.auction.domain.Bid;
 import com.pser.hotel.domain.hotel.domain.Amenity;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
@@ -143,6 +144,14 @@ public class Utils {
                 .endAt(LocalDateTime.now())
                 .depositPrice(1000)
                 .status(AuctionStatusEnum.ON_GOING)
+                .build();
+    }
+
+    public static Bid createBid(User user, Auction auction) {
+        return Bid.builder()
+                .user(user)
+                .auction(auction)
+                .price(1000)
                 .build();
     }
 }
