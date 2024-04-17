@@ -54,7 +54,7 @@ public class Amenity extends BaseEntity {
     public Amenity(Room room, Boolean heatingSystem, Boolean tv, Boolean refrigerator, Boolean airConditioner,
                    Boolean washer, Boolean terrace, Boolean coffeeMachine, Boolean internet, Boolean kitchen,
                    Boolean bathtub, Boolean iron, Boolean pool, Boolean pet, Boolean inAnnex) {
-        this.room = room;
+        setRoom(room);
         this.heatingSystem = Optional.ofNullable(heatingSystem).orElse(this.heatingSystem);
         this.tv = Optional.ofNullable(tv).orElse(this.tv);
         this.refrigerator = Optional.ofNullable(refrigerator).orElse(this.refrigerator);
@@ -69,5 +69,10 @@ public class Amenity extends BaseEntity {
         this.pool = Optional.ofNullable(pool).orElse(this.pool);
         this.pet = Optional.ofNullable(pet).orElse(this.pet);
         this.inAnnex = Optional.ofNullable(inAnnex).orElse(this.inAnnex);
+    }
+
+    public void setRoom(Room room) {
+        room.setAmenity(this);
+        this.room = room;
     }
 }
