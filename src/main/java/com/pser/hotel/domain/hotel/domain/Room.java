@@ -5,9 +5,11 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -56,6 +58,10 @@ public class Room extends BaseEntity {
     @Column(nullable = false)
     @Min(0)
     private int totalRooms;
+
+    @OneToOne(optional = false, mappedBy = "room", cascade = {CascadeType.PERSIST,
+            CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Amenity amenity;
 
     @Builder
     public Room(Hotel hotel, String name, String description, String precaution, int price, LocalTime checkIn,
