@@ -1,5 +1,6 @@
 package com.pser.hotel.domain.hotel.api;
 
+import com.pser.hotel.domain.hotel.dto.RoomRequestDto;
 import com.pser.hotel.domain.hotel.dto.RoomResponseDto;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
 import com.pser.hotel.global.common.response.ApiResponse;
@@ -11,6 +12,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,4 +46,10 @@ public class RoomApi {
 
         return ResponseEntity.ok(ApiResponse.success(result));
     }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<Void>> roomSave(@RequestBody RoomRequestDto request) {
+        return ResponseEntity.ok().build();
+    }
+
 }
