@@ -82,53 +82,42 @@ class RoomApiTest {
     @Test
     @DisplayName("객실 저장 테스트")
     public void roomSave() throws Exception {
-        RoomRequestDto dto = createRoomRequestDto();
         mockMvc.perform(post("/rooms")
                         .header("user-id", 1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(String.format(
-                                "{\"hotelId\" : \"%d\", \"name\" : \"%s\", \"description\" : \"%s\","
-                                        + " \"precaution\" : \"%s\", \"price\" : \"%d\", \"standardCapacity\" : \"%d\","
-                                        + " \"maxCapacity\" : \"%d\", \"totalRooms\" : \"%d\", \"heatingSystem\" : \"%s\","
-                                        + " \"tv\" : \"%s\", \"refrigerator\" : \"%s\", \"airConditioner\" : \"%s\","
-                                        + " \"washer\" : \"%s\", \"terrace\" : \"%s\", \"coffeeMachine\" : \"%s\","
-                                        + " \"internet\" : \"%s\", \"kitchen\" : \"%s\", \"bathtub\" : \"%s\","
-                                        + " \"iron\" : \"%s\", \"pool\" : \"%s\", \"pet\" : \"%s\","
-                                        + " \"inAnnex\" : \"%s\"}"
-                                , dto.getHotelId(), dto.getName(), dto.getDescription(), dto.getPrecaution(),
-                                dto.getPrice(), dto.getStandardCapacity(), dto.getMaxCapacity(), dto.getTotalRooms(),
-                                dto.getHeatingSystem(), dto.getTv(), dto.getRefrigerator(), dto.getAirConditioner(),
-                                dto.getWasher(), dto.getTerrace(),
-                                dto.getCoffeeMachine(), dto.getInternet(), dto.getKitchen(), dto.getBathtub(), dto.getIron(),
-                                dto.getPool(), dto.getPet(), dto.getInAnnex()))
+                        .content(getRoomByJson())
                 )
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("객실 저장 테스트 - 요청헤더(user-id)가 없으면 BadRequest를 응답한다.")
+    public void roomSaveByBadRequest() throws Exception {
+        mockMvc.perform(post("/rooms")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getRoomByJson())
+        ).andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("객실 수정 테스트")
     public void roomUpdate() throws Exception {
-        RoomRequestDto dto = createRoomRequestDto();
         mockMvc.perform(patch("/rooms/1")
                         .header("user-id", 1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(String.format(
-                                "{\"hotelId\" : \"%d\", \"name\" : \"%s\", \"description\" : \"%s\","
-                                        + " \"precaution\" : \"%s\", \"price\" : \"%d\", \"standardCapacity\" : \"%d\","
-                                        + " \"maxCapacity\" : \"%d\", \"totalRooms\" : \"%d\", \"heatingSystem\" : \"%s\","
-                                        + " \"tv\" : \"%s\", \"refrigerator\" : \"%s\", \"airConditioner\" : \"%s\","
-                                        + " \"washer\" : \"%s\", \"terrace\" : \"%s\", \"coffeeMachine\" : \"%s\","
-                                        + " \"internet\" : \"%s\", \"kitchen\" : \"%s\", \"bathtub\" : \"%s\","
-                                        + " \"iron\" : \"%s\", \"pool\" : \"%s\", \"pet\" : \"%s\","
-                                        + " \"inAnnex\" : \"%s\"}"
-                                , dto.getHotelId(), dto.getName(), dto.getDescription(), dto.getPrecaution(),
-                                dto.getPrice(), dto.getStandardCapacity(), dto.getMaxCapacity(), dto.getTotalRooms(),
-                                dto.getHeatingSystem(), dto.getTv(), dto.getRefrigerator(), dto.getAirConditioner(),
-                                dto.getWasher(), dto.getTerrace(),
-                                dto.getCoffeeMachine(), dto.getInternet(), dto.getKitchen(), dto.getBathtub(), dto.getIron(),
-                                dto.getPool(), dto.getPet(), dto.getInAnnex()))
+                        .content(getRoomByJson())
                 )
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("객실 수정 테스트 - 요청헤더(user-id)가 없으면 BadRequest를 응답한다.")
+    public void roomUpdateByBadRequest() throws Exception {
+        mockMvc.perform(patch("/rooms/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(getRoomByJson())
+                )
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -137,6 +126,13 @@ class RoomApiTest {
         mockMvc.perform(delete("/rooms/1")
                         .header("user-id", 1))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("객실 삭제 테스트 - 요청헤더(user-id)가 없으면 BadRequest를 응답한다.")
+    public void roomDeleteByBadRequest() throws Exception {
+        mockMvc.perform(delete("/rooms/1"))
+                .andExpect(status().isBadRequest());
     }
 
     private RoomRequestDto createRoomRequestDto() {
@@ -152,5 +148,24 @@ class RoomApiTest {
 
     private User createUser() {
         return User.builder().email("test_email").password("123").build();
+    }
+
+    public String getRoomByJson() {
+        RoomRequestDto dto = createRoomRequestDto();
+        return String.format(
+                "{\"hotelId\" : \"%d\", \"name\" : \"%s\", \"description\" : \"%s\","
+                        + " \"precaution\" : \"%s\", \"price\" : \"%d\", \"standardCapacity\" : \"%d\","
+                        + " \"maxCapacity\" : \"%d\", \"totalRooms\" : \"%d\", \"heatingSystem\" : \"%s\","
+                        + " \"tv\" : \"%s\", \"refrigerator\" : \"%s\", \"airConditioner\" : \"%s\","
+                        + " \"washer\" : \"%s\", \"terrace\" : \"%s\", \"coffeeMachine\" : \"%s\","
+                        + " \"internet\" : \"%s\", \"kitchen\" : \"%s\", \"bathtub\" : \"%s\","
+                        + " \"iron\" : \"%s\", \"pool\" : \"%s\", \"pet\" : \"%s\","
+                        + " \"inAnnex\" : \"%s\"}"
+                , dto.getHotelId(), dto.getName(), dto.getDescription(), dto.getPrecaution(),
+                dto.getPrice(), dto.getStandardCapacity(), dto.getMaxCapacity(), dto.getTotalRooms(),
+                dto.getHeatingSystem(), dto.getTv(), dto.getRefrigerator(), dto.getAirConditioner(),
+                dto.getWasher(), dto.getTerrace(),
+                dto.getCoffeeMachine(), dto.getInternet(), dto.getKitchen(), dto.getBathtub(), dto.getIron(),
+                dto.getPool(), dto.getPet(), dto.getInAnnex());
     }
 }
