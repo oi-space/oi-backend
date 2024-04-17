@@ -8,12 +8,14 @@ import java.util.stream.Stream;
 
 public enum GradeEnum {
 
-        EXCELLENT(0), // 우수
-        GOOD(1), // 좋음
-        AVERAGE(2), // 보통
-        POOR(3); // 나쁨
+    ONE_STAR(1), // 별점 1
+    TWO_STARS(2), // 별점 2
+    THREE_STARS(3), // 별점 3
+    FOUR_STARS(4), // 별점 4
+    FIVE_STARS(5); // 별점 5
 
-        private static final Map<Integer, GradeEnum> valueToGrade =
+
+    private static final Map<Integer, GradeEnum> valueToGrade =
                 Collections.unmodifiableMap(Stream.of(values())
                         .collect(Collectors.toMap(GradeEnum::getValue, Function.identity())));
 
