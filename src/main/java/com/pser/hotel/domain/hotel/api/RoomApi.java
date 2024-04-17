@@ -53,28 +53,19 @@ public class RoomApi {
 
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> roomSave(@RequestBody RoomRequestDto request,
-                                                      @RequestHeader("user-id") Long userId) {
-        if (userId == null) {
-            throw new IllegalArgumentException();
-        }
+                                                      @RequestHeader("user-id") long userId) {
         return ResponseEntity.created(URI.create("/rooms/" + 1)).build();
     }
 
     @PatchMapping("/{roomId}")
     public ResponseEntity<ApiResponse<Void>> roomUpdate(@RequestBody RoomRequestDto dto, @PathVariable Long roomId,
-                                                        @RequestHeader("user-id") Long userId) {
-        if (userId == null) {
-            throw new IllegalArgumentException();
-        }
+                                                        @RequestHeader("user-id") long userId) {
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{roomId}")
     public ResponseEntity<ApiResponse<Void>> roomDelete(@PathVariable Long roomId,
-                                                        @RequestHeader("user-id") Long userId) {
-        if (userId == null) {
-            throw new IllegalArgumentException();
-        }
+                                                        @RequestHeader("user-id") long userId) {
         return ResponseEntity.ok().build();
     }
 
