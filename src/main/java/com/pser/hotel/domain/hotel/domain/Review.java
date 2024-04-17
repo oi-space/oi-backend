@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
@@ -22,7 +20,7 @@ public class Review extends BaseEntity {
     @Length(min = 10, max = 500) // 상세 내용의 길이를 제한
     private String detail;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hotel_id")
+    @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)) //외래키 제약 조건 추가
     private Reservation reservation;
 
     @Builder
@@ -42,17 +40,6 @@ public class Review extends BaseEntity {
         // 넣은 Reservation에 나를 add 추가해준다.
     }
 
-    //    private String images; // 이미지는 유효성 검사 없이 저장
-
-
-//    public Review(int rating, String grade, Hotel hotel, String detail, String rentId, String images, String nickname) {
-//        this.grade = grade;
-//        this.detail = detail;
-//        this.rentId = rentId;
-//        this.images = images;
-//        this.hotel = hotel;
-//        // createdTime과 updatedTime은 각각 @CreatedDate, @LastModifiedDate 어노테이션에 의해 자동 설정 됨.
-//    }
 
 //    public void updateReview(int rating, String detail, String images) {
 //        this.detail = detail;
