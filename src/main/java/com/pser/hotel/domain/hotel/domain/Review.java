@@ -22,10 +22,10 @@ public class Review extends BaseEntity {
 
     @Length(min = 10, max = 500) // 상세 내용의 길이를 제한
     private String detail;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, optional = false)
-    @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)) //외래키 제약 조건 추가
-    private Reservation reservation;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, optional = false)
+    @JoinColumn(name = "reservation_id", nullable = false, unique = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Reservation reservation;
     @Builder
     public Review(GradeEnum grade, String detail, Reservation reservation) {
         this.grade = grade;
