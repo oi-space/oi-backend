@@ -70,13 +70,14 @@ class RoomDaoImplTest {
 
         Page<RoomResponseDto> fetch = roomDao.search(request, pageable);
         List<Room> expect = rooms.stream().filter(e ->
-                e.getAmenity().getTv() == request.getTv()).toList();
+                e.getAmenity().getTv() == true && e.getAmenity().getPet() == true).toList();
         Assertions.assertThat(fetch.getContent().size()).isEqualTo(expect.size());
     }
 
     private RoomSearchRequest createRoomSearchRequestByAmenity() {
         RoomSearchRequest request = RoomSearchRequest.builder()
                 .tv(rnd.nextBoolean())
+                .pet(rnd.nextBoolean())
                 .build();
         return request;
     }
