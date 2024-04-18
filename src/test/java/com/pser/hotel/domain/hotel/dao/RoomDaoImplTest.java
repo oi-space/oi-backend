@@ -44,6 +44,42 @@ class RoomDaoImplTest {
     }
 
     @Test
+    public void searchByMaxCapacity_Lte() {
+        request = createRoomSearchRequestByMaxCapacityLte(15);
+        pageable = createPageable();
+
+        Page<RoomResponseDto> fetch = roomDao.search(request, pageable);
+        List<Room> expect = rooms.stream().filter(e -> e.getMaxCapacity() <= request.getMaxCapacityLte())
+                .toList();
+        Assertions.assertThat(fetch.getContent().size()).isEqualTo(expect.size());
+    }
+
+    private RoomSearchRequest createRoomSearchRequestByMaxCapacityLte(int maxCapacityLte) {
+        RoomSearchRequest request = RoomSearchRequest.builder()
+                .maxCapacityLte(maxCapacityLte)
+                .build();
+        return request;
+    }
+
+    @Test
+    public void searchByMaxCapacity_Gte() {
+        request = createRoomSearchRequestByMaxCapacityGte(15);
+        pageable = createPageable();
+
+        Page<RoomResponseDto> fetch = roomDao.search(request, pageable);
+        List<Room> expect = rooms.stream().filter(e -> e.getMaxCapacity() >= request.getMaxCapacityGte())
+                .toList();
+        Assertions.assertThat(fetch.getContent().size()).isEqualTo(expect.size());
+    }
+
+    private RoomSearchRequest createRoomSearchRequestByMaxCapacityGte(int maxCapacityGte) {
+        RoomSearchRequest request = RoomSearchRequest.builder()
+                .maxCapacityGte(maxCapacityGte)
+                .build();
+        return request;
+    }
+
+    @Test
     public void searchByStandardCapacity_Lte() {
         request = createRoomSearchRequestByStandartCapacityLte(5);
         pageable = createPageable();
