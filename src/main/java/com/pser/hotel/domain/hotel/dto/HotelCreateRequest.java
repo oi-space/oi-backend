@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class HotelRequest {
+public class HotelCreateRequest {
     @NotBlank
     private Long userId;
     @NotBlank
