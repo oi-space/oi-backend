@@ -44,6 +44,40 @@ class RoomDaoImplTest {
     }
 
     @Test
+    public void searchByPrice_Lte() {
+        request = createRoomSearchRequestByPriceLte(1000);
+        pageable = createPageable();
+
+        Page<RoomResponseDto> fetch = roomDao.search(request, pageable);
+        List<Room> expect = rooms.stream().filter(e -> e.getPrice() < request.getPriceLte()).toList();
+        Assertions.assertThat(fetch.getContent().size()).isEqualTo(expect.size());
+    }
+
+    private RoomSearchRequest createRoomSearchRequestByPriceLte(int priceLte) {
+        RoomSearchRequest request = RoomSearchRequest.builder()
+                .priceLte(priceLte)
+                .build();
+        return request;
+    }
+
+    @Test
+    public void searchByPrice_Gte() {
+        request = createRoomSearchRequestByPriceGte(1000);
+        pageable = createPageable();
+
+        Page<RoomResponseDto> fetch = roomDao.search(request, pageable);
+        List<Room> expect = rooms.stream().filter(e -> e.getPrice() > request.getPriceGte()).toList();
+        Assertions.assertThat(fetch.getContent().size()).isEqualTo(expect.size());
+    }
+
+    private RoomSearchRequest createRoomSearchRequestByPriceGte(int priceGte) {
+        RoomSearchRequest request = RoomSearchRequest.builder()
+                .priceGte(priceGte)
+                .build();
+        return request;
+    }
+
+    @Test
     public void searchByName() {
         String keyword = "3";
         request = createRoomSearchRequestByKeyword(keyword);

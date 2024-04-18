@@ -56,7 +56,7 @@ public class Utils {
                 .totalRooms(new Random().nextInt(1, 100))
                 .maxCapacity(new Random().nextInt(3, 10))
                 .standardCapacity(new Random().nextInt(1, 3))
-                .price(1000)
+                .price(rnd.nextInt(500, 2000))
                 .checkIn(LocalTime.of(15, 00, 0))
                 .checkOut(LocalTime.of(11, 00, 00))
                 .build();
