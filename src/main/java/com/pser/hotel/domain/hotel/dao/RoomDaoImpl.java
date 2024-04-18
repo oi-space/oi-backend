@@ -32,7 +32,8 @@ public class RoomDaoImpl implements RoomDaoCustom {
                         searchCondition(request),
                         amenityCondition(request),
                         priceCondition(request),
-                        standardCapacityCondition(request)
+                        standardCapacityCondition(request),
+                        maxCapacityCondition(request)
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -49,13 +50,21 @@ public class RoomDaoImpl implements RoomDaoCustom {
                         searchCondition(request),
                         amenityCondition(request),
                         priceCondition(request),
-                        standardCapacityCondition(request)
+                        standardCapacityCondition(request),
+                        maxCapacityCondition(request)
                 )
                 .fetchOne();
         if (count == null) {
             count = 0L;
         }
         return count;
+    }
+
+    private BooleanBuilder maxCapacityCondition(RoomSearchRequest request) {
+        return new BooleanBuilder()
+                .and(maxCapacityEq(request.getMaxCapacity()))
+                .and(maxCapacityGte(request.getMaxCapacityGte()))
+                .and(maxCapacityLte(request.getMaxCapacityLte()));
     }
 
     private BooleanBuilder standardCapacityCondition(RoomSearchRequest request) {
@@ -95,6 +104,18 @@ public class RoomDaoImpl implements RoomDaoCustom {
                 .and(innAnnexIsTrue(request.getInAnnex()));
     }
 
+    private BooleanExpression maxCapacityEq(Integer maxCapacity) {
+        return maxCapacity != null ? room.maxCapacity.eq(maxCapacity) : null;
+    }
+
+    private BooleanExpression maxCapacityGte(Integer maxCapacityGte) {
+        return maxCapacityGte != null ? room.maxCapacity.goe(maxCapacityGte) : null;
+    }
+
+    private BooleanExpression maxCapacityLte(Integer maxCapacityLte) {
+        return maxCapacityLte != null ? room.maxCapacity.loe(maxCapacityLte) : null;
+    }
+    
     private BooleanExpression standardCapacityEq(Integer standardCapacity) {
         return standardCapacity != null ? room.standardCapacity.eq(standardCapacity) : null;
     }
