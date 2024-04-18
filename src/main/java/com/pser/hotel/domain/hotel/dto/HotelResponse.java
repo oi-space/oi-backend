@@ -7,7 +7,6 @@ import lombok.Data;
 @Builder
 public class HotelResponse {
     private String response;
-
     public HotelResponse(String response){
         this.response = response;
     }
