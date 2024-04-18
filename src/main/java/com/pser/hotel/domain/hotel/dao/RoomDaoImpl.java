@@ -30,7 +30,8 @@ public class RoomDaoImpl implements RoomDaoCustom {
                 .from(room)
                 .where(
                         searchCondition(request),
-                        amenityCondition(request)
+                        amenityCondition(request),
+                        priceCondition(request)
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -45,13 +46,21 @@ public class RoomDaoImpl implements RoomDaoCustom {
                 .from(room)
                 .where(
                         searchCondition(request),
-                        amenityCondition(request)
+                        amenityCondition(request),
+                        priceCondition(request)
                 )
                 .fetchOne();
         if (count == null) {
             count = 0L;
         }
         return count;
+    }
+
+    private BooleanBuilder priceCondition(RoomSearchRequest request) {
+        return new BooleanBuilder()
+                .and(priceEq(request.getPrice()))
+                .and(priceGte(request.getPriceGte()))
+                .and(priceLte(request.getPriceLte()));
     }
 
     private BooleanBuilder searchCondition(RoomSearchRequest request) {
@@ -75,6 +84,18 @@ public class RoomDaoImpl implements RoomDaoCustom {
                 .and(poolIsTrue(request.getPool()))
                 .and(petIsTrue(request.getPet()))
                 .and(innAnnexIsTrue(request.getInAnnex()));
+    }
+
+    private BooleanExpression priceEq(Integer price) {
+        return price != null ? room.price.eq(price) : null;
+    }
+
+    private BooleanExpression priceGte(Integer priceGte) {
+        return priceGte != null ? room.price.goe(priceGte) : null;
+    }
+
+    private BooleanExpression priceLte(Integer priceLte) {
+        return priceLte != null ? room.price.loe(priceLte) : null;
     }
 
     private BooleanExpression heatingIsTrue(Boolean heatingSystem) {
