@@ -1,6 +1,6 @@
 package com.pser.hotel.domain.hotel.api;
 
-import com.pser.hotel.domain.hotel.dto.HotelRequest;
+import com.pser.hotel.domain.hotel.dto.HotelCreateRequest;
 import com.pser.hotel.domain.hotel.dto.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
 import com.pser.hotel.global.common.response.ApiResponse;
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HotelApi {
 
     @PostMapping // 숙소 등록 api
-    public ResponseEntity<ApiResponse<Void>> saveHotel(@RequestBody HotelRequest hotelRequest, /*@RequestHeader("user-id")*/ Long userId) {
+    public ResponseEntity<ApiResponse<Void>> saveHotel(@RequestBody HotelCreateRequest hotelCreateRequest, @RequestHeader("user-id") Long userId) {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -51,17 +51,17 @@ public class HotelApi {
 
     @GetMapping("/{hotelId}") // 특정 숙소 조회
     public ResponseEntity<ApiResponse<HotelResponse>> getHotel(@PathVariable Long hotelId){
-        HotelResponse hotelRequest = new HotelResponse("first test");
+        HotelResponse hotelRequest = new HotelResponse("first controller");
         return ResponseEntity.ok(ApiResponse.success(hotelRequest));
     }
 
     @PatchMapping("/{hotelId}") // 숙소 수정
-    public ResponseEntity<ApiResponse<Void>> updateHotel(HotelRequest hotelRequest, @PathVariable Long hotelId, /*@RequestHeader("user-id")*/ Long userId){
+    public ResponseEntity<ApiResponse<Void>> updateHotel(HotelCreateRequest hotelCreateRequest, @PathVariable Long hotelId, @RequestHeader("user-id") Long userId){
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{hotelId}") // 숙소 삭제
-    public ResponseEntity<ApiResponse<Void>> deleteHotel(HotelRequest hotelRequest, @PathVariable Long hotelId, /*@RequestHeader("user-id")*/ Long userId){
+    public ResponseEntity<ApiResponse<Void>> deleteHotel(HotelCreateRequest hotelCreateRequest, @PathVariable Long hotelId, @RequestHeader("user-id") Long userId){
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
