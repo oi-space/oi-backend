@@ -31,7 +31,8 @@ public class RoomDaoImpl implements RoomDaoCustom {
                 .where(
                         searchCondition(request),
                         amenityCondition(request),
-                        priceCondition(request)
+                        priceCondition(request),
+                        standardCapacityCondition(request)
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -47,13 +48,21 @@ public class RoomDaoImpl implements RoomDaoCustom {
                 .where(
                         searchCondition(request),
                         amenityCondition(request),
-                        priceCondition(request)
+                        priceCondition(request),
+                        standardCapacityCondition(request)
                 )
                 .fetchOne();
         if (count == null) {
             count = 0L;
         }
         return count;
+    }
+
+    private BooleanBuilder standardCapacityCondition(RoomSearchRequest request) {
+        return new BooleanBuilder()
+                .and(standardCapacityEq(request.getStandardCapacity()))
+                .and(standardCapacityGte(request.getStandardCapacityGte()))
+                .and(standardCapacityLte(request.getStandardCapacityLte()));
     }
 
     private BooleanBuilder priceCondition(RoomSearchRequest request) {
@@ -84,6 +93,18 @@ public class RoomDaoImpl implements RoomDaoCustom {
                 .and(poolIsTrue(request.getPool()))
                 .and(petIsTrue(request.getPet()))
                 .and(innAnnexIsTrue(request.getInAnnex()));
+    }
+
+    private BooleanExpression standardCapacityEq(Integer standardCapacity) {
+        return standardCapacity != null ? room.standardCapacity.eq(standardCapacity) : null;
+    }
+
+    private BooleanExpression standardCapacityGte(Integer standardCapacityGte) {
+        return standardCapacityGte != null ? room.standardCapacity.goe(standardCapacityGte) : null;
+    }
+
+    private BooleanExpression standardCapacityLte(Integer standardCapacityLte) {
+        return standardCapacityLte != null ? room.standardCapacity.loe(standardCapacityLte) : null;
     }
 
     private BooleanExpression priceEq(Integer price) {

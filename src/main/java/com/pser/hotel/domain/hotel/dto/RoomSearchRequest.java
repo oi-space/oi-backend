@@ -20,7 +20,11 @@ public class RoomSearchRequest extends SearchQuery {
 
     private LocalTime checkOut;
 
+    private Integer standardCapacityGte;
+
     private Integer standardCapacity;
+
+    private Integer standardCapacityLte;
 
     private Integer maxCapacity;
 
@@ -57,18 +61,21 @@ public class RoomSearchRequest extends SearchQuery {
     @Builder
     public RoomSearchRequest(String keyword, LocalDateTime createdAfter, LocalDateTime createdBefore,
                              LocalDateTime updatedAfter, LocalDateTime updatedBefore, Integer priceGte, Integer price,
-                             Integer priceLte, LocalTime checkIn, LocalTime checkOut, Integer standardCapacity,
-                             Integer maxCapacity, Integer totalRooms, Boolean heatingSystem, Boolean tv,
-                             Boolean refrigerator, Boolean airConditioner, Boolean washer, Boolean terrace,
-                             Boolean coffeeMachine, Boolean internet, Boolean kitchen, Boolean bathtub, Boolean iron,
-                             Boolean pool, Boolean pet, Boolean inAnnex) {
+                             Integer priceLte, LocalTime checkIn, LocalTime checkOut, Integer standardCapacityGte,
+                             Integer standardCapacity, Integer standardCapacityLte, Integer maxCapacity,
+                             Integer totalRooms,
+                             Boolean heatingSystem, Boolean tv, Boolean refrigerator, Boolean airConditioner,
+                             Boolean washer, Boolean terrace, Boolean coffeeMachine, Boolean internet, Boolean kitchen,
+                             Boolean bathtub, Boolean iron, Boolean pool, Boolean pet, Boolean inAnnex) {
         super(keyword, createdAfter, createdBefore, updatedAfter, updatedBefore);
         this.priceGte = priceGte;
         this.price = price;
         this.priceLte = priceLte;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
+        this.standardCapacityGte = standardCapacityGte;
         this.standardCapacity = standardCapacity;
+        this.standardCapacityLte = standardCapacityLte;
         this.maxCapacity = maxCapacity;
         this.totalRooms = totalRooms;
         this.heatingSystem = heatingSystem;
