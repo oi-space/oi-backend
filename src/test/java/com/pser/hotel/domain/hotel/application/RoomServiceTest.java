@@ -121,6 +121,24 @@ class RoomServiceTest {
         Assertions.assertThat(actual).isEqualTo(expect);
     }
 
+    @Test
+    @DisplayName("update 테스트")
+    public void updateTest() {
+        // Given
+        Long roomId = 1L;
+        Long userId = 1L;
+        requestDto = createRoomRequestDto();
+        given(hotel.getId()).willReturn(1L);
+        given(hotelDao.findByIdAndUserId(requestDto.getHotelId(), userId)).willReturn(Optional.of(hotel));
+        given(roomDao.findByIdAndHotelId(roomId, requestDto.getHotelId())).willReturn(Optional.of(room));
+
+        // When
+        roomService.update(userId, roomId, requestDto);
+
+        // Then
+        then(roomDao).should().save(any());
+    }
+
     private RoomSearchRequest createSearchReqeust() {
         return RoomSearchRequest.builder()
                 .keyword("test_keyword")
