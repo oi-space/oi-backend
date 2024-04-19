@@ -139,6 +139,25 @@ class RoomServiceTest {
         then(roomDao).should().save(any());
     }
 
+    @Test
+    @DisplayName("remove 테스트")
+    public void removeTest() {
+        // Given
+        Long userId = 1L;
+        Long hotelId = 1L;
+        Long roomId = 1L;
+        given(hotel.getId()).willReturn(hotelId);
+        given(room.getId()).willReturn(roomId);
+        given(hotelDao.findByIdAndUserId(hotelId, userId)).willReturn(Optional.of(hotel));
+        given(roomDao.findByIdAndHotelId(roomId, hotelId)).willReturn(Optional.of(room));
+
+        // When
+        roomService.remove(userId, hotelId, roomId);
+
+        // Then
+        then(roomDao).should().deleteById(roomId);
+    }
+
     private RoomSearchRequest createSearchReqeust() {
         return RoomSearchRequest.builder()
                 .keyword("test_keyword")
