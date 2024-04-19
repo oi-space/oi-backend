@@ -14,7 +14,7 @@ public class ReviewCreateResponseDto {
 
     private GradeEnum grade;
 
-    private String detail;=
+    private String detail;
 
     private Long reservationId; // 연결된 예약 ID
 
