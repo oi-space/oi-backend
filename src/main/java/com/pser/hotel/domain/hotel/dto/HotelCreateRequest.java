@@ -2,9 +2,12 @@ package com.pser.hotel.domain.hotel.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import org.hibernate.validator.constraints.URL;
 
 @Data
+@Builder
 @AllArgsConstructor
 public class HotelCreateRequest {
     @NotBlank
@@ -30,10 +33,12 @@ public class HotelCreateRequest {
     @NotBlank
     private Double longtitude;
     @NotBlank
+    @URL(message = "URL 형식이 유효하지 않습니다.")
     private String mainImage;
     @NotBlank
-    private String businessNumber;;
+    private String businessNumber;
     @NotBlank
+    @URL(message = "URL 형식이 유효하지 않습니다.")
     private String certUrl;
     @NotBlank
     private String visitGuidance;
