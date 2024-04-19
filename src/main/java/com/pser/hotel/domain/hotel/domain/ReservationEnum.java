@@ -11,8 +11,8 @@ import lombok.Getter;
 public enum ReservationEnum {
     END_RESERVATION(0),    // 종료된 예약
     BEFORE_ENTER_DEFAULT(1), // 입장 전
-    BEFORE_ENTER_DISQUALIFICATION(2),
-    REFUND(3), // 환불
+    REFUND(2), // 환불
+    AUCTION_FAIL(3),    // 입장 전 (유찰)
     AUCTION_PROCESSING(4),  // 경매 중
     AUCTION_SUCCESS(5); // 경매 성공
 
