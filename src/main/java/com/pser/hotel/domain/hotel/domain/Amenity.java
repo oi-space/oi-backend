@@ -12,14 +12,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
+@ToString(of = {"heatingSystem", "tv", "refrigerator", "airConditioner", "washer", "terrace", "coffeeMachine",
+        "internet", "kitchen", "bathtub", "iron", "pool", "pet",
+        "inAnnex",})
 public class Amenity extends BaseEntity {
     @OneToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(unique = true, nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Room room;
 
     private Boolean heatingSystem = false;
