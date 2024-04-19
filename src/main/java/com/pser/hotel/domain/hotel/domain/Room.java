@@ -1,5 +1,7 @@
 package com.pser.hotel.domain.hotel.domain;
 
+import com.pser.hotel.domain.hotel.dto.RoomRequestDto;
+import com.pser.hotel.domain.hotel.dto.RoomResponseDto;
 import com.pser.hotel.domain.model.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -82,6 +84,42 @@ public class Room extends BaseEntity {
     private void validate() {
         if (standardCapacity > maxCapacity) {
             throw new IllegalArgumentException("기준 인원이 최대 인원보다 클 수 없습니다");
+        }
+    }
+
+    public RoomResponseDto toDto() {
+        return RoomResponseDto.builder()
+                .name(this.name)
+                .build();
+    }
+
+    public void update(RoomRequestDto request) {
+        if (!request.getName().equals(name)) {
+            this.name = request.getName();
+        }
+        if (!request.getDescription().equals(description)) {
+            this.description = request.getDescription();
+        }
+        if (!request.getPrecaution().equals(precaution)) {
+            this.precaution = request.getPrecaution();
+        }
+        if (!(request.getPrice() == price)) {
+            this.price = request.getPrice();
+        }
+        if (!request.getCheckIn().equals(request.getCheckIn())) {
+            this.checkIn = request.getCheckIn();
+        }
+        if (!request.getCheckOut().equals(request.getCheckOut())) {
+            this.checkOut = request.getCheckOut();
+        }
+        if (!(request.getStandardCapacity() == standardCapacity)) {
+            this.standardCapacity = request.getStandardCapacity();
+        }
+        if (!(request.getMaxCapacity() == maxCapacity)) {
+            this.maxCapacity = request.getMaxCapacity();
+        }
+        if (!(request.getTotalRooms() == totalRooms)) {
+            this.totalRooms = request.getTotalRooms();
         }
     }
 }
