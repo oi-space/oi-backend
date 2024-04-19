@@ -4,7 +4,9 @@ import static com.pser.hotel.domain.hotel.util.Utils.createHotel;
 import static com.pser.hotel.domain.hotel.util.Utils.createRoom;
 import static com.pser.hotel.domain.hotel.util.Utils.createRooms;
 import static com.pser.hotel.domain.hotel.util.Utils.createUser;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
 import com.pser.hotel.domain.hotel.dao.HotelDao;
 import com.pser.hotel.domain.hotel.dao.RoomDao;
@@ -12,6 +14,7 @@ import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.dto.RoomRequestDto;
 import com.pser.hotel.domain.hotel.dto.RoomResponseDto;
+import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalTime;
 import java.util.List;
@@ -85,6 +88,25 @@ class RoomServiceTest {
 
         // Then
         Assertions.assertThat(result).isEqualTo(roomPage.map(e -> e.toDto()));
+    }
+
+    @Test
+    @DisplayName("findRoom 테스트")
+    public void findRoomTest() {
+        // Given
+        given(roomDao.findById(1L)).willReturn(Optional.of(room));
+
+        // When
+        RoomResponseDto result = roomService.findRoom(1L);
+
+        //Then
+        Assertions.assertThat(result).isEqualTo(room.toDto());
+    }
+
+    private RoomSearchRequest createSearchReqeust() {
+        return RoomSearchRequest.builder()
+                .keyword("test_keyword")
+                .build();
     }
 
     private RoomRequestDto createRoomRequestDto() {
