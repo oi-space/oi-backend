@@ -1,8 +1,8 @@
 package com.pser.hotel.domain.hotel.api;
 
 import com.pser.hotel.domain.hotel.application.RoomService;
-import com.pser.hotel.domain.hotel.dto.RoomRequestDto;
-import com.pser.hotel.domain.hotel.dto.RoomResponseDto;
+import com.pser.hotel.domain.hotel.dto.RoomRequest;
+import com.pser.hotel.domain.hotel.dto.RoomResponse;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
 import com.pser.hotel.global.common.response.ApiResponse;
 import java.net.URI;
@@ -27,35 +27,35 @@ public class RoomRestApi {
     private final RoomService roomService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<RoomResponseDto>>> roomList(@PageableDefault Pageable pageable) {
-        Page<RoomResponseDto> result = roomService.findRoomList(pageable);
+    public ResponseEntity<ApiResponse<Page<RoomResponse>>> roomList(@PageableDefault Pageable pageable) {
+        Page<RoomResponse> result = roomService.findRoomList(pageable);
 
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 
     @GetMapping("/{roomId}")
-    public ResponseEntity<ApiResponse<RoomResponseDto>> roomDetails(@PathVariable Long roomId) {
-        RoomResponseDto result = roomService.findRoom(roomId);
+    public ResponseEntity<ApiResponse<RoomResponse>> roomDetails(@PathVariable Long roomId) {
+        RoomResponse result = roomService.findRoom(roomId);
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<Page<RoomResponseDto>>> searchRoom(
+    public ResponseEntity<ApiResponse<Page<RoomResponse>>> searchRoom(
             RoomSearchRequest request, @PageableDefault Pageable pageable) {
-        Page<RoomResponseDto> result = roomService.search(request, pageable);
+        Page<RoomResponse> result = roomService.search(request, pageable);
 
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> roomSave(@RequestBody RoomRequestDto request,
+    public ResponseEntity<ApiResponse<Void>> roomSave(@RequestBody RoomRequest request,
                                                       @RequestHeader("user-id") long userId) {
         Long roomId = roomService.save(userId, request);
         return ResponseEntity.created(URI.create("/rooms/" + roomId)).build();
     }
 
     @PatchMapping("/{roomId}")
-    public ResponseEntity<ApiResponse<Void>> roomUpdate(@RequestBody RoomRequestDto dto, @PathVariable Long roomId,
+    public ResponseEntity<ApiResponse<Void>> roomUpdate(@RequestBody RoomRequest dto, @PathVariable Long roomId,
                                                         @RequestHeader("user-id") long userId) {
         roomService.update(userId, roomId, dto);
         return ResponseEntity.ok().build();

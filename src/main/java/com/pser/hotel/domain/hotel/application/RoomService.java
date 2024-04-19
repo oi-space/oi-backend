@@ -5,8 +5,8 @@ import com.pser.hotel.domain.hotel.dao.RoomDao;
 import com.pser.hotel.domain.hotel.domain.Amenity;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
-import com.pser.hotel.domain.hotel.dto.RoomRequestDto;
-import com.pser.hotel.domain.hotel.dto.RoomResponseDto;
+import com.pser.hotel.domain.hotel.dto.RoomRequest;
+import com.pser.hotel.domain.hotel.dto.RoomResponse;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,23 +21,23 @@ public class RoomService {
     private final RoomDao roomDao;
 
     @Transactional
-    public Page<RoomResponseDto> findRoomList(Pageable pageable) {
-        Page<RoomResponseDto> result = roomDao.findAll(pageable).map(e -> e.toDto());
+    public Page<RoomResponse> findRoomList(Pageable pageable) {
+        Page<RoomResponse> result = roomDao.findAll(pageable).map(e -> e.toDto());
         return result;
     }
 
     @Transactional
-    public RoomResponseDto findRoom(Long roomId) {
+    public RoomResponse findRoom(Long roomId) {
         return roomDao.findById(roomId).orElseThrow(() -> new IllegalArgumentException()).toDto();
     }
 
     @Transactional
-    public Page<RoomResponseDto> search(RoomSearchRequest request, Pageable pageable) {
+    public Page<RoomResponse> search(RoomSearchRequest request, Pageable pageable) {
         return roomDao.search(request, pageable);
     }
 
     @Transactional
-    public Long save(long userId, RoomRequestDto request) {
+    public Long save(long userId, RoomRequest request) {
         Hotel hotel = findHotelByIdAndUserId(request.getHotelId(), userId);
         Room room = createRoom(hotel, request);
         Amenity amenity = createAmenity(room, request);
@@ -46,7 +46,7 @@ public class RoomService {
     }
 
     @Transactional
-    public void update(long userId, Long roomId, RoomRequestDto request) {
+    public void update(long userId, Long roomId, RoomRequest request) {
         Hotel hotel = findHotelByIdAndUserId(request.getHotelId(), userId);
         Room room = roomDao.findByIdAndHotelId(roomId, hotel.getId()).orElseThrow(() -> new IllegalArgumentException());
         room.update(request);
@@ -64,7 +64,7 @@ public class RoomService {
         return hotelDao.findByIdAndUserId(hotelId, userId).orElseThrow(() -> new IllegalArgumentException());
     }
 
-    private Amenity createAmenity(Room room, RoomRequestDto requestDto) {
+    private Amenity createAmenity(Room room, RoomRequest requestDto) {
         return Amenity.builder()
                 .room(room)
                 .heatingSystem(requestDto.getHeatingSystem())
@@ -84,7 +84,7 @@ public class RoomService {
                 .build();
     }
 
-    private Room createRoom(Hotel hotel, RoomRequestDto requestDto) {
+    private Room createRoom(Hotel hotel, RoomRequest requestDto) {
         Room room = Room.builder()
                 .hotel(hotel)
                 .name(requestDto.getName())

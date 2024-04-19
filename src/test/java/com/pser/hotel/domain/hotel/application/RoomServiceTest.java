@@ -12,8 +12,8 @@ import com.pser.hotel.domain.hotel.dao.HotelDao;
 import com.pser.hotel.domain.hotel.dao.RoomDao;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
-import com.pser.hotel.domain.hotel.dto.RoomRequestDto;
-import com.pser.hotel.domain.hotel.dto.RoomResponseDto;
+import com.pser.hotel.domain.hotel.dto.RoomRequest;
+import com.pser.hotel.domain.hotel.dto.RoomResponse;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalTime;
@@ -49,7 +49,7 @@ class RoomServiceTest {
     User user;
     Hotel hotel;
     Room room;
-    RoomRequestDto requestDto;
+    RoomRequest requestDto;
 
     @BeforeEach
     public void setUp() {
@@ -84,7 +84,7 @@ class RoomServiceTest {
         given(roomDao.findAll(pageable)).willReturn(roomPage);
 
         // When
-        Page<RoomResponseDto> result = roomService.findRoomList(pageable);
+        Page<RoomResponse> result = roomService.findRoomList(pageable);
 
         // Then
         Assertions.assertThat(result).isEqualTo(roomPage.map(e -> e.toDto()));
@@ -97,7 +97,7 @@ class RoomServiceTest {
         given(roomDao.findById(1L)).willReturn(Optional.of(room));
 
         // When
-        RoomResponseDto result = roomService.findRoom(1L);
+        RoomResponse result = roomService.findRoom(1L);
 
         //Then
         Assertions.assertThat(result).isEqualTo(room.toDto());
@@ -110,12 +110,12 @@ class RoomServiceTest {
         RoomSearchRequest searchRequest = createSearchReqeust();
         List<Room> roomList = createRooms(hotel, 10);
         Pageable pageable = createPageable(0, 10);
-        Page<RoomResponseDto> expect = new PageImpl<>(roomList, pageable, 10).map(e -> e.toDto());
+        Page<RoomResponse> expect = new PageImpl<>(roomList, pageable, 10).map(e -> e.toDto());
 
         given(roomDao.search(searchRequest, pageable)).willReturn(expect);
 
         // When
-        Page<RoomResponseDto> actual = roomService.search(searchRequest, pageable);
+        Page<RoomResponse> actual = roomService.search(searchRequest, pageable);
 
         // Then
         Assertions.assertThat(actual).isEqualTo(expect);
@@ -164,8 +164,8 @@ class RoomServiceTest {
                 .build();
     }
 
-    private RoomRequestDto createRoomRequestDto() {
-        return new RoomRequestDto(
+    private RoomRequest createRoomRequestDto() {
+        return new RoomRequest(
                 1L,
                 "객실이름", "설명", "주의사항", 1000, LocalTime.of(15, 00), LocalTime.of(11, 00),
                 1, 1, 1,

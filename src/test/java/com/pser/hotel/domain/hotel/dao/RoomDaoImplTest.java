@@ -2,7 +2,7 @@ package com.pser.hotel.domain.hotel.dao;
 
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
-import com.pser.hotel.domain.hotel.dto.RoomResponseDto;
+import com.pser.hotel.domain.hotel.dto.RoomResponse;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
 import com.pser.hotel.domain.hotel.util.Utils;
 import com.pser.hotel.domain.member.domain.User;
@@ -20,10 +20,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({QueryDslConfig.class})
+@ActiveProfiles("test")
 @DisplayName("RoomDaoImpl 테스트")
 class RoomDaoImplTest {
     @Autowired
@@ -48,7 +50,7 @@ class RoomDaoImplTest {
         request = createRoomSearchRequestByMaxCapacityLte(15);
         pageable = createPageable();
 
-        Page<RoomResponseDto> fetch = roomDao.search(request, pageable);
+        Page<RoomResponse> fetch = roomDao.search(request, pageable);
         List<Room> expect = rooms.stream().filter(e -> e.getMaxCapacity() <= request.getMaxCapacityLte())
                 .toList();
         Assertions.assertThat(fetch.getContent().size()).isEqualTo(expect.size());
@@ -66,7 +68,7 @@ class RoomDaoImplTest {
         request = createRoomSearchRequestByMaxCapacityGte(15);
         pageable = createPageable();
 
-        Page<RoomResponseDto> fetch = roomDao.search(request, pageable);
+        Page<RoomResponse> fetch = roomDao.search(request, pageable);
         List<Room> expect = rooms.stream().filter(e -> e.getMaxCapacity() >= request.getMaxCapacityGte())
                 .toList();
         Assertions.assertThat(fetch.getContent().size()).isEqualTo(expect.size());
@@ -84,7 +86,7 @@ class RoomDaoImplTest {
         request = createRoomSearchRequestByStandartCapacityLte(5);
         pageable = createPageable();
 
-        Page<RoomResponseDto> fetch = roomDao.search(request, pageable);
+        Page<RoomResponse> fetch = roomDao.search(request, pageable);
         List<Room> expect = rooms.stream().filter(e -> e.getStandardCapacity() <= request.getStandardCapacityLte())
                 .toList();
         Assertions.assertThat(fetch.getContent().size()).isEqualTo(expect.size());
@@ -102,7 +104,7 @@ class RoomDaoImplTest {
         request = createRoomSearchRequestByStandartCapacityGte(5);
         pageable = createPageable();
 
-        Page<RoomResponseDto> fetch = roomDao.search(request, pageable);
+        Page<RoomResponse> fetch = roomDao.search(request, pageable);
         List<Room> expect = rooms.stream().filter(e -> e.getStandardCapacity() >= request.getStandardCapacityGte())
                 .toList();
         Assertions.assertThat(fetch.getContent().size()).isEqualTo(expect.size());
@@ -120,7 +122,7 @@ class RoomDaoImplTest {
         request = createRoomSearchRequestByPriceLte(1000);
         pageable = createPageable();
 
-        Page<RoomResponseDto> fetch = roomDao.search(request, pageable);
+        Page<RoomResponse> fetch = roomDao.search(request, pageable);
         List<Room> expect = rooms.stream().filter(e -> e.getPrice() < request.getPriceLte()).toList();
         Assertions.assertThat(fetch.getContent().size()).isEqualTo(expect.size());
     }
@@ -137,7 +139,7 @@ class RoomDaoImplTest {
         request = createRoomSearchRequestByPriceGte(1000);
         pageable = createPageable();
 
-        Page<RoomResponseDto> fetch = roomDao.search(request, pageable);
+        Page<RoomResponse> fetch = roomDao.search(request, pageable);
         List<Room> expect = rooms.stream().filter(e -> e.getPrice() > request.getPriceGte()).toList();
         Assertions.assertThat(fetch.getContent().size()).isEqualTo(expect.size());
     }
@@ -155,7 +157,7 @@ class RoomDaoImplTest {
         request = createRoomSearchRequestByKeyword(keyword);
         pageable = createPageable();
 
-        Page<RoomResponseDto> fetch = roomDao.search(request, pageable);
+        Page<RoomResponse> fetch = roomDao.search(request, pageable);
         List<Room> expect = rooms.stream().filter(e ->
                 e.getName().contains(keyword) || e.getDescription().contains(keyword) || e.getPrecaution()
                         .contains(keyword)).toList();
@@ -174,7 +176,7 @@ class RoomDaoImplTest {
         request = createRoomSearchRequestByAmenity();
         pageable = createPageable();
 
-        Page<RoomResponseDto> fetch = roomDao.search(request, pageable);
+        Page<RoomResponse> fetch = roomDao.search(request, pageable);
         List<Room> expect = rooms.stream().filter(e ->
                 e.getAmenity().getTv() == true && e.getAmenity().getPet() == true).toList();
         Assertions.assertThat(fetch.getContent().size()).isEqualTo(expect.size());

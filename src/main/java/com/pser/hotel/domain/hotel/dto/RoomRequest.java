@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class RoomRequestDto {
+public class RoomRequest {
     @NotBlank
     private long hotelId;
     @NotBlank

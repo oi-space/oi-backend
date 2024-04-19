@@ -1,7 +1,7 @@
 package com.pser.hotel.domain.hotel.domain;
 
-import com.pser.hotel.domain.hotel.dto.RoomRequestDto;
-import com.pser.hotel.domain.hotel.dto.RoomResponseDto;
+import com.pser.hotel.domain.hotel.dto.RoomRequest;
+import com.pser.hotel.domain.hotel.dto.RoomResponse;
 import com.pser.hotel.domain.model.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -87,13 +87,13 @@ public class Room extends BaseEntity {
         }
     }
 
-    public RoomResponseDto toDto() {
-        return RoomResponseDto.builder()
+    public RoomResponse toDto() {
+        return RoomResponse.builder()
                 .name(this.name)
                 .build();
     }
 
-    public void update(RoomRequestDto request) {
+    public void update(RoomRequest request) {
         if (!request.getName().equals(name)) {
             this.name = request.getName();
         }

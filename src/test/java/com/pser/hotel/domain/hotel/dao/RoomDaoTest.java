@@ -39,7 +39,6 @@ class RoomDaoTest {
         hotel = createHotel(user);
         room = createRoom(hotel);
         roomDao.save(room);
-        em.clear();
     }
 
     @AfterEach

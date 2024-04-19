@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.pser.hotel.domain.hotel.application.RoomService;
-import com.pser.hotel.domain.hotel.dto.RoomRequestDto;
+import com.pser.hotel.domain.hotel.dto.RoomRequest;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalTime;
@@ -120,8 +120,8 @@ class RoomRestApiTest {
                 .andExpect(status().isBadRequest());
     }
 
-    private RoomRequestDto createRoomRequestDto() {
-        return new RoomRequestDto(
+    private RoomRequest createRoomRequestDto() {
+        return new RoomRequest(
                 1L,
                 "객실이름", "설명", "주의사항", 1000, LocalTime.of(15, 00), LocalTime.of(11, 00),
                 1, 1, 1,
@@ -136,7 +136,7 @@ class RoomRestApiTest {
     }
 
     public String getRoomByJson() {
-        RoomRequestDto dto = createRoomRequestDto();
+        RoomRequest dto = createRoomRequestDto();
         return String.format(
                 "{\"hotelId\" : \"%d\", \"name\" : \"%s\", \"description\" : \"%s\","
                         + " \"precaution\" : \"%s\", \"price\" : \"%d\", \"standardCapacity\" : \"%d\","
