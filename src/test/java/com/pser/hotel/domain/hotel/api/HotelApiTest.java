@@ -94,25 +94,25 @@ public class HotelApiTest {
     }
 
     private HotelCreateRequest createHotelCreateRequest() {
-        return new HotelCreateRequest(
-            12345L,
-            "Test Hotel",
-            "Test Category",
-            "Test Description",
-            "Test Notice",
-            "Test Province",
-            "Test City",
-            "Test District",
-            "Test Detailed Address",
-            37.1234,
-            127.1234,
-            "Test Main Image",
-            "Test Business Number",
-            "Test Cert URL",
-            "Test Visit Guidance",
-            true,
-            true,
-            false
-        );
+        return HotelCreateRequest.builder()
+            .userId(12345L)
+            .name("Test Hotel")
+            .category("Test Category")
+            .description("Test Description")
+            .notice("Test Notice")
+            .province("Test Province")
+            .city("Test City")
+            .district("Test District")
+            .detailedAddress("Test Detailed Address")
+            .latitude(37.1234)
+            .longtitude(127.1234)
+            .mainImage("Test Main Image")
+            .businessNumber("Test Business Number")
+            .certUrl("Test Cert URL")
+            .visitGuidance("Test Visit Guidance")
+            .parkingLot(true)
+            .wifi(true)
+            .barbecue(false)
+            .build();
     }
 }
