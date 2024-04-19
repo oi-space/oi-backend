@@ -24,7 +24,16 @@ public class RoomDaoImpl implements RoomDaoCustom {
     public Page<RoomResponseDto> search(RoomSearchRequest request, Pageable pageable) {
         List<RoomResponseDto> fetch = queryFactory.select(
                         new QRoomResponseDto(
-                                room.name
+                                room.name,
+                                room.description,
+                                room.precaution,
+                                room.price,
+                                room.checkIn,
+                                room.checkOut,
+                                room.standardCapacity,
+                                room.maxCapacity,
+                                room.totalRooms,
+                                room.amenity
                         )
                 )
                 .from(room)
@@ -115,7 +124,7 @@ public class RoomDaoImpl implements RoomDaoCustom {
     private BooleanExpression maxCapacityLte(Integer maxCapacityLte) {
         return maxCapacityLte != null ? room.maxCapacity.loe(maxCapacityLte) : null;
     }
-    
+
     private BooleanExpression standardCapacityEq(Integer standardCapacity) {
         return standardCapacity != null ? room.standardCapacity.eq(standardCapacity) : null;
     }
