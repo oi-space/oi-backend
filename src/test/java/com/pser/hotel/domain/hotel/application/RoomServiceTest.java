@@ -103,6 +103,24 @@ class RoomServiceTest {
         Assertions.assertThat(result).isEqualTo(room.toDto());
     }
 
+    @Test
+    @DisplayName("search 테스트")
+    public void searchTest() {
+        // Given
+        RoomSearchRequest searchRequest = createSearchReqeust();
+        List<Room> roomList = createRooms(hotel, 10);
+        Pageable pageable = createPageable(0, 10);
+        Page<RoomResponseDto> expect = new PageImpl<>(roomList, pageable, 10).map(e -> e.toDto());
+
+        given(roomDao.search(searchRequest, pageable)).willReturn(expect);
+
+        // When
+        Page<RoomResponseDto> actual = roomService.search(searchRequest, pageable);
+
+        // Then
+        Assertions.assertThat(actual).isEqualTo(expect);
+    }
+
     private RoomSearchRequest createSearchReqeust() {
         return RoomSearchRequest.builder()
                 .keyword("test_keyword")
