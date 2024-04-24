@@ -16,6 +16,8 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
+      - run: mkdir ./src/test/resources; touch ./src/test/resources/application.yaml
+      - run: echo "${{env.TEST_CONFIG}}" > ./src/test/resources/application.yaml
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Test with Gradle
