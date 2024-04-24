@@ -37,7 +37,7 @@ public class RoomApi {
 
     @GetMapping("/{roomId}")
     public ResponseEntity<ApiResponse<RoomResponseDto>> roomDetails(@PathVariable Long roomId) {
-        RoomResponseDto res = new RoomResponseDto("TEST_NAME");
+        RoomResponseDto res = new RoomResponseDto();
         return ResponseEntity.ok(ApiResponse.success(res));
     }
 
