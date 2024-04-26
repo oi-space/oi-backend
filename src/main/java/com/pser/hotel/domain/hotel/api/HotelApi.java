@@ -4,6 +4,7 @@ import com.pser.hotel.domain.hotel.application.HotelService;
 import com.pser.hotel.domain.hotel.dto.HotelCreateRequest;
 import com.pser.hotel.domain.hotel.dto.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
+import com.pser.hotel.domain.hotel.dto.HotelUpdateRequest;
 import com.pser.hotel.global.common.response.ApiResponse;
 import java.net.URI;
 import java.util.Optional;
@@ -52,8 +53,8 @@ public class HotelApi {
     }
 
     @PatchMapping("/{hotelId}") // 숙소 수정
-    public ResponseEntity<ApiResponse<Void>> updateHotel(@RequestBody HotelCreateRequest hotelCreateRequest, @PathVariable Long hotelId, @RequestHeader("user-id") long userId){
-        hotelService.updateHotelData(hotelCreateRequest, hotelId, userId);
+    public ResponseEntity<ApiResponse<Void>> updateHotel(@RequestBody HotelUpdateRequest hotelUpdateRequest, @PathVariable Long hotelId, @RequestHeader("user-id") long userId){
+        hotelService.updateHotelData(hotelUpdateRequest, hotelId, userId);
         return ResponseEntity.noContent().build();
     }
 
