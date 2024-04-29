@@ -8,6 +8,7 @@ import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.dto.RoomRequest;
 import com.pser.hotel.domain.hotel.dto.RoomResponse;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +49,7 @@ public class RoomService {
     @Transactional
     public void update(long userId, Long roomId, RoomRequest request) {
         Hotel hotel = findHotelById(request.getHotelId());
-        Room room = roomDao.findByIdAndHotelId(roomId, hotel.getId()).orElseThrow(() -> new IllegalArgumentException());
+        Room room = findRoomByIdAndHoteId(roomId, hotel.getId());
         room.update(request);
         roomDao.save(room);
     }
@@ -56,12 +57,16 @@ public class RoomService {
     @Transactional
     public void remove(long userId, Long hotelId, Long roomId) {
         Hotel hotel = findHotelById(hotelId);
-        Room room = roomDao.findByIdAndHotelId(roomId, hotel.getId()).orElseThrow(() -> new IllegalArgumentException());
+        Room room = findRoomByIdAndHoteId(roomId, hotel.getId());
         roomDao.deleteById(room.getId());
     }
 
     private Hotel findHotelById(Long hotelId) {
-        return hotelDao.findById(hotelId).orElseThrow(() -> new IllegalArgumentException());
+        return hotelDao.findById(hotelId).orElseThrow(() -> new EntityNotFoundException());
+    }
+
+    private Room findRoomByIdAndHoteId(Long roomId, Long hotelId) {
+        return roomDao.findByIdAndHotelId(roomId, hotelId).orElseThrow(() -> new EntityNotFoundException());
     }
 
     private Amenity createAmenity(Room room, RoomRequest requestDto) {
