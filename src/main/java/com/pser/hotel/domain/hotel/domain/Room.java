@@ -1,6 +1,5 @@
 package com.pser.hotel.domain.hotel.domain;
 
-import com.pser.hotel.domain.hotel.dto.RoomRequest;
 import com.pser.hotel.domain.hotel.dto.RoomResponse;
 import com.pser.hotel.domain.model.BaseEntity;
 import jakarta.persistence.CascadeType;
@@ -91,35 +90,5 @@ public class Room extends BaseEntity {
         return RoomResponse.builder()
                 .name(this.name)
                 .build();
-    }
-
-    public void update(RoomRequest request) {
-        if (!request.getName().equals(name)) {
-            this.name = request.getName();
-        }
-        if (!request.getDescription().equals(description)) {
-            this.description = request.getDescription();
-        }
-        if (!request.getPrecaution().equals(precaution)) {
-            this.precaution = request.getPrecaution();
-        }
-        if (!(request.getPrice() == price)) {
-            this.price = request.getPrice();
-        }
-        if (!request.getCheckIn().equals(request.getCheckIn())) {
-            this.checkIn = request.getCheckIn();
-        }
-        if (!request.getCheckOut().equals(request.getCheckOut())) {
-            this.checkOut = request.getCheckOut();
-        }
-        if (!(request.getStandardCapacity() == standardCapacity)) {
-            this.standardCapacity = request.getStandardCapacity();
-        }
-        if (!(request.getMaxCapacity() == maxCapacity)) {
-            this.maxCapacity = request.getMaxCapacity();
-        }
-        if (!(request.getTotalRooms() == totalRooms)) {
-            this.totalRooms = request.getTotalRooms();
-        }
     }
 }
