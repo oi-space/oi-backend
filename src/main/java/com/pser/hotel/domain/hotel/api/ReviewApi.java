@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping("/reviews")
 @RestController
 public class ReviewApi {
+    // TODO : ReviewService DI 예정
 
     @GetMapping
     public ResponseEntity<ApiResponse<ReviewListResponseDto>> reviewList(@PageableDefault Pageable pageable) {
