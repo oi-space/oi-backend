@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Import;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({QueryDslConfig.class})
-@DisplayName("RommDao 테스트")
+@DisplayName("RoomDao 테스트")
 class RoomDaoTest {
     @Autowired
     RoomDao roomDao;
