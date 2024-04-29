@@ -1,12 +1,17 @@
 package com.pser.hotel.domain.hotel.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-public class RoomRequestDto {
+@Builder
+@NoArgsConstructor
+public class RoomRequest {
     @NotBlank
     private long hotelId;
     @NotBlank
@@ -17,6 +22,10 @@ public class RoomRequestDto {
     private String precaution;
     @NotBlank
     private int price;
+    @NotBlank
+    private LocalTime checkIn;
+    @NotBlank
+    private LocalTime checkOut;
     @NotBlank
     private int standardCapacity;
     @NotBlank
