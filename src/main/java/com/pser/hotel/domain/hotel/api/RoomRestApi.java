@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +35,7 @@ public class RoomRestApi {
     }
 
     @GetMapping("/{roomId}")
-    public ResponseEntity<ApiResponse<RoomResponse>> roomDetails(@PathVariable Long roomId) {
+    public ResponseEntity<ApiResponse<RoomResponse>> roomDetails(@PathVariable long roomId) {
         RoomResponse result = roomService.findRoom(roomId);
         return ResponseEntity.ok(ApiResponse.success(result));
     }
@@ -48,6 +49,7 @@ public class RoomRestApi {
     }
 
     @PostMapping
+    @PreAuthorize("@methodAuthorizationManager.isHotelByIdAndRequest(#userId, #request)")
     public ResponseEntity<ApiResponse<Void>> roomSave(@RequestBody RoomRequest request,
                                                       @RequestHeader("user-id") long userId) {
         Long roomId = roomService.save(userId, request);
@@ -55,9 +57,10 @@ public class RoomRestApi {
     }
 
     @PatchMapping("/{roomId}")
-    public ResponseEntity<ApiResponse<Void>> roomUpdate(@RequestBody RoomRequest dto, @PathVariable Long roomId,
+    @PreAuthorize("@methodAuthorizationManager.isHotelByIdAndRequest(#userId, #request)")
+    public ResponseEntity<ApiResponse<Void>> roomUpdate(@RequestBody RoomRequest request, @PathVariable Long roomId,
                                                         @RequestHeader("user-id") long userId) {
-        roomService.update(userId, roomId, dto);
+        roomService.update(userId, roomId, request);
         return ResponseEntity.ok().build();
     }
 }
