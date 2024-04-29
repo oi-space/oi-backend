@@ -12,6 +12,7 @@ import com.pser.hotel.domain.hotel.dao.HotelDao;
 import com.pser.hotel.domain.hotel.dao.RoomDao;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
+import com.pser.hotel.domain.hotel.dto.RoomMapper;
 import com.pser.hotel.domain.hotel.dto.RoomRequest;
 import com.pser.hotel.domain.hotel.dto.RoomResponse;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
@@ -46,6 +47,8 @@ class RoomServiceTest {
     RoomDao roomDao;
     @Mock
     HotelDao hotelDao;
+    @Mock
+    RoomMapper roomMapper;
     User user;
     Hotel hotel;
     Room room;
@@ -136,7 +139,8 @@ class RoomServiceTest {
         roomService.update(userId, roomId, requestDto);
 
         // Then
-        then(roomDao).should().save(any());
+        then(roomMapper).should().updateRoomFromDto(requestDto, room);
+        then(roomDao).should().save(room);
     }
 
     @Test

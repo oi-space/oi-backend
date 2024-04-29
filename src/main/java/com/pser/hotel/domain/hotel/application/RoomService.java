@@ -5,6 +5,7 @@ import com.pser.hotel.domain.hotel.dao.RoomDao;
 import com.pser.hotel.domain.hotel.domain.Amenity;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
+import com.pser.hotel.domain.hotel.dto.RoomMapper;
 import com.pser.hotel.domain.hotel.dto.RoomRequest;
 import com.pser.hotel.domain.hotel.dto.RoomResponse;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class RoomService {
     private final HotelDao hotelDao;
     private final RoomDao roomDao;
+    private final RoomMapper roomMapper;
 
     @Transactional(readOnly = true)
     public Page<RoomResponse> findRoomList(Pageable pageable) {
@@ -50,6 +52,7 @@ public class RoomService {
     public void update(long userId, Long roomId, RoomRequest request) {
         Hotel hotel = findHotelById(request.getHotelId());
         Room room = findRoomByIdAndHoteId(roomId, hotel.getId());
+        roomMapper.updateRoomFromDto(request, room);
         room.update(request);
         roomDao.save(room);
     }
