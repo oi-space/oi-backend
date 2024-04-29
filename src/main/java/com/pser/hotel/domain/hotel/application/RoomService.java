@@ -53,7 +53,6 @@ public class RoomService {
         Hotel hotel = findHotelById(request.getHotelId());
         Room room = findRoomByIdAndHoteId(roomId, hotel.getId());
         roomMapper.updateRoomFromDto(request, room);
-        room.update(request);
         roomDao.save(room);
     }
 
