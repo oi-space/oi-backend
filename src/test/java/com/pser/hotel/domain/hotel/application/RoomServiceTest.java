@@ -64,7 +64,7 @@ class RoomServiceTest {
         // Given
         long userId = 1;
         requestDto = createRoomRequestDto();
-        given(hotelDao.findByIdAndUserId(userId, requestDto.getHotelId())).willReturn(Optional.of(hotel));
+        given(hotelDao.findById(requestDto.getHotelId())).willReturn(Optional.of(hotel));
 
         // When
         Long save = roomService.save(userId, requestDto);
@@ -129,7 +129,7 @@ class RoomServiceTest {
         Long userId = 1L;
         requestDto = createRoomRequestDto();
         given(hotel.getId()).willReturn(1L);
-        given(hotelDao.findByIdAndUserId(requestDto.getHotelId(), userId)).willReturn(Optional.of(hotel));
+        given(hotelDao.findById(requestDto.getHotelId())).willReturn(Optional.of(hotel));
         given(roomDao.findByIdAndHotelId(roomId, requestDto.getHotelId())).willReturn(Optional.of(room));
 
         // When
@@ -146,9 +146,10 @@ class RoomServiceTest {
         Long userId = 1L;
         Long hotelId = 1L;
         Long roomId = 1L;
+        requestDto = createRoomRequestDto();
         given(hotel.getId()).willReturn(hotelId);
         given(room.getId()).willReturn(roomId);
-        given(hotelDao.findByIdAndUserId(hotelId, userId)).willReturn(Optional.of(hotel));
+        given(hotelDao.findById(requestDto.getHotelId())).willReturn(Optional.of(hotel));
         given(roomDao.findByIdAndHotelId(roomId, hotelId)).willReturn(Optional.of(room));
 
         // When

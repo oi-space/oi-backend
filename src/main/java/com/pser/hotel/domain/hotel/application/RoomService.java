@@ -20,25 +20,25 @@ public class RoomService {
     private final HotelDao hotelDao;
     private final RoomDao roomDao;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<RoomResponse> findRoomList(Pageable pageable) {
         Page<RoomResponse> result = roomDao.findAll(pageable).map(e -> e.toDto());
         return result;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public RoomResponse findRoom(Long roomId) {
         return roomDao.findById(roomId).orElseThrow(() -> new IllegalArgumentException()).toDto();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<RoomResponse> search(RoomSearchRequest request, Pageable pageable) {
         return roomDao.search(request, pageable);
     }
 
     @Transactional
     public Long save(long userId, RoomRequest request) {
-        Hotel hotel = findHotelByIdAndUserId(request.getHotelId(), userId);
+        Hotel hotel = findHotelById(request.getHotelId());
         Room room = createRoom(hotel, request);
         Amenity amenity = createAmenity(room, request);
         roomDao.save(room);
@@ -47,7 +47,7 @@ public class RoomService {
 
     @Transactional
     public void update(long userId, Long roomId, RoomRequest request) {
-        Hotel hotel = findHotelByIdAndUserId(request.getHotelId(), userId);
+        Hotel hotel = findHotelById(request.getHotelId());
         Room room = roomDao.findByIdAndHotelId(roomId, hotel.getId()).orElseThrow(() -> new IllegalArgumentException());
         room.update(request);
         roomDao.save(room);
@@ -55,13 +55,13 @@ public class RoomService {
 
     @Transactional
     public void remove(long userId, Long hotelId, Long roomId) {
-        Hotel hotel = findHotelByIdAndUserId(hotelId, userId);
+        Hotel hotel = findHotelById(hotelId);
         Room room = roomDao.findByIdAndHotelId(roomId, hotel.getId()).orElseThrow(() -> new IllegalArgumentException());
         roomDao.deleteById(room.getId());
     }
 
-    private Hotel findHotelByIdAndUserId(Long hotelId, Long userId) {
-        return hotelDao.findByIdAndUserId(hotelId, userId).orElseThrow(() -> new IllegalArgumentException());
+    private Hotel findHotelById(Long hotelId) {
+        return hotelDao.findById(hotelId).orElseThrow(() -> new IllegalArgumentException());
     }
 
     private Amenity createAmenity(Room room, RoomRequest requestDto) {
