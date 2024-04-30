@@ -1,5 +1,6 @@
 package com.pser.hotel.domain.hotel.api;
 
+import static com.pser.hotel.domain.hotel.util.Utils.createImageUrl;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,6 +11,7 @@ import com.pser.hotel.domain.hotel.dto.RoomRequest;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -127,7 +129,8 @@ class RoomRestApiTest {
                 1, 1, 1,
                 true, true, true, true,
                 true, true, true, true,
-                true, true, true, true, true, true
+                true, true, true, true, true, true,
+                List.of(createImageUrl(), createImageUrl())
         );
     }
 

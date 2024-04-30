@@ -8,6 +8,7 @@ import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -90,7 +91,7 @@ class RoomMapperTest {
                 rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(),
                 rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(),
                 rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(),
-                rnd.nextBoolean()
+                rnd.nextBoolean(), List.of()
         );
     }
 }
