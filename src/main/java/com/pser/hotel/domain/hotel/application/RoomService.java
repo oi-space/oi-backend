@@ -6,10 +6,12 @@ import com.pser.hotel.domain.hotel.domain.Amenity;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.dto.RoomMapper;
+import com.pser.hotel.domain.hotel.domain.RoomImage;
 import com.pser.hotel.domain.hotel.dto.RoomRequest;
 import com.pser.hotel.domain.hotel.dto.RoomResponse;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,6 +46,7 @@ public class RoomService {
         Hotel hotel = findHotelById(request.getHotelId());
         Room room = createRoom(hotel, request);
         Amenity amenity = createAmenity(room, request);
+        List<RoomImage> roomImages = createRoomImages(room, request.getImgUrls());
         roomDao.save(room);
         return room.getId();
     }
@@ -105,5 +108,16 @@ public class RoomService {
                 .totalRooms(requestDto.getTotalRooms())
                 .build();
         return room;
+    }
+
+    private RoomImage createRoomImage(Room room, String imageUrl) {
+        return RoomImage.builder()
+                .imageUrl(imageUrl)
+                .room(room)
+                .build();
+    }
+
+    private List<RoomImage> createRoomImages(Room room, List<String> imgUrls) {
+        return imgUrls.stream().map(url -> createRoomImage(room, url)).toList();
     }
 }
