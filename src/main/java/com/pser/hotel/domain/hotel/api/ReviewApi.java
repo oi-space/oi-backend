@@ -1,6 +1,6 @@
 package com.pser.hotel.domain.hotel.api;
 
-import com.pser.hotel.domain.hotel.dto.ReviewRequestDto;
+import com.pser.hotel.domain.hotel.dto.ReviewRequest;
 import com.pser.hotel.domain.hotel.dto.ReviewResponseDto;
 import com.pser.hotel.domain.hotel.dto.ReviewListResponseDto;
 import com.pser.hotel.global.common.response.ApiResponse;
@@ -31,7 +31,7 @@ public class ReviewApi {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Long>> createReview(@RequestBody ReviewRequestDto request) {
+    public ResponseEntity<ApiResponse<Long>> createReview(@RequestBody ReviewRequest request) {
         // 리뷰 생성 후 생성된 리뷰 ID 반환
         Long createdReviewId = 1L; // 임시 데이터
 
@@ -49,7 +49,7 @@ public class ReviewApi {
 
     @PatchMapping("/{reviewId}")
     public ResponseEntity<ApiResponse<Void>> updateReview(@PathVariable Long reviewId,
-                                                          @RequestBody ReviewRequestDto dto) {
+                                                          @RequestBody ReviewRequest dto) {
         return ResponseEntity.ok().build();
     }
 

@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ReviewRequestDto {
+public class ReviewRequest {
     @NotNull
     private GradeEnum grade; // 별점
 
