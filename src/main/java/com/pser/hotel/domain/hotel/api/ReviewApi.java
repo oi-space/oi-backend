@@ -19,9 +19,9 @@ public class ReviewApi {
 
     @GetMapping
     public ResponseEntity<ApiResponse<ReviewListResponseDto>> reviewList(@PageableDefault Pageable pageable) {
-
-        List<ReviewListResponseDto.ReviewDto> fetch = List.of(); // 임시 데이터
-        long totalReviews = 0; // 임시 데이터
+        // 임시 데이터를 사용하여 리뷰 리스트 생성
+        List<ReviewListResponseDto.ReviewDto> fetch = List.of();
+        long totalReviews = 0;
         ReviewListResponseDto result = ReviewListResponseDto.builder()
                 .reviews(fetch)
                 .totalReviews(totalReviews)
@@ -31,17 +31,18 @@ public class ReviewApi {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Long>> createReview(@RequestBody ReviewRequest request) {
-        // 리뷰 생성 후 생성된 리뷰 ID 반환
-        Long createdReviewId = 1L; // 임시 데이터
+    public ResponseEntity<Void> createReview(@RequestBody ReviewRequest request) {
+        // 리뷰 생성 로직 (생략)
+        Long createdReviewId = 1L; // 임시 데이터로 생성된 리뷰 ID
 
-        return ResponseEntity.created(URI.create("/reviews/" + createdReviewId))
-                .body(ApiResponse.success(createdReviewId));
+        // 생성된 리소스 위치를 'Location' 헤더로 반환
+        URI location = URI.create("/reviews/" + createdReviewId);
+        return ResponseEntity.created(location).build();
     }
 
     @GetMapping("/{reviewId}")
     public ResponseEntity<ApiResponse<ReviewResponseDto>> reviewDetails(@PathVariable Long reviewId) {
-        //  리뷰 상세 정보 조회
+        // 리뷰 상세 정보 조회 로직 (생략)
         ReviewResponseDto res = ReviewResponseDto.builder().id(reviewId).build(); // 임시 데이터
 
         return ResponseEntity.ok(ApiResponse.success(res));
@@ -50,11 +51,13 @@ public class ReviewApi {
     @PatchMapping("/{reviewId}")
     public ResponseEntity<ApiResponse<Void>> updateReview(@PathVariable Long reviewId,
                                                           @RequestBody ReviewRequest dto) {
+        // 리뷰 수정 로직 (생략)
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<ApiResponse<Void>> deleteReview(@PathVariable Long reviewId) {
+        // 리뷰 삭제 로직 (생략)
         return ResponseEntity.ok().build();
     }
 }
