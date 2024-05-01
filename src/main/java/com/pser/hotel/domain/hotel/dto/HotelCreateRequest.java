@@ -1,5 +1,6 @@
 package com.pser.hotel.domain.hotel.dto;
 
+import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,7 @@ public class HotelCreateRequest {
     @NotBlank
     private String name;
     @NotBlank
-    private String category;
+    private HotelCategoryEnum category;
     @NotBlank
     private String description;
     @NotBlank
