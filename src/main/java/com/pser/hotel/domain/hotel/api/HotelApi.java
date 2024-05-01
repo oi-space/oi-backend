@@ -32,8 +32,8 @@ public class HotelApi {
 
     @PostMapping // 숙소 등록 api
     public ResponseEntity<ApiResponse<Void>> saveHotel(@RequestBody HotelCreateRequest hotelCreateRequest, @RequestHeader("user-id") long userId) {
-        Long hotelId = hotelService.saveHotelData(hotelCreateRequest, userId);
-        return ResponseEntity.created(URI.create("/hotels/" + hotelId)).build();
+        Long savedUserId = hotelService.saveHotelData(hotelCreateRequest, userId);
+        return ResponseEntity.created(URI.create("/hotels/" + savedUserId)).build();
     }
 
     @GetMapping // 숙소 전체 조회
@@ -54,13 +54,13 @@ public class HotelApi {
 
     @PatchMapping("/{hotelId}") // 숙소 수정
     public ResponseEntity<ApiResponse<Void>> updateHotel(@RequestBody HotelUpdateRequest hotelUpdateRequest, @PathVariable Long hotelId, @RequestHeader("user-id") long userId){
-        hotelService.updateHotelData(hotelUpdateRequest, hotelId, userId);
-        return ResponseEntity.noContent().build();
+        Long updatedHotelId = hotelService.updateHotelData(hotelUpdateRequest, hotelId, userId);
+        return ResponseEntity.created(URI.create("hotels/" + updatedHotelId)).build();
     }
 
     @DeleteMapping("/{hotelId}") // 숙소 삭제
     public ResponseEntity<ApiResponse<Void>> deleteHotel(@PathVariable Long hotelId, @RequestHeader("user-id") long userId){
-        hotelService.deleteHotelData(hotelId, userId);
-        return ResponseEntity.noContent().build();
+        Long deletedHotelId = hotelService.deleteHotelData(hotelId, userId);
+        return ResponseEntity.created(URI.create("hotels/" + deletedHotelId)).build();
     }
 }
