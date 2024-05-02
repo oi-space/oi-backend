@@ -4,7 +4,9 @@ package com.pser.hotel.domain.hotel.util;
 import com.pser.hotel.domain.auction.domain.Auction;
 import com.pser.hotel.domain.auction.domain.AuctionStatusEnum;
 import com.pser.hotel.domain.auction.domain.Bid;
+import com.pser.hotel.domain.hotel.dao.FacilityDao;
 import com.pser.hotel.domain.hotel.domain.Amenity;
+import com.pser.hotel.domain.hotel.domain.Facility;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.pser.hotel.domain.hotel.domain.Reservation;
@@ -90,6 +92,25 @@ public class Utils {
         return hotel;
     }
 
+    public static List<Hotel> createHotels(User user, int count) {
+        List<Hotel> list = new ArrayList<>();
+        for(int i=0; i < count; i++){
+            Hotel hotel = createHotel(user);
+            Facility facility = createFacility(hotel);
+            list.add(hotel);
+        }
+        return list;
+    }
+
+    public static Facility createFacility(Hotel hotel){
+        return Facility.builder()
+            .hotel(hotel)
+            .parkingLot(rnd.nextBoolean())
+            .wifi(rnd.nextBoolean())
+            .barbecue(rnd.nextBoolean())
+            .build();
+    }
+
     public static Reservation createReservation(User user, Room room) {
         return Reservation.builder()
                 .price(1000)
@@ -98,7 +119,7 @@ public class Utils {
                 .reservationCapacity(5)
                 .adultCapacity(3)
                 .childCapacity(2)
-                .status(ReservationEnum.BEFORE_ENTER)
+                .status(ReservationEnum.BEFORE_ENTER_DEFAULT)
                 .tid("test_tid")
                 .user(user)
                 .room(room)
@@ -114,7 +135,7 @@ public class Utils {
                 .reservationCapacity(reservationCapacity)
                 .adultCapacity(adultCapacity)
                 .childCapacity(childCapacity)
-                .status(ReservationEnum.BEFORE_ENTER)
+                .status(ReservationEnum.BEFORE_ENTER_DEFAULT)
                 .tid("test_tid")
                 .user(user)
                 .room(room)
