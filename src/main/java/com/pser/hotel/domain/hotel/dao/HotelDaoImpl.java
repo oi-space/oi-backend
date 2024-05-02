@@ -1,11 +1,11 @@
 package com.pser.hotel.domain.hotel.dao;
 
-import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryConverter;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.pser.hotel.domain.hotel.domain.QHotel;
 import com.pser.hotel.domain.hotel.dto.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
+import com.pser.hotel.domain.hotel.dto.QHotelResponse;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -26,7 +25,28 @@ public class HotelDaoImpl implements HotelDaoCustom {
     @Override
     public Slice<HotelResponse> search(HotelSearchRequest hotelSearchRequest, Pageable pageable){
         List<HotelResponse> content = queryFactory
-            .selectFrom(QHotel.hotel)
+            .select(new QHotelResponse(
+                QHotel.hotel.id,
+                QHotel.hotel.user.id,
+                QHotel.hotel.name,
+                QHotel.hotel.category,
+                QHotel.hotel.description,
+                QHotel.hotel.notice,
+                QHotel.hotel.province,
+                QHotel.hotel.city,
+                QHotel.hotel.district,
+                QHotel.hotel.detailedAddress,
+                QHotel.hotel.latitude,
+                QHotel.hotel.longtitude,
+                QHotel.hotel.mainImage,
+                QHotel.hotel.businessNumber,
+                QHotel.hotel.certUrl,
+                QHotel.hotel.visitGuidance,
+                QHotel.hotel.facility.parkingLot,
+                QHotel.hotel.facility.wifi,
+                QHotel.hotel.facility.barbecue
+            ))
+            .from(QHotel.hotel)
             .where(
                 getNamePredicate(hotelSearchRequest.getName()),
                 getProvincePredicate(hotelSearchRequest.getProvince()),
@@ -41,10 +61,7 @@ public class HotelDaoImpl implements HotelDaoCustom {
             )
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize() + 1)
-            .fetch()
-            .stream()
-            .map(this::mapHotelToHotelResponse)
-            .collect(Collectors.toList());
+            .fetch();
 
         boolean hasNext = false;
         if (content.size() > pageable.getPageSize()) {
@@ -105,28 +122,5 @@ public class HotelDaoImpl implements HotelDaoCustom {
             builder.or(hotel.detailedAddress.contains(keyword));
         }
         return builder.getValue();
-    }
-
-    private HotelResponse mapHotelToHotelResponse(Hotel hotel) {
-        HotelResponse hotelResponse = new HotelResponse();
-        hotelResponse.setId(hotel.getId());
-        hotelResponse.setName(hotel.getName());
-        hotelResponse.setCategory(hotel.getCategory());
-        hotelResponse.setDescription(hotel.getDescription());
-        hotelResponse.setNotice(hotel.getNotice());
-        hotelResponse.setProvince(hotel.getProvince());
-        hotelResponse.setCity(hotel.getCity());
-        hotelResponse.setDistrict(hotel.getDistrict());
-        hotelResponse.setDetailedAddress(hotel.getDetailedAddress());
-        hotelResponse.setLatitude(hotel.getLatitude());
-        hotelResponse.setLongtitude(hotel.getLongtitude());
-        hotelResponse.setMainImage(hotel.getMainImage());
-        hotelResponse.setBusinessNumber(hotel.getBusinessNumber());
-        hotelResponse.setCertUrl(hotel.getCertUrl());
-        hotelResponse.setVisitGuidance(hotel.getVisitGuidance());
-        hotelResponse.setParkingLot(hotel.getFacility().getParkingLot());
-        hotelResponse.setWifi(hotel.getFacility().getWifi());
-        hotelResponse.setBarbecue(hotel.getFacility().getBarbecue());
-        return hotelResponse;
     }
 }
