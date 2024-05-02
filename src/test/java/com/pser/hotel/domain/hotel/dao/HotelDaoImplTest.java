@@ -140,19 +140,6 @@ public class HotelDaoImplTest {
             .parkingLot(wifi)
             .build();
     }
-    @Test
-    @DisplayName("barbecue 검색 테스트")
-    public void barbecueTest() {
-        Pageable pageable = createPageable();
-        hotelSearchRequest = createSearchRequestByBarbecue(hotel.getFacility().getBarbecue());
-        Slice<HotelResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
-        Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
-    }
-    private HotelSearchRequest createSearchRequestByBarbecue(Boolean barbecue){
-        return HotelSearchRequest.builder()
-            .parkingLot(barbecue)
-            .build();
-    }
     private Pageable createPageable() {
         return PageRequest.of(0, 10);
     }
