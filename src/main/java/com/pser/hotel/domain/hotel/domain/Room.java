@@ -1,5 +1,6 @@
 package com.pser.hotel.domain.hotel.domain;
 
+import com.pser.hotel.domain.hotel.dto.RoomResponse;
 import com.pser.hotel.domain.model.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -83,5 +84,11 @@ public class Room extends BaseEntity {
         if (standardCapacity > maxCapacity) {
             throw new IllegalArgumentException("기준 인원이 최대 인원보다 클 수 없습니다");
         }
+    }
+
+    public RoomResponse toDto() {
+        return RoomResponse.builder()
+                .name(this.name)
+                .build();
     }
 }

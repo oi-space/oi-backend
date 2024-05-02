@@ -18,7 +18,8 @@ spec:
             name: app-config
       containers:
         - name: hotel-container
-          image: amanecopse/p-ser-hotel
+          image: amanecopse/p-ser-hotel:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           volumeMounts:
