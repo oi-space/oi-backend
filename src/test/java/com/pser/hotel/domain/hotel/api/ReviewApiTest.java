@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -16,11 +17,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("리뷰 Controller 테스트")
-class ReviewApiTest {
+public class ReviewApiTest {
     @InjectMocks
     ReviewApi reviewApi;
 
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @BeforeEach
     public void setUp() {
@@ -42,9 +43,9 @@ class ReviewApiTest {
     @Test
     @DisplayName("리뷰 생성 테스트")
     public void createReview() throws Exception {
-        String reviewJson = "{\"content\":\"Great hotel!\", \"rating\":\"5\"}"; // 임시 데이터로 채워진 JSON
+        String reviewJson = "{\"userId\":1,\"grade\":\"GOOD\",\"title\":\"좋은 호텔!\",\"content\":\"이 호텔은 정말 좋았습니다!\"}";
         mockMvc.perform(post("/reviews")
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(reviewJson))
                 .andExpect(status().isCreated())
                 .andDo(print());
@@ -58,13 +59,12 @@ class ReviewApiTest {
                 .andDo(print());
     }
 
-
     @Test
     @DisplayName("리뷰 업데이트 테스트")
     public void updateReview() throws Exception {
-        String reviewJson = "{\"content\":\"Updated review\", \"rating\":\"4\"}"; // 임시 데이터
+        String reviewJson = "{\"content\":\"업데이트된 리뷰 내용\", \"grade\":\"AVERAGE\"}";
         mockMvc.perform(patch("/reviews/{reviewId}", 1L)
-                        .contentType("application/json")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(reviewJson))
                 .andExpect(status().isOk())
                 .andDo(print());
