@@ -9,24 +9,19 @@ import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public class HotelDaoImpl extends QuerydslRepositorySupport implements HotelDaoCustom {
+@RequiredArgsConstructor
+public class HotelDaoImpl implements HotelDaoCustom {
     private final JPAQueryFactory queryFactory;
-
-    public HotelDaoImpl(EntityManager em) {
-        super(Hotel.class);
-        queryFactory = new JPAQueryFactory(em);
-    }
 
     @Override
     public Slice<HotelResponse> search(HotelSearchRequest hotelSearchRequest, Pageable pageable){
