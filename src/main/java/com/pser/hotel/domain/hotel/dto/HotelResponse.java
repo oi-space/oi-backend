@@ -1,15 +1,13 @@
 package com.pser.hotel.domain.hotel.dto;
 
-import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
-import lombok.AllArgsConstructor;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class HotelResponse {
     private Long id;
@@ -50,25 +48,30 @@ public class HotelResponse {
 
     private Boolean barbecue;
 
-    public HotelResponse(Hotel hotel) {
-        this.id = hotel.getId();
-        this.userId = hotel.getUser().getId();
-        this.name = hotel.getName();
-        this.category = hotel.getCategory();
-        this.description = hotel.getDescription();
-        this.notice = hotel.getNotice();
-        this.province = hotel.getProvince();
-        this.city = hotel.getCity();
-        this.district = hotel.getDistrict();
-        this.detailedAddress = hotel.getDetailedAddress();
-        this.latitude = hotel.getLatitude();
-        this.longtitude = hotel.getLongtitude();
-        this.mainImage = hotel.getMainImage();
-        this.businessNumber = hotel.getBusinessNumber();
-        this.certUrl = hotel.getCertUrl();
-        this.visitGuidance = hotel.getVisitGuidance();
-        this.parkingLot = hotel.getFacility().getParkingLot();
-        this.wifi = hotel.getFacility().getWifi();
-        this.barbecue = hotel.getFacility().getBarbecue();
+
+    @QueryProjection
+    public HotelResponse(Long id, Long userId, String name, HotelCategoryEnum category, String description,
+        String notice, String province, String city, String district, String detailedAddress, Double latitude,
+        Double longtitude, String mainImage, String businessNumber, String certUrl, String visitGuidance,
+        Boolean parkingLot, Boolean wifi, Boolean barbecue) {
+        this.id = id;
+        this.userId = userId;
+        this.name = name;
+        this.category = category;
+        this.description = description;
+        this.notice = notice;
+        this.province = province;
+        this.city = city;
+        this.district = district;
+        this.detailedAddress = detailedAddress;
+        this.latitude = latitude;
+        this.longtitude = longtitude;
+        this.mainImage = mainImage;
+        this.businessNumber = businessNumber;
+        this.certUrl = certUrl;
+        this.visitGuidance = visitGuidance;
+        this.parkingLot = parkingLot;
+        this.wifi = wifi;
+        this.barbecue = barbecue;
     }
 }
