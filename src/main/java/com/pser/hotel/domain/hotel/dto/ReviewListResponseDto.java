@@ -2,20 +2,21 @@ package com.pser.hotel.domain.hotel.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pser.hotel.domain.model.GradeEnum;
-import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
+
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
-@Builder
 public class ReviewListResponseDto {
 
-    private List<ReviewDto> reviews;
-    private Long totalReviews;
+    private final Page<ReviewDto> reviews;
+
+    public ReviewListResponseDto(Page<ReviewDto> reviews) {
+        this.reviews = reviews;
+    }
 
     @Getter
-    @Builder
     public static class ReviewDto {
 
         private Long userId; // 사용자 ID
