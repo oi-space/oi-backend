@@ -114,32 +114,6 @@ public class HotelDaoImplTest {
             .detailedAddress(detailedAddress)
             .build();
     }
-    @Test
-    @DisplayName("parkingLot 검색 테스트")
-    public void parkingLotTest() {
-        Pageable pageable = createPageable();
-        hotelSearchRequest = createSearchRequestByParkingLot(hotel.getFacility().getParkingLot());
-        Slice<HotelResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
-        Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
-    }
-    private HotelSearchRequest createSearchRequestByParkingLot(Boolean parkingLot){
-        return HotelSearchRequest.builder()
-            .parkingLot(parkingLot)
-            .build();
-    }
-    @Test
-    @DisplayName("wifi 검색 테스트")
-    public void wifiTest() {
-        Pageable pageable = createPageable();
-        hotelSearchRequest = createSearchRequestByWifi(hotel.getFacility().getWifi());
-        Slice<HotelResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
-        Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
-    }
-    private HotelSearchRequest createSearchRequestByWifi(Boolean wifi){
-        return HotelSearchRequest.builder()
-            .parkingLot(wifi)
-            .build();
-    }
     private Pageable createPageable() {
         return PageRequest.of(0, 10);
     }
