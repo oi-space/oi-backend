@@ -10,11 +10,14 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -64,6 +67,10 @@ public class Room extends BaseEntity {
             CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
     private Amenity amenity;
 
+    @OneToMany(mappedBy = "room", cascade = {CascadeType.PERSIST,
+            CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<RoomImage> roomImages = new ArrayList<>();
+
     @Builder
     public Room(Hotel hotel, String name, String description, String precaution, int price, LocalTime checkIn,
                 LocalTime checkOut, int standardCapacity, int maxCapacity, int totalRooms) {
@@ -77,6 +84,7 @@ public class Room extends BaseEntity {
         this.standardCapacity = standardCapacity;
         this.maxCapacity = maxCapacity;
         this.totalRooms = totalRooms;
+        this.roomImages = new ArrayList<>();
     }
 
     @PrePersist
@@ -90,5 +98,13 @@ public class Room extends BaseEntity {
         return RoomResponse.builder()
                 .name(this.name)
                 .build();
+    }
+
+    public void addImage(RoomImage roomImage) {
+        this.roomImages.add(roomImage);
+    }
+
+    public void removeImage(RoomImage roomImage) {
+        this.roomImages.remove(roomImage);
     }
 }

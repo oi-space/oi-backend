@@ -8,6 +8,7 @@ import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.pser.hotel.domain.hotel.domain.Reservation;
 import com.pser.hotel.domain.hotel.domain.ReservationEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
+import com.pser.hotel.domain.hotel.domain.RoomImage;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,6 +20,18 @@ import java.util.stream.IntStream;
 
 public class Utils {
     private static Random rnd = new Random();
+
+    public static String createImageUrl() {
+        return String.format("http://%s.com", UUID.randomUUID().toString().substring(1, 10));
+    }
+
+    public static RoomImage createRoomImage(Room room, String imageUrl) {
+        return RoomImage.builder().room(room).imageUrl(imageUrl).build();
+    }
+
+    public static List<RoomImage> createRoomImages(Room room, List<String> imageUrls) {
+        return imageUrls.stream().map(url -> createRoomImage(room, url)).toList();
+    }
 
     public static Amenity createAmenity(Room room) {
         return Amenity.builder()

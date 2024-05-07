@@ -1,6 +1,7 @@
 package com.pser.hotel.domain.hotel.application;
 
 import static com.pser.hotel.domain.hotel.util.Utils.createHotel;
+import static com.pser.hotel.domain.hotel.util.Utils.createImageUrl;
 import static com.pser.hotel.domain.hotel.util.Utils.createRoom;
 import static com.pser.hotel.domain.hotel.util.Utils.createRooms;
 import static com.pser.hotel.domain.hotel.util.Utils.createUser;
@@ -66,7 +67,7 @@ class RoomServiceTest {
     public void saveTest() {
         // Given
         long userId = 1;
-        requestDto = createRoomRequestDto();
+        requestDto = createRoomRequest();
         given(hotelDao.findById(requestDto.getHotelId())).willReturn(Optional.of(hotel));
 
         // When
@@ -130,7 +131,7 @@ class RoomServiceTest {
         // Given
         Long roomId = 1L;
         Long userId = 1L;
-        requestDto = createRoomRequestDto();
+        requestDto = createRoomRequest();
         given(hotel.getId()).willReturn(1L);
         given(hotelDao.findById(requestDto.getHotelId())).willReturn(Optional.of(hotel));
         given(roomDao.findByIdAndHotelId(roomId, requestDto.getHotelId())).willReturn(Optional.of(room));
@@ -150,7 +151,7 @@ class RoomServiceTest {
         Long userId = 1L;
         Long hotelId = 1L;
         Long roomId = 1L;
-        requestDto = createRoomRequestDto();
+        requestDto = createRoomRequest();
         given(hotel.getId()).willReturn(hotelId);
         given(room.getId()).willReturn(roomId);
         given(hotelDao.findById(requestDto.getHotelId())).willReturn(Optional.of(hotel));
@@ -169,7 +170,7 @@ class RoomServiceTest {
                 .build();
     }
 
-    private RoomRequest createRoomRequestDto() {
+    private RoomRequest createRoomRequest() {
         return new RoomRequest(
                 1L,
                 "객실이름", "설명", "주의사항", 1000, LocalTime.of(15, 00), LocalTime.of(11, 00),
@@ -177,7 +178,8 @@ class RoomServiceTest {
                 rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(),
                 rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(),
                 rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(),
-                rnd.nextBoolean()
+                rnd.nextBoolean(),
+                List.of(createImageUrl(), createImageUrl(), createImageUrl())
         );
     }
 

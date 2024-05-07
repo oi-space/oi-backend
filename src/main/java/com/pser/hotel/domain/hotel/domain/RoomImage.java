@@ -12,12 +12,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.URL;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
+@ToString(of = {"imageUrl"})
 public class RoomImage extends BaseEntity {
     @ManyToOne(cascade = {CascadeType.PERSIST}, optional = false)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -29,7 +31,15 @@ public class RoomImage extends BaseEntity {
 
     @Builder
     public RoomImage(Room room, String imageUrl) {
-        this.room = room;
+        setRoom(room);
         this.imageUrl = imageUrl;
+    }
+
+    public void setRoom(Room room) {
+        if (this.room != null) {
+            this.room.removeImage(this);
+        }
+        this.room = room;
+        this.room.addImage(this);
     }
 }
