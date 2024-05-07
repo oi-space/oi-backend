@@ -33,7 +33,6 @@ public class Review extends BaseEntity {
         this.reservation = reservation;
     }
 
-
 //    public void updateReview(int rating, String detail, String images) {
 //        this.detail = detail;
 //        this.images = images;
