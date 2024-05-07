@@ -29,7 +29,7 @@ public class ReviewImage {
     @JoinColumn(name = "review_id")
     private Review review; // 역방향 참조
 
-    @Builder // 빌더 패턴을 사용하기 위한 어노테이션 추가
+    @Builder // 빌더 패턴 추가
     public ReviewImage(String fileName, String filePath, Review review) {
         this.fileName = fileName;
         this.filePath = filePath;
