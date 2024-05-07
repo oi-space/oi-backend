@@ -11,15 +11,14 @@ import com.pser.hotel.domain.hotel.dto.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
 import com.pser.hotel.domain.hotel.dto.HotelUpdateRequest;
 import com.pser.hotel.domain.member.domain.User;
-import java.util.NoSuchElementException;
 import java.util.Optional;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -46,37 +45,34 @@ public class HotelService {
     @Transactional
     public Long saveHotelData(HotelCreateRequest hotelCreateRequest, Long userId) {
         User user = userDao.findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("not found user id: " + userId));
+            .orElseThrow(() ->  new ResponseStatusException(HttpStatus.NOT_FOUND, "not found user id"));
 
         Hotel hotel = hotelMapper.changeToHotel(hotelCreateRequest, user);
         Facility facility = hotelMapper.changeToFacility(hotelCreateRequest, hotel);
 
         hotelDao.save(hotel);
-        facilityDao.save(facility);
 
         return hotel.getId();
     }
 
     @Transactional
-    public void updateHotelData(HotelUpdateRequest hotelUpdateRequest, Long hotelId, Long userId) {
+    public void updateHotelData(HotelUpdateRequest hotelUpdateRequest, Long hotelId) {
         Hotel hotel = hotelDao.findById(hotelId)
-            .orElseThrow(() -> new IllegalArgumentException("not found hotel"));
+            .orElseThrow(() ->  new ResponseStatusException(HttpStatus.NOT_FOUND, "not found hotel"));
         Facility facility = facilityDao.findByHotelId(hotelId)
-            .orElseThrow(() -> new IllegalArgumentException("not found facility"));
+            .orElseThrow(() ->  new ResponseStatusException(HttpStatus.NOT_FOUND, "not found facility"));
 
         hotelMapper.updateHotelFromDto(hotelUpdateRequest, hotel);
         hotelMapper.updateFacilityFromDto(hotelUpdateRequest, facility);
 
         hotelDao.save(hotel);
-        facilityDao.save(facility);
     }
 
     @Transactional
-    public void deleteHotelData(Long hotelId, Long userId) {
-        Hotel hotel = hotelDao.findById(hotelId).
-            orElseThrow(() -> new NoSuchElementException("Hotel not found with id: " + hotelId));
+    public void deleteHotelData(Long hotelId) {
+        Hotel hotel = hotelDao.findById(hotelId)
+            .orElseThrow(() ->  new ResponseStatusException(HttpStatus.NOT_FOUND, "not found hotel"));
 
         hotelDao.delete(hotel);
-        facilityDao.deleteByHotelId(hotelId);
     }
 }

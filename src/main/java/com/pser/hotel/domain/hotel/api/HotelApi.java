@@ -54,13 +54,13 @@ public class HotelApi {
 
     @PatchMapping("/{hotelId}") // 숙소 수정
     public ResponseEntity<ApiResponse<Void>> updateHotel(@RequestBody HotelUpdateRequest hotelUpdateRequest, @PathVariable Long hotelId, @RequestHeader("user-id") long userId){
-        hotelService.updateHotelData(hotelUpdateRequest, hotelId, userId);
+        hotelService.updateHotelData(hotelUpdateRequest, hotelId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{hotelId}") // 숙소 삭제
     public ResponseEntity<ApiResponse<Void>> deleteHotel(@PathVariable Long hotelId, @RequestHeader("user-id") long userId){
-        hotelService.deleteHotelData(hotelId, userId);
+        hotelService.deleteHotelData(hotelId);
         return ResponseEntity.noContent().build();
     }
 }
