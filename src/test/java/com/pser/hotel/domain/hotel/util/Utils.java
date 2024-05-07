@@ -1,10 +1,6 @@
 package com.pser.hotel.domain.hotel.util;
 
 
-import com.pser.hotel.domain.auction.domain.Auction;
-import com.pser.hotel.domain.auction.domain.AuctionStatusEnum;
-import com.pser.hotel.domain.auction.domain.Bid;
-import com.pser.hotel.domain.hotel.dao.FacilityDao;
 import com.pser.hotel.domain.hotel.domain.Amenity;
 import com.pser.hotel.domain.hotel.domain.Facility;
 import com.pser.hotel.domain.hotel.domain.Hotel;
@@ -14,7 +10,6 @@ import com.pser.hotel.domain.hotel.domain.ReservationEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -139,40 +134,6 @@ public class Utils {
                 .tid("test_tid")
                 .user(user)
                 .room(room)
-                .build();
-    }
-
-    public static Auction createAuction(Reservation auctionedReservation) {
-        return Auction.builder()
-                .auctionedReservation(auctionedReservation)
-                .derivedReservation(null)
-                .price(1000)
-                .endPrice(2000)
-                .startAt(LocalDateTime.now())
-                .endAt(LocalDateTime.now())
-                .depositPrice(1000)
-                .status(AuctionStatusEnum.ON_GOING)
-                .build();
-    }
-
-    public static Auction createAuction(Reservation auctionedReservation, int price, int endPrice) {
-        return Auction.builder()
-                .auctionedReservation(auctionedReservation)
-                .derivedReservation(null)
-                .price(price)
-                .endPrice(endPrice)
-                .startAt(LocalDateTime.now())
-                .endAt(LocalDateTime.now())
-                .depositPrice(1000)
-                .status(AuctionStatusEnum.ON_GOING)
-                .build();
-    }
-
-    public static Bid createBid(User user, Auction auction) {
-        return Bid.builder()
-                .user(user)
-                .auction(auction)
-                .price(1000)
                 .build();
     }
 }
