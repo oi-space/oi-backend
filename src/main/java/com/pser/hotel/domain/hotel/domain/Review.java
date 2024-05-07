@@ -31,18 +31,18 @@ public class Review extends BaseEntity {
     private Reservation reservation;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReviewImageFile> reviewImageFiles = new ArrayList<>();
+    private List<ReviewImage> reviewImages = new ArrayList<>();
 
     @Builder
-    public Review(GradeEnum grade, String detail, Reservation reservation, List<ReviewImageFile> reviewImageFiles) {
+    public Review(GradeEnum grade, String detail, Reservation reservation, List<ReviewImage> reviewImages) {
         this.grade = grade;
         this.detail = detail;
         this.reservation = reservation;
-        this.reviewImageFiles = reviewImageFiles;
+        this.reviewImages = reviewImages;
     }
 
-    public void addReviewImageFile(ReviewImageFile reviewImageFile) {
-        this.reviewImageFiles.add(reviewImageFile);
-        reviewImageFile.setReview(this);
+    public void addReviewImageFile(ReviewImage reviewImage) {
+        this.reviewImages.add(reviewImage);
+        reviewImage.setReview(this);
     }
 }
