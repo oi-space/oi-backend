@@ -2,6 +2,7 @@ package com.pser.hotel.domain.hotel.util;
 
 
 import com.pser.hotel.domain.hotel.domain.Amenity;
+import com.pser.hotel.domain.hotel.domain.Facility;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.pser.hotel.domain.hotel.domain.Reservation;
@@ -84,6 +85,25 @@ public class Utils {
                 .user(user)
                 .build();
         return hotel;
+    }
+
+    public static List<Hotel> createHotels(User user, int count) {
+        List<Hotel> list = new ArrayList<>();
+        for(int i=0; i < count; i++){
+            Hotel hotel = createHotel(user);
+            Facility facility = createFacility(hotel);
+            list.add(hotel);
+        }
+        return list;
+    }
+
+    public static Facility createFacility(Hotel hotel){
+        return Facility.builder()
+            .hotel(hotel)
+            .parkingLot(rnd.nextBoolean())
+            .wifi(rnd.nextBoolean())
+            .barbecue(rnd.nextBoolean())
+            .build();
     }
 
     public static Reservation createReservation(User user, Room room) {
