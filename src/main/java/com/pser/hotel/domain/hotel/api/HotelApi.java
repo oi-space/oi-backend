@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -53,12 +54,14 @@ public class HotelApi {
     }
 
     @PatchMapping("/{hotelId}") // 숙소 수정
+    @PreAuthorize("@methodAuthorizationManager.isHotelByIdAndUserId(#userId, #hotelId)")
     public ResponseEntity<ApiResponse<Void>> updateHotel(@RequestBody HotelUpdateRequest hotelUpdateRequest, @PathVariable Long hotelId, @RequestHeader("user-id") long userId){
         hotelService.updateHotelData(hotelUpdateRequest, hotelId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{hotelId}") // 숙소 삭제
+    @PreAuthorize("@methodAuthorizationManager.isHotelByIdAndUserId(#userId, #hotelId)")
     public ResponseEntity<ApiResponse<Void>> deleteHotel(@PathVariable Long hotelId, @RequestHeader("user-id") long userId){
         hotelService.deleteHotelData(hotelId);
         return ResponseEntity.noContent().build();
