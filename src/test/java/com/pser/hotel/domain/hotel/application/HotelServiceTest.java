@@ -152,7 +152,7 @@ public class HotelServiceTest {
 
         //when
         HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelMapper);
-        hotelService.updateHotelData(hotelUpdateRequest, hotel.getId(), user.getId());
+        hotelService.updateHotelData(hotelUpdateRequest, hotel.getId());
 
         //then
         verify(hotelMapper, times(1)).updateHotelFromDto(hotelUpdateRequest, hotel);
@@ -168,11 +168,10 @@ public class HotelServiceTest {
 
         //when
         HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelMapper);
-        hotelService.deleteHotelData(hotel.getId(), user.getId());
+        hotelService.deleteHotelData(hotel.getId());
 
         //then
         verify(hotelDao, times(1)).delete(hotel);
-        verify(facilityDao, times(1)).deleteByHotelId(hotel.getId());
     }
 
     private Pageable createPageable() {
