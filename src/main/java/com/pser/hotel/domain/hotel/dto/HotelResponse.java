@@ -1,12 +1,14 @@
 package com.pser.hotel.domain.hotel.dto;
 
-import lombok.AllArgsConstructor;
+import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
+@NoArgsConstructor
 public class HotelResponse {
     private Long id;
 
@@ -14,7 +16,7 @@ public class HotelResponse {
 
     private String name;
 
-    private String category;
+    private HotelCategoryEnum category;
 
     private String description;
 
@@ -45,4 +47,31 @@ public class HotelResponse {
     private Boolean wifi;
 
     private Boolean barbecue;
+
+
+    @QueryProjection
+    public HotelResponse(Long id, Long userId, String name, HotelCategoryEnum category, String description,
+        String notice, String province, String city, String district, String detailedAddress, Double latitude,
+        Double longtitude, String mainImage, String businessNumber, String certUrl, String visitGuidance,
+        Boolean parkingLot, Boolean wifi, Boolean barbecue) {
+        this.id = id;
+        this.userId = userId;
+        this.name = name;
+        this.category = category;
+        this.description = description;
+        this.notice = notice;
+        this.province = province;
+        this.city = city;
+        this.district = district;
+        this.detailedAddress = detailedAddress;
+        this.latitude = latitude;
+        this.longtitude = longtitude;
+        this.mainImage = mainImage;
+        this.businessNumber = businessNumber;
+        this.certUrl = certUrl;
+        this.visitGuidance = visitGuidance;
+        this.parkingLot = parkingLot;
+        this.wifi = wifi;
+        this.barbecue = barbecue;
+    }
 }
