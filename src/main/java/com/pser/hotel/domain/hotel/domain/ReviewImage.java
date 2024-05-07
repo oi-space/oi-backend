@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,6 +29,7 @@ public class ReviewImage {
     @JoinColumn(name = "review_id")
     private Review review; // 역방향 참조
 
+    @Builder // 빌더 패턴을 사용하기 위한 어노테이션 추가
     public ReviewImage(String fileName, String filePath, Review review) {
         this.fileName = fileName;
         this.filePath = filePath;
