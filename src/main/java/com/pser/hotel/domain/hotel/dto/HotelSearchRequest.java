@@ -1,6 +1,7 @@
 package com.pser.hotel.domain.hotel.dto;
 
 
+import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.pser.hotel.global.common.request.SearchQuery;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -13,7 +14,7 @@ public class HotelSearchRequest extends SearchQuery {
 
     private String name;
 
-    private String category;
+    private HotelCategoryEnum category;
 
     private String province;
 
@@ -31,7 +32,7 @@ public class HotelSearchRequest extends SearchQuery {
 
     @Builder
     public HotelSearchRequest(String keyword, LocalDateTime createdAfter, LocalDateTime createdBefore,
-        LocalDateTime updatedAfter, LocalDateTime updatedBefore, String name, String category, String province,
+        LocalDateTime updatedAfter, LocalDateTime updatedBefore, String name, HotelCategoryEnum category, String province,
         String city, String district, String detailedAddress, Boolean parkingLot, Boolean wifi, Boolean barbecue){
         super(keyword, createdAfter, createdBefore, updatedAfter, updatedBefore);
         this.name = name;

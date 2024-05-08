@@ -45,4 +45,5 @@ public class Review extends BaseEntity {
         this.reviewImages.add(reviewImage);
         reviewImage.setReview(this);
     }
+
 }

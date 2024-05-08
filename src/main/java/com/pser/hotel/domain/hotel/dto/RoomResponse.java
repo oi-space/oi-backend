@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @NoArgsConstructor
-public class RoomResponseDto {
+public class RoomResponse {
     private String name;
     private String description;
     private String precaution;
@@ -23,8 +23,8 @@ public class RoomResponseDto {
     private Amenity amenity;
 
     @QueryProjection
-    public RoomResponseDto(String name, String description, String precaution, int price, LocalTime checkIn,
-                           LocalTime checkOut, int standardCapacity, int maxCapacity, int totalRooms, Amenity amenity) {
+    public RoomResponse(String name, String description, String precaution, int price, LocalTime checkIn,
+                        LocalTime checkOut, int standardCapacity, int maxCapacity, int totalRooms, Amenity amenity) {
         this.name = name;
         this.description = description;
         this.precaution = precaution;
