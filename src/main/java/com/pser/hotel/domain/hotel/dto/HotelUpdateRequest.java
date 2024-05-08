@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.URL;
 @Data
 @Builder
 @AllArgsConstructor
-public class HotelCreateRequest {
+public class HotelUpdateRequest {
     @NotBlank
     private Long userId;
     @NotBlank

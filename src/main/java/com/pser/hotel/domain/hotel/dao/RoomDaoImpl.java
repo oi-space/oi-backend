@@ -2,8 +2,8 @@ package com.pser.hotel.domain.hotel.dao;
 
 import static com.pser.hotel.domain.hotel.domain.QRoom.room;
 
-import com.pser.hotel.domain.hotel.dto.QRoomResponseDto;
-import com.pser.hotel.domain.hotel.dto.RoomResponseDto;
+import com.pser.hotel.domain.hotel.dto.QRoomResponse;
+import com.pser.hotel.domain.hotel.dto.RoomResponse;
 import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -21,9 +21,9 @@ public class RoomDaoImpl implements RoomDaoCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<RoomResponseDto> search(RoomSearchRequest request, Pageable pageable) {
-        List<RoomResponseDto> fetch = queryFactory.select(
-                        new QRoomResponseDto(
+    public Page<RoomResponse> search(RoomSearchRequest request, Pageable pageable) {
+        List<RoomResponse> fetch = queryFactory.select(
+                        new QRoomResponse(
                                 room.name,
                                 room.description,
                                 room.precaution,
@@ -48,7 +48,7 @@ public class RoomDaoImpl implements RoomDaoCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
         long count = searchForCount(request);
-        return new PageImpl<RoomResponseDto>(fetch, pageable, count);
+        return new PageImpl<RoomResponse>(fetch, pageable, count);
     }
 
     public Long searchForCount(RoomSearchRequest request) {
