@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -20,22 +23,27 @@ public class Review extends BaseEntity {
     @Convert(converter = GradeEnumConverter.class)
     private GradeEnum grade;
 
-    @Length(min = 10, max = 500) // 상세 내용의 길이를 제한
+    @Length(min = 10, max = 500)
     private String detail;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, optional = false)
     @JoinColumn(name = "reservation_id", nullable = false, unique = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Reservation reservation;
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewImage> reviewImages = new ArrayList<>();
+
     @Builder
-    public Review(GradeEnum grade, String detail, Reservation reservation) {
+    public Review(GradeEnum grade, String detail, Reservation reservation, List<ReviewImage> reviewImages) {
         this.grade = grade;
         this.detail = detail;
         this.reservation = reservation;
+        this.reviewImages = reviewImages;
     }
 
-//    public void updateReview(int rating, String detail, String images) {
-//        this.detail = detail;
-//        this.images = images;
-//        // updatedTime은 @LastModifiedDate 어노테이션에 의해 자동 설정 됨
-//    }
+    public void addReviewImageFile(ReviewImage reviewImage) {
+        this.reviewImages.add(reviewImage);
+        reviewImage.setReview(this);
+    }
+
 }
