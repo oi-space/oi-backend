@@ -100,7 +100,7 @@ public class HotelApiTest {
             .header("user-id", 1)
             .contentType(MediaType.APPLICATION_JSON)
             .content(getUpdateHotelByJson()))
-            .andExpect(MockMvcResultMatchers.status().isCreated());
+            .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
     @Test
@@ -108,7 +108,7 @@ public class HotelApiTest {
     public void deleteHotel() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/hotels/1")
             .header("user-id", 1))
-            .andExpect(MockMvcResultMatchers.status().isCreated());
+            .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
     private HotelCreateRequest createHotelCreateRequest(Hotel hotel) {
