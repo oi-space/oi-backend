@@ -12,8 +12,6 @@ import org.hibernate.validator.constraints.URL;
 @AllArgsConstructor
 public class HotelUpdateRequest {
     @NotBlank
-    private Long userId;
-    @NotBlank
     private String name;
     @NotBlank
     private HotelCategoryEnum category;
@@ -49,4 +47,28 @@ public class HotelUpdateRequest {
     private Boolean wifi;
     @NotBlank
     private Boolean barbecue;
+    @NotBlank
+    private Boolean sauna;
+    @NotBlank
+    private Boolean swimmingPool;
+    @NotBlank
+    private Boolean restaurant;
+    @NotBlank
+    private Boolean roofTop;
+    @NotBlank
+    private Boolean fitness;
+    @NotBlank
+    private Boolean dryer;
+    @NotBlank
+    private Boolean breakfast;
+    @NotBlank
+    private Boolean smokingArea;
+    @NotBlank
+    private Boolean allTimeDesk;
+    @NotBlank
+    private Boolean luggageStorage;
+    @NotBlank
+    private Boolean snackBar;
+    @NotBlank
+    private Boolean petFriendly;
 }
