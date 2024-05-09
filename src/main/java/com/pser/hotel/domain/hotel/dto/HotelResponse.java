@@ -48,12 +48,38 @@ public class HotelResponse {
 
     private Boolean barbecue;
 
+    private Boolean sauna;
+
+    private Boolean swimmingPool;
+
+    private Boolean restaurant;
+
+    private Boolean roofTop;
+
+    private Boolean fitness;
+
+    private Boolean dryer;
+
+    private Boolean breakfast;
+
+    private Boolean smokingArea;
+
+    private Boolean allTimeDesk;
+
+    private Boolean luggageStorage;
+
+    private Boolean snackBar;
+
+    private Boolean petFriendly;
+
 
     @QueryProjection
     public HotelResponse(Long id, Long userId, String name, HotelCategoryEnum category, String description,
         String notice, String province, String city, String district, String detailedAddress, Double latitude,
         Double longtitude, String mainImage, String businessNumber, String certUrl, String visitGuidance,
-        Boolean parkingLot, Boolean wifi, Boolean barbecue) {
+        Boolean parkingLot, Boolean wifi, Boolean barbecue, Boolean sauna, Boolean swimmingPool, Boolean restaurant,
+        Boolean roofTop, Boolean fitness, Boolean dryer, Boolean breakfast, Boolean smokingArea, Boolean allTimeDesk,
+        Boolean luggageStorage, Boolean snackBar, Boolean petFriendly) {
         this.id = id;
         this.userId = userId;
         this.name = name;
@@ -73,5 +99,17 @@ public class HotelResponse {
         this.parkingLot = parkingLot;
         this.wifi = wifi;
         this.barbecue = barbecue;
+        this.sauna = sauna;
+        this.swimmingPool = swimmingPool;
+        this.restaurant = restaurant;
+        this.roofTop = roofTop;
+        this.fitness = fitness;
+        this.dryer = dryer;
+        this.breakfast = breakfast;
+        this.smokingArea = smokingArea;
+        this.allTimeDesk = allTimeDesk;
+        this.luggageStorage = luggageStorage;
+        this.snackBar = snackBar;
+        this.petFriendly = petFriendly;
     }
 }
