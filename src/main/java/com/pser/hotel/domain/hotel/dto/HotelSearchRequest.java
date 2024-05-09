@@ -30,10 +30,36 @@ public class HotelSearchRequest extends SearchQuery {
 
     private Boolean barbecue;
 
+    private Boolean sauna;
+
+    private Boolean swimmingPool;
+
+    private Boolean restaurant;
+
+    private Boolean roofTop;
+
+    private Boolean fitness;
+
+    private Boolean dryer;
+
+    private Boolean breakfast;
+
+    private Boolean smokingArea;
+
+    private Boolean allTimeDesk;
+
+    private Boolean luggageStorage;
+
+    private Boolean snackBar;
+
+    private Boolean petFriendly;
+
     @Builder
     public HotelSearchRequest(String keyword, LocalDateTime createdAfter, LocalDateTime createdBefore,
         LocalDateTime updatedAfter, LocalDateTime updatedBefore, String name, HotelCategoryEnum category, String province,
-        String city, String district, String detailedAddress, Boolean parkingLot, Boolean wifi, Boolean barbecue){
+        String city, String district, String detailedAddress, Boolean parkingLot, Boolean wifi, Boolean barbecue,
+        Boolean sauna, Boolean swimmingPool, Boolean restaurant, Boolean roofTop, Boolean fitness, Boolean dryer,
+        Boolean breakfast, Boolean smokingArea, Boolean allTimeDesk, Boolean luggageStorage, Boolean snackBar, Boolean petFriendly){
         super(keyword, createdAfter, createdBefore, updatedAfter, updatedBefore);
         this.name = name;
         this.category = category;
@@ -44,5 +70,17 @@ public class HotelSearchRequest extends SearchQuery {
         this.parkingLot = parkingLot;
         this.wifi = wifi;
         this.barbecue = barbecue;
+        this.sauna = sauna;
+        this.swimmingPool = swimmingPool;
+        this.restaurant = restaurant;
+        this.roofTop = roofTop;
+        this.fitness = fitness;
+        this.dryer = dryer;
+        this.breakfast = breakfast;
+        this.smokingArea = smokingArea;
+        this.allTimeDesk = allTimeDesk;
+        this.luggageStorage = luggageStorage;
+        this.snackBar = snackBar;
+        this.petFriendly = petFriendly;
     }
 }
