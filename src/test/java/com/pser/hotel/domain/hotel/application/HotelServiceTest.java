@@ -188,11 +188,11 @@ public class HotelServiceTest {
             .parkingLot(true)
             .wifi(true)
             .barbecue(false)
+            .breakfast(true)
             .build();
     }
     private HotelCreateRequest createCreateRequest(Hotel hotel) {
         return HotelCreateRequest.builder()
-            .userId(hotel.getUser().getId())
             .name(hotel.getName())
             .category(hotel.getCategory())
             .description(hotel.getDescription())
@@ -210,11 +210,22 @@ public class HotelServiceTest {
             .parkingLot(hotel.getFacility().getParkingLot())
             .wifi(hotel.getFacility().getWifi())
             .barbecue(hotel.getFacility().getBarbecue())
+            .sauna(hotel.getFacility().getSauna())
+            .swimmingPool(hotel.getFacility().getSwimmingPool())
+            .restaurant(hotel.getFacility().getRestaurant())
+            .roofTop(hotel.getFacility().getRoofTop())
+            .fitness(hotel.getFacility().getFitness())
+            .dryer(hotel.getFacility().getDryer())
+            .breakfast(hotel.getFacility().getBreakfast())
+            .smokingArea(hotel.getFacility().getSmokingArea())
+            .allTimeDesk(hotel.getFacility().getAllTimeDesk())
+            .luggageStorage(hotel.getFacility().getLuggageStorage())
+            .snackBar(hotel.getFacility().getSnackBar())
+            .petFriendly(hotel.getFacility().getPetFriendly())
             .build();
     }
     private HotelUpdateRequest createUpdateRequest(Hotel hotel) {
         return HotelUpdateRequest.builder()
-            .userId(hotel.getUser().getId())
             .name(hotel.getName())
             .category(hotel.getCategory())
             .description(hotel.getDescription())
@@ -232,6 +243,18 @@ public class HotelServiceTest {
             .parkingLot(hotel.getFacility().getParkingLot())
             .wifi(hotel.getFacility().getWifi())
             .barbecue(hotel.getFacility().getBarbecue())
+            .sauna(hotel.getFacility().getSauna())
+            .swimmingPool(hotel.getFacility().getSwimmingPool())
+            .restaurant(hotel.getFacility().getRestaurant())
+            .roofTop(hotel.getFacility().getRoofTop())
+            .fitness(hotel.getFacility().getFitness())
+            .dryer(hotel.getFacility().getDryer())
+            .breakfast(hotel.getFacility().getBreakfast())
+            .smokingArea(hotel.getFacility().getSmokingArea())
+            .allTimeDesk(hotel.getFacility().getAllTimeDesk())
+            .luggageStorage(hotel.getFacility().getLuggageStorage())
+            .snackBar(hotel.getFacility().getSnackBar())
+            .petFriendly(hotel.getFacility().getPetFriendly())
             .build();
     }
 }
