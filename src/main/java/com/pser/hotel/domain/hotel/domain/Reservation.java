@@ -1,5 +1,6 @@
 package com.pser.hotel.domain.hotel.domain;
 
+import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationUpdateRequestDto;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.domain.model.BaseEntity;
 import jakarta.persistence.CascadeType;
@@ -72,5 +73,13 @@ public class Reservation extends BaseEntity {
         if (reservationCapacity != (adultCapacity + childCapacity)) {
             throw new IllegalArgumentException("기준 인원이 최대 인원보다 클 수 없습니다");
         }
+    }
+
+    public void updateInformation(ReservationUpdateRequestDto reservationUpdateRequestDto){
+        this.startAt = reservationUpdateRequestDto.getStartAt();
+        this.endAt = reservationUpdateRequestDto.getEndAt();
+        this.adultCapacity = reservationUpdateRequestDto.getAdultCapacity();
+        this.childCapacity = reservationUpdateRequestDto.getChildCapacity();
+        this.status = reservationUpdateRequestDto.getStatus();
     }
 }
