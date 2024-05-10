@@ -113,7 +113,6 @@ public class HotelApiTest {
 
     private HotelCreateRequest createHotelCreateRequest(Hotel hotel) {
         return HotelCreateRequest.builder()
-            .userId(hotel.getUser().getId())
             .name(hotel.getName())
             .category(hotel.getCategory())
             .description(hotel.getDescription())
@@ -131,12 +130,23 @@ public class HotelApiTest {
             .parkingLot(hotel.getFacility().getParkingLot())
             .wifi(hotel.getFacility().getWifi())
             .barbecue(hotel.getFacility().getBarbecue())
+            .sauna(hotel.getFacility().getSauna())
+            .swimmingPool(hotel.getFacility().getSwimmingPool())
+            .restaurant(hotel.getFacility().getRestaurant())
+            .roofTop(hotel.getFacility().getRoofTop())
+            .fitness(hotel.getFacility().getFitness())
+            .dryer(hotel.getFacility().getDryer())
+            .breakfast(hotel.getFacility().getBreakfast())
+            .smokingArea(hotel.getFacility().getSmokingArea())
+            .allTimeDesk(hotel.getFacility().getAllTimeDesk())
+            .luggageStorage(hotel.getFacility().getLuggageStorage())
+            .snackBar(hotel.getFacility().getSnackBar())
+            .petFriendly(hotel.getFacility().getPetFriendly())
             .build();
     }
 
     private HotelUpdateRequest updateHotelCreateRequest(Hotel hotel) {
         return HotelUpdateRequest.builder()
-            .userId(hotel.getUser().getId())
             .name(hotel.getName())
             .category(hotel.getCategory())
             .description(hotel.getDescription())
@@ -154,31 +164,55 @@ public class HotelApiTest {
             .parkingLot(hotel.getFacility().getParkingLot())
             .wifi(hotel.getFacility().getWifi())
             .barbecue(hotel.getFacility().getBarbecue())
+            .sauna(hotel.getFacility().getSauna())
+            .swimmingPool(hotel.getFacility().getSwimmingPool())
+            .restaurant(hotel.getFacility().getRestaurant())
+            .roofTop(hotel.getFacility().getRoofTop())
+            .fitness(hotel.getFacility().getFitness())
+            .dryer(hotel.getFacility().getDryer())
+            .breakfast(hotel.getFacility().getBreakfast())
+            .smokingArea(hotel.getFacility().getSmokingArea())
+            .allTimeDesk(hotel.getFacility().getAllTimeDesk())
+            .luggageStorage(hotel.getFacility().getLuggageStorage())
+            .snackBar(hotel.getFacility().getSnackBar())
+            .petFriendly(hotel.getFacility().getPetFriendly())
             .build();
     }
 
     private String getCreateHotelByJson() {
         HotelCreateRequest dto = hotelCreateRequest;
         return String.format(
-            "{\"userId\": \"%d\", \"name\": \"%s\", \"category\": \"%s\", \"description\": \"%s\", \"notice\": \"%s\", \"province\": \"%s\", " +
-            "\"city\": \"%s\", \"district\": \"%s\", \"detailedAddress\": \"%s\", \"latitude\": \"%f\", \"longtitude\": \"%f\", " +
-            "\"mainImage\": \"%s\", \"businessNumber\": \"%s\", \"certUrl\": \"%s\", \"visitGuidance\": \"%s\", " +
-            "\"parkingLot\": \"%b\", \"wifi\": \"%b\", \"barbecue\": \"%b\"}"
-            , dto.getUserId(), dto.getName(), dto.getCategory(), dto.getDescription(), dto.getNotice(), dto.getProvince()
+            "{\"name\": \"%s\", \"category\": \"%s\", \"description\": \"%s\", \"notice\": \"%s\", \"province\": \"%s\", " +
+                "\"city\": \"%s\", \"district\": \"%s\", \"detailedAddress\": \"%s\", \"latitude\": \"%f\", \"longtitude\": \"%f\", " +
+                "\"mainImage\": \"%s\", \"businessNumber\": \"%s\", \"certUrl\": \"%s\", \"visitGuidance\": \"%s\", " +
+                "\"parkingLot\": \"%b\", \"wifi\": \"%b\", \"barbecue\": \"%b\", \"sauna\": \"%b\", \"swimmingPool\": \"%b\", " +
+                "\"restaurant\": \"%b\", \"roofTop\": \"%b\", \"fitness\": \"%b\", \"dryer\": \"%b\", \"breakfast\": \"%b\", " +
+                "\"smokingArea\": \"%b\", \"allTimeDesk\": \"%b\", \"luggageStorage\": \"%b\", \"snackBar\": \"%b\", " +
+                "\"petFriendly\": \"%b\"}"
+            , dto.getName(), dto.getCategory(), dto.getDescription(), dto.getNotice(), dto.getProvince()
             , dto.getCity(), dto.getDistrict(), dto.getDetailedAddress(), dto.getLatitude(), dto.getLongtitude(), dto.getMainImage()
             , dto.getBusinessNumber(), dto.getCertUrl(), dto.getVisitGuidance(), dto.getParkingLot(), dto.getWifi(), dto.getBarbecue()
+            , dto.getSauna(), dto.getSwimmingPool(), dto.getRestaurant(), dto.getRoofTop(), dto.getFitness(), dto.getDryer()
+            , dto.getBreakfast(), dto.getSmokingArea(), dto.getAllTimeDesk(), dto.getLuggageStorage(), dto.getSnackBar()
+            , dto.getPetFriendly()
         );
     }
     private String getUpdateHotelByJson() {
         HotelUpdateRequest dto = hotelUpdateRequest;
         return String.format(
-            "{\"userId\": \"%d\", \"name\": \"%s\", \"category\": \"%s\", \"description\": \"%s\", \"notice\": \"%s\", \"province\": \"%s\", " +
+            "{\"name\": \"%s\", \"category\": \"%s\", \"description\": \"%s\", \"notice\": \"%s\", \"province\": \"%s\", " +
                 "\"city\": \"%s\", \"district\": \"%s\", \"detailedAddress\": \"%s\", \"latitude\": \"%f\", \"longtitude\": \"%f\", " +
                 "\"mainImage\": \"%s\", \"businessNumber\": \"%s\", \"certUrl\": \"%s\", \"visitGuidance\": \"%s\", " +
-                "\"parkingLot\": \"%b\", \"wifi\": \"%b\", \"barbecue\": \"%b\"}"
-            , dto.getUserId(), dto.getName(), dto.getCategory(), dto.getDescription(), dto.getNotice(), dto.getProvince()
+                "\"parkingLot\": \"%b\", \"wifi\": \"%b\", \"barbecue\": \"%b\", \"sauna\": \"%b\", \"swimmingPool\": \"%b\", " +
+                "\"restaurant\": \"%b\", \"roofTop\": \"%b\", \"fitness\": \"%b\", \"dryer\": \"%b\", \"breakfast\": \"%b\", " +
+                "\"smokingArea\": \"%b\", \"allTimeDesk\": \"%b\", \"luggageStorage\": \"%b\", \"snackBar\": \"%b\", " +
+                "\"petFriendly\": \"%b\"}"
+            , dto.getName(), dto.getCategory(), dto.getDescription(), dto.getNotice(), dto.getProvince()
             , dto.getCity(), dto.getDistrict(), dto.getDetailedAddress(), dto.getLatitude(), dto.getLongtitude(), dto.getMainImage()
             , dto.getBusinessNumber(), dto.getCertUrl(), dto.getVisitGuidance(), dto.getParkingLot(), dto.getWifi(), dto.getBarbecue()
+            , dto.getSauna(), dto.getSwimmingPool(), dto.getRestaurant(), dto.getRoofTop(), dto.getFitness(), dto.getDryer()
+            , dto.getBreakfast(), dto.getSmokingArea(), dto.getAllTimeDesk(), dto.getLuggageStorage(), dto.getSnackBar()
+            , dto.getPetFriendly()
         );
     }
 }

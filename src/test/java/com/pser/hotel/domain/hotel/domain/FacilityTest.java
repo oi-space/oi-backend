@@ -65,6 +65,18 @@ class FacilityTest {
                 .parkingLot(true)
                 .barbecue(true)
                 .wifi(true)
+                .sauna(true)
+                .swimmingPool(true)
+                .restaurant(true)
+                .roofTop(true)
+                .fitness(true)
+                .dryer(true)
+                .breakfast(true)
+                .smokingArea(true)
+                .allTimeDesk(true)
+                .luggageStorage(true)
+                .snackBar(true)
+                .petFriendly(true)
                 .hotel(hotel)
                 .build();
     }
