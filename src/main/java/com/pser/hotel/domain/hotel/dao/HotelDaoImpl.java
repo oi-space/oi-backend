@@ -23,69 +23,69 @@ public class HotelDaoImpl implements HotelDaoCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<HotelResponse> search(HotelSearchRequest hotelSearchRequest, Pageable pageable){
+    public Slice<HotelResponse> search(HotelSearchRequest hotelSearchRequest, Pageable pageable) {
         List<HotelResponse> content = queryFactory
-            .select(new QHotelResponse(
-                QHotel.hotel.id,
-                QHotel.hotel.user.id,
-                QHotel.hotel.name,
-                QHotel.hotel.category,
-                QHotel.hotel.description,
-                QHotel.hotel.notice,
-                QHotel.hotel.province,
-                QHotel.hotel.city,
-                QHotel.hotel.district,
-                QHotel.hotel.detailedAddress,
-                QHotel.hotel.latitude,
-                QHotel.hotel.longtitude,
-                QHotel.hotel.mainImage,
-                QHotel.hotel.businessNumber,
-                QHotel.hotel.certUrl,
-                QHotel.hotel.visitGuidance,
-                QHotel.hotel.facility.parkingLot,
-                QHotel.hotel.facility.wifi,
-                QHotel.hotel.facility.barbecue,
-                QHotel.hotel.facility.sauna,
-                QHotel.hotel.facility.swimmingPool,
-                QHotel.hotel.facility.restaurant,
-                QHotel.hotel.facility.roofTop,
-                QHotel.hotel.facility.fitness,
-                QHotel.hotel.facility.dryer,
-                QHotel.hotel.facility.breakfast,
-                QHotel.hotel.facility.smokingArea,
-                QHotel.hotel.facility.allTimeDesk,
-                QHotel.hotel.facility.luggageStorage,
-                QHotel.hotel.facility.snackBar,
-                QHotel.hotel.facility.petFriendly
-            ))
-            .from(QHotel.hotel)
-            .where(
-                getNamePredicate(hotelSearchRequest.getName()),
-                getProvincePredicate(hotelSearchRequest.getProvince()),
-                getCityPredicate(hotelSearchRequest.getCity()),
-                getDistrictPredicate(hotelSearchRequest.getDistrict()),
-                getDetailedAddressPredicate(hotelSearchRequest.getDetailedAddress()),
-                getBarbecuePredicate(hotelSearchRequest.getBarbecue()),
-                getWifiPredicate(hotelSearchRequest.getWifi()),
-                getParkingLotPredicate(hotelSearchRequest.getParkingLot()),
-                getCategoryPredicate(hotelSearchRequest.getCategory()),
-                getSaunaPredicate(hotelSearchRequest.getSauna()),
-                getSwimmingPoolPredicate(hotelSearchRequest.getSwimmingPool()),
-                getRestaurantPredicate(hotelSearchRequest.getRestaurant()),
-                getRoofTopPredicate(hotelSearchRequest.getRoofTop()),
-                getFitnessPredicate(hotelSearchRequest.getFitness()),
-                getDryerPredicate(hotelSearchRequest.getDryer()),
-                getBreakfistPredicate(hotelSearchRequest.getBreakfast()),
-                getSmokingAreaPredicate(hotelSearchRequest.getSmokingArea()),
-                getAllTimeDeskPredicate(hotelSearchRequest.getAllTimeDesk()),
-                getLuggageStoragePredicate(hotelSearchRequest.getLuggageStorage()),
-                getSnackBarPredicate(hotelSearchRequest.getSnackBar()),
-                getPetFriendlyPredicate(hotelSearchRequest.getPetFriendly()),
-                containsKeywordPredicate(hotelSearchRequest.getKeyword())
-            )
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize() + 1)
-            .fetch();
+                .select(new QHotelResponse(
+                        QHotel.hotel.id,
+                        QHotel.hotel.user.id,
+                        QHotel.hotel.name,
+                        QHotel.hotel.category,
+                        QHotel.hotel.description,
+                        QHotel.hotel.notice,
+                        QHotel.hotel.province,
+                        QHotel.hotel.city,
+                        QHotel.hotel.district,
+                        QHotel.hotel.detailedAddress,
+                        QHotel.hotel.latitude,
+                        QHotel.hotel.longtitude,
+                        QHotel.hotel.mainImage,
+                        QHotel.hotel.businessNumber,
+                        QHotel.hotel.certUrl,
+                        QHotel.hotel.visitGuidance,
+                        QHotel.hotel.facility.parkingLot,
+                        QHotel.hotel.facility.wifi,
+                        QHotel.hotel.facility.barbecue,
+                        QHotel.hotel.facility.sauna,
+                        QHotel.hotel.facility.swimmingPool,
+                        QHotel.hotel.facility.restaurant,
+                        QHotel.hotel.facility.roofTop,
+                        QHotel.hotel.facility.fitness,
+                        QHotel.hotel.facility.dryer,
+                        QHotel.hotel.facility.breakfast,
+                        QHotel.hotel.facility.smokingArea,
+                        QHotel.hotel.facility.allTimeDesk,
+                        QHotel.hotel.facility.luggageStorage,
+                        QHotel.hotel.facility.snackBar,
+                        QHotel.hotel.facility.petFriendly
+                ))
+                .from(QHotel.hotel)
+                .where(
+                        getNamePredicate(hotelSearchRequest.getName()),
+                        getProvincePredicate(hotelSearchRequest.getProvince()),
+                        getCityPredicate(hotelSearchRequest.getCity()),
+                        getDistrictPredicate(hotelSearchRequest.getDistrict()),
+                        getDetailedAddressPredicate(hotelSearchRequest.getDetailedAddress()),
+                        getBarbecuePredicate(hotelSearchRequest.getBarbecue()),
+                        getWifiPredicate(hotelSearchRequest.getWifi()),
+                        getParkingLotPredicate(hotelSearchRequest.getParkingLot()),
+                        getCategoryPredicate(hotelSearchRequest.getCategory()),
+                        getSaunaPredicate(hotelSearchRequest.getSauna()),
+                        getSwimmingPoolPredicate(hotelSearchRequest.getSwimmingPool()),
+                        getRestaurantPredicate(hotelSearchRequest.getRestaurant()),
+                        getRoofTopPredicate(hotelSearchRequest.getRoofTop()),
+                        getFitnessPredicate(hotelSearchRequest.getFitness()),
+                        getDryerPredicate(hotelSearchRequest.getDryer()),
+                        getBreakfistPredicate(hotelSearchRequest.getBreakfast()),
+                        getSmokingAreaPredicate(hotelSearchRequest.getSmokingArea()),
+                        getAllTimeDeskPredicate(hotelSearchRequest.getAllTimeDesk()),
+                        getLuggageStoragePredicate(hotelSearchRequest.getLuggageStorage()),
+                        getSnackBarPredicate(hotelSearchRequest.getSnackBar()),
+                        getPetFriendlyPredicate(hotelSearchRequest.getPetFriendly()),
+                        containsKeywordPredicate(hotelSearchRequest.getKeyword())
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
 
         boolean hasNext = false;
         if (content.size() > pageable.getPageSize()) {
@@ -179,13 +179,13 @@ public class HotelDaoImpl implements HotelDaoCustom {
     private Predicate getCategoryPredicate(HotelCategoryEnum categoryEnum) {
         HotelCategoryConverter hotelCategoryConverter = new HotelCategoryConverter();
         return categoryEnum != null ? QHotel.hotel.category.stringValue()
-            .eq(hotelCategoryConverter.convertToDatabaseColumn(categoryEnum).toString()) : null;
+                .eq(hotelCategoryConverter.convertToDatabaseColumn(categoryEnum).toString()) : null;
     }
 
     private Predicate containsKeywordPredicate(String keyword) {
         BooleanBuilder builder = new BooleanBuilder();
 
-        if(StringUtils.hasText(keyword)){
+        if (StringUtils.hasText(keyword)) {
             QHotel hotel = QHotel.hotel;
             builder.or(hotel.name.contains(keyword));
             builder.or(hotel.province.contains(keyword));
