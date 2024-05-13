@@ -22,11 +22,13 @@ public class UserDaoTest {
     @Autowired
     EntityManager entityManager;
     User user;
+
     @BeforeEach
     public void setUp() {
         user = Utils.createUser();
         userDao.save(user);
     }
+
     @Test
     @DisplayName("findById 테스트")
     public void findByIdTest() {
