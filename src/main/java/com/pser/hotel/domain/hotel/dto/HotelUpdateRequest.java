@@ -1,6 +1,7 @@
 package com.pser.hotel.domain.hotel.dto;
 
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -69,4 +70,6 @@ public class HotelUpdateRequest {
     private Boolean snackBar;
 
     private Boolean petFriendly;
+
+    private List<String> hotelImageUrls;
 }
