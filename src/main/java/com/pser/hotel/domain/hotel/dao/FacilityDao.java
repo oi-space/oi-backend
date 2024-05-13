@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FacilityDao extends JpaRepository<Facility, Long> {
     Optional<Facility> findByHotelId(Long hotelId);
+
     void deleteByHotelId(Long hotelId);
 }
