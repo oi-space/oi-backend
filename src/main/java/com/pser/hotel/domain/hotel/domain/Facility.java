@@ -17,9 +17,9 @@ import lombok.ToString;
 @Setter
 @Entity
 @NoArgsConstructor
-@ToString(of = {"parkingLot", "barbecue", "wifi", "sauna", "swimmingPool", "restaurant", "roofTop", "fitness", "dryer", "breakfast", "smokingArea", "allTimeDesk", "luggageStorage", "snackBar", "petFriendly"})
+@ToString(of = {"parkingLot", "barbecue", "wifi", "sauna", "swimmingPool", "restaurant", "roofTop", "fitness", "dryer",
+        "breakfast", "smokingArea", "allTimeDesk", "luggageStorage", "snackBar", "petFriendly"})
 public class Facility extends BaseEntity {
-    // TODO : 추후 추가 예정
     private Boolean parkingLot;
     private Boolean barbecue;
     private Boolean wifi;
@@ -41,9 +41,10 @@ public class Facility extends BaseEntity {
 
     @Builder
     public Facility(Boolean parkingLot, Boolean barbecue, Boolean wifi, Boolean sauna, Boolean swimmingPool,
-        Boolean restaurant, Boolean roofTop, Boolean fitness, Boolean dryer, Boolean breakfast, Boolean smokingArea,
-        Boolean allTimeDesk, Boolean luggageStorage, Boolean snackBar, Boolean petFriendly,
-        Hotel hotel) {
+                    Boolean restaurant, Boolean roofTop, Boolean fitness, Boolean dryer, Boolean breakfast,
+                    Boolean smokingArea,
+                    Boolean allTimeDesk, Boolean luggageStorage, Boolean snackBar, Boolean petFriendly,
+                    Hotel hotel) {
         this.parkingLot = parkingLot;
         this.barbecue = barbecue;
         this.wifi = wifi;
@@ -62,8 +63,8 @@ public class Facility extends BaseEntity {
         setHotel(hotel);
     }
 
-    public void setHotel(Hotel hotel){
-        if(this.hotel != null){
+    public void setHotel(Hotel hotel) {
+        if (this.hotel != null) {
             this.hotel.setFacility(null);
         }
         this.hotel = hotel;
