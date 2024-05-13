@@ -38,6 +38,7 @@ public class HotelDaoImplTest {
     Facility facility;
     PageRequest pageRequest;
     HotelSearchRequest hotelSearchRequest;
+
     @BeforeEach
     public void setUp() {
         pageRequest = PageRequest.of(0, 10);
@@ -57,11 +58,13 @@ public class HotelDaoImplTest {
         Slice<HotelResponse> nameResponse = hotelDao.search(hotelSearchRequest, pageable);
         Assertions.assertThat(nameResponse.getContent()).isNotEmpty();
     }
-    private HotelSearchRequest createSearchRequestByName(String name){
+
+    private HotelSearchRequest createSearchRequestByName(String name) {
         return HotelSearchRequest.builder()
-            .name(name)
-            .build();
+                .name(name)
+                .build();
     }
+
     @Test
     @DisplayName("category 검색 테스트")
     public void categorySearchTest() {
@@ -70,11 +73,13 @@ public class HotelDaoImplTest {
         Slice<HotelResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
         Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
     }
-    private HotelSearchRequest createSearchRequestByCategory(HotelCategoryEnum hotelCategoryEnum){
+
+    private HotelSearchRequest createSearchRequestByCategory(HotelCategoryEnum hotelCategoryEnum) {
         return HotelSearchRequest.builder()
-            .category(hotelCategoryEnum)
-            .build();
+                .category(hotelCategoryEnum)
+                .build();
     }
+
     @Test
     @DisplayName("province 검색 테스트")
     public void provinceSearchTest() {
@@ -83,11 +88,13 @@ public class HotelDaoImplTest {
         Slice<HotelResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
         Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
     }
-    private HotelSearchRequest creatSearchRequestByProvince(String province){
+
+    private HotelSearchRequest creatSearchRequestByProvince(String province) {
         return HotelSearchRequest.builder()
-            .province(province)
-            .build();
+                .province(province)
+                .build();
     }
+
     @Test
     @DisplayName("district 검색 테스트")
     public void districtSearchTest() {
@@ -96,11 +103,13 @@ public class HotelDaoImplTest {
         Slice<HotelResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
         Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
     }
-    private HotelSearchRequest createSearchRequestByDistrict(String district){
+
+    private HotelSearchRequest createSearchRequestByDistrict(String district) {
         return HotelSearchRequest.builder()
-            .district(district)
-            .build();
+                .district(district)
+                .build();
     }
+
     @Test
     @DisplayName("detailedAddress 검색 테스트")
     public void detailedAddressTest() {
@@ -109,11 +118,13 @@ public class HotelDaoImplTest {
         Slice<HotelResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
         Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
     }
-    private HotelSearchRequest createSearchRequestByDetailedAddress(String detailedAddress){
+
+    private HotelSearchRequest createSearchRequestByDetailedAddress(String detailedAddress) {
         return HotelSearchRequest.builder()
-            .detailedAddress(detailedAddress)
-            .build();
+                .detailedAddress(detailedAddress)
+                .build();
     }
+
     private Pageable createPageable() {
         return PageRequest.of(0, 10);
     }
