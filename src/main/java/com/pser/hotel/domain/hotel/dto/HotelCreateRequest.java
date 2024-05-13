@@ -2,6 +2,7 @@ package com.pser.hotel.domain.hotel.dto;
 
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -71,4 +72,6 @@ public class HotelCreateRequest {
     private Boolean snackBar;
     @NotBlank
     private Boolean petFriendly;
+    @NotBlank
+    private List<String> hotelImageUrls;
 }
