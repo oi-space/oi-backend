@@ -75,11 +75,15 @@ public class HotelResponse {
 
     @QueryProjection
     public HotelResponse(Long id, Long userId, String name, HotelCategoryEnum category, String description,
-        String notice, String province, String city, String district, String detailedAddress, Double latitude,
-        Double longtitude, String mainImage, String businessNumber, String certUrl, String visitGuidance,
-        Boolean parkingLot, Boolean wifi, Boolean barbecue, Boolean sauna, Boolean swimmingPool, Boolean restaurant,
-        Boolean roofTop, Boolean fitness, Boolean dryer, Boolean breakfast, Boolean smokingArea, Boolean allTimeDesk,
-        Boolean luggageStorage, Boolean snackBar, Boolean petFriendly) {
+                         String notice, String province, String city, String district, String detailedAddress,
+                         Double latitude,
+                         Double longtitude, String mainImage, String businessNumber, String certUrl,
+                         String visitGuidance,
+                         Boolean parkingLot, Boolean wifi, Boolean barbecue, Boolean sauna, Boolean swimmingPool,
+                         Boolean restaurant,
+                         Boolean roofTop, Boolean fitness, Boolean dryer, Boolean breakfast, Boolean smokingArea,
+                         Boolean allTimeDesk,
+                         Boolean luggageStorage, Boolean snackBar, Boolean petFriendly) {
         this.id = id;
         this.userId = userId;
         this.name = name;
