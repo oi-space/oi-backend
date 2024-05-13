@@ -4,12 +4,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
 import com.pser.hotel.domain.hotel.dao.FacilityDao;
 import com.pser.hotel.domain.hotel.dao.HotelDao;
+import com.pser.hotel.domain.hotel.dao.HotelImageDao;
 import com.pser.hotel.domain.hotel.dao.UserDao;
 import com.pser.hotel.domain.hotel.domain.Facility;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
+import com.pser.hotel.domain.hotel.domain.HotelImage;
 import com.pser.hotel.domain.hotel.dto.HotelCreateRequest;
 import com.pser.hotel.domain.hotel.dto.HotelMapper;
 import com.pser.hotel.domain.hotel.dto.HotelResponse;
@@ -45,6 +48,8 @@ public class HotelServiceTest {
     UserDao userDao;
     @Mock
     HotelMapper hotelMapper;
+    @Mock
+    HotelImageDao hotelImageDao;
     MockMvc mockMvc;
     User user;
     Hotel hotel;
@@ -53,6 +58,7 @@ public class HotelServiceTest {
     HotelSearchRequest hotelSearchRequest;
     HotelCreateRequest hotelCreateRequest;
     HotelUpdateRequest hotelUpdateRequest;
+    List<String> hotelImages;
 
     @BeforeEach
     public void setUp() {
@@ -60,11 +66,13 @@ public class HotelServiceTest {
         user = Utils.createUser();
         hotel = Utils.createHotel(user);
         facility = Utils.createFacility(hotel);
+        hotelImages = Utils.createHotelImages();
         MockitoAnnotations.openMocks(this);
         hotelSearchRequest = createSearchRequest();
         hotelCreateRequest = createCreateRequest(hotel);
         hotelUpdateRequest = createUpdateRequest(hotel);
     }
+
     @Test
     @DisplayName("숙소 전체 조회 Service 테스트")
     public void getAllHotelDataServiceTest() throws Exception {
@@ -77,7 +85,7 @@ public class HotelServiceTest {
         lenient().when(hotelDao.findAll(any(Pageable.class))).thenReturn(page);
 
         //when
-        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelMapper);
+        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
         Slice<HotelResponse> sliceData = hotelService.getAllHotelData(pageable);
 
         //then
@@ -91,12 +99,13 @@ public class HotelServiceTest {
         Pageable pageable = createPageable();
 
         List<Hotel> hotels = Utils.createHotels(user, 10);
-        Slice<HotelResponse> pageHotelData = new SliceImpl<>(hotels, pageable, true).map(hotelMapper::changeToHotelResponse);
+        Slice<HotelResponse> pageHotelData = new SliceImpl<>(hotels, pageable, true).map(
+                hotelMapper::changeToHotelResponse);
 
         lenient().when(hotelDao.search(hotelSearchRequest, pageable)).thenReturn(pageHotelData);
 
         //when
-        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelMapper);
+        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
         Slice<HotelResponse> sliceData = hotelService.searchHotelData(hotelSearchRequest, pageable);
 
         //then
@@ -111,7 +120,7 @@ public class HotelServiceTest {
         lenient().when(hotelDao.findById(any())).thenReturn(optionalHotel);
 
         //when
-        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelMapper);
+        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
         Optional<HotelResponse> hotelResponse = hotelService.getHotelDataById(1L);
 
         //then
@@ -129,9 +138,9 @@ public class HotelServiceTest {
         lenient().when(facilityDao.save(any(Facility.class))).thenReturn(facility);
         lenient().when(hotelMapper.changeToHotel(hotelCreateRequest, user)).thenReturn(hotel);
         lenient().when(hotelMapper.changeToFacility(hotelCreateRequest, hotel)).thenReturn(facility);
-
+        System.out.println("크리에이트 리쿼스트 : " + hotelCreateRequest);
         //when
-        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelMapper);
+        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
         Long hotelId = hotelService.saveHotelData(hotelCreateRequest, 1L);
 
         //then
@@ -151,7 +160,7 @@ public class HotelServiceTest {
         lenient().when(facilityDao.save(any(Facility.class))).thenReturn(facility);
 
         //when
-        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelMapper);
+        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
         hotelService.updateHotelData(hotelUpdateRequest, hotel.getId());
 
         //then
@@ -167,7 +176,7 @@ public class HotelServiceTest {
         lenient().when(hotelDao.findById(any())).thenReturn(optionalHotel);
 
         //when
-        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelMapper);
+        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
         hotelService.deleteHotelData(hotel.getId());
 
         //then
@@ -180,81 +189,85 @@ public class HotelServiceTest {
 
     private HotelSearchRequest createSearchRequest() {
         return HotelSearchRequest.builder()
-            .name("업체명")
-            .category(HotelCategoryEnum.HOTEL)
-            .province("강원도")
-            .district("양양군")
-            .detailedAddress("양양로")
-            .parkingLot(true)
-            .wifi(true)
-            .barbecue(false)
-            .breakfast(true)
-            .build();
+                .name("업체명")
+                .category(HotelCategoryEnum.HOTEL)
+                .province("강원도")
+                .district("양양군")
+                .detailedAddress("양양로")
+                .parkingLot(true)
+                .wifi(true)
+                .barbecue(false)
+                .breakfast(true)
+                .build();
     }
+
     private HotelCreateRequest createCreateRequest(Hotel hotel) {
         return HotelCreateRequest.builder()
-            .name(hotel.getName())
-            .category(hotel.getCategory())
-            .description(hotel.getDescription())
-            .notice(hotel.getNotice())
-            .province(hotel.getProvince())
-            .city(hotel.getCity())
-            .district(hotel.getDistrict())
-            .detailedAddress(hotel.getDetailedAddress())
-            .latitude(hotel.getLatitude())
-            .longtitude(hotel.getLongtitude())
-            .mainImage(hotel.getMainImage())
-            .businessNumber(hotel.getBusinessNumber())
-            .certUrl(hotel.getCertUrl())
-            .visitGuidance(hotel.getVisitGuidance())
-            .parkingLot(hotel.getFacility().getParkingLot())
-            .wifi(hotel.getFacility().getWifi())
-            .barbecue(hotel.getFacility().getBarbecue())
-            .sauna(hotel.getFacility().getSauna())
-            .swimmingPool(hotel.getFacility().getSwimmingPool())
-            .restaurant(hotel.getFacility().getRestaurant())
-            .roofTop(hotel.getFacility().getRoofTop())
-            .fitness(hotel.getFacility().getFitness())
-            .dryer(hotel.getFacility().getDryer())
-            .breakfast(hotel.getFacility().getBreakfast())
-            .smokingArea(hotel.getFacility().getSmokingArea())
-            .allTimeDesk(hotel.getFacility().getAllTimeDesk())
-            .luggageStorage(hotel.getFacility().getLuggageStorage())
-            .snackBar(hotel.getFacility().getSnackBar())
-            .petFriendly(hotel.getFacility().getPetFriendly())
-            .build();
+                .name(hotel.getName())
+                .category(hotel.getCategory())
+                .description(hotel.getDescription())
+                .notice(hotel.getNotice())
+                .province(hotel.getProvince())
+                .city(hotel.getCity())
+                .district(hotel.getDistrict())
+                .detailedAddress(hotel.getDetailedAddress())
+                .latitude(hotel.getLatitude())
+                .longtitude(hotel.getLongtitude())
+                .mainImage(hotel.getMainImage())
+                .businessNumber(hotel.getBusinessNumber())
+                .certUrl(hotel.getCertUrl())
+                .visitGuidance(hotel.getVisitGuidance())
+                .parkingLot(hotel.getFacility().getParkingLot())
+                .wifi(hotel.getFacility().getWifi())
+                .barbecue(hotel.getFacility().getBarbecue())
+                .sauna(hotel.getFacility().getSauna())
+                .swimmingPool(hotel.getFacility().getSwimmingPool())
+                .restaurant(hotel.getFacility().getRestaurant())
+                .roofTop(hotel.getFacility().getRoofTop())
+                .fitness(hotel.getFacility().getFitness())
+                .dryer(hotel.getFacility().getDryer())
+                .breakfast(hotel.getFacility().getBreakfast())
+                .smokingArea(hotel.getFacility().getSmokingArea())
+                .allTimeDesk(hotel.getFacility().getAllTimeDesk())
+                .luggageStorage(hotel.getFacility().getLuggageStorage())
+                .snackBar(hotel.getFacility().getSnackBar())
+                .petFriendly(hotel.getFacility().getPetFriendly())
+                .hotelImageUrls(hotelImages)
+                .build();
     }
+
     private HotelUpdateRequest createUpdateRequest(Hotel hotel) {
         return HotelUpdateRequest.builder()
-            .name(hotel.getName())
-            .category(hotel.getCategory())
-            .description(hotel.getDescription())
-            .notice(hotel.getNotice())
-            .province(hotel.getProvince())
-            .city(hotel.getCity())
-            .district(hotel.getDistrict())
-            .detailedAddress(hotel.getDetailedAddress())
-            .latitude(hotel.getLatitude())
-            .longtitude(hotel.getLongtitude())
-            .mainImage(hotel.getMainImage())
-            .businessNumber(hotel.getBusinessNumber())
-            .certUrl(hotel.getCertUrl())
-            .visitGuidance(hotel.getVisitGuidance())
-            .parkingLot(hotel.getFacility().getParkingLot())
-            .wifi(hotel.getFacility().getWifi())
-            .barbecue(hotel.getFacility().getBarbecue())
-            .sauna(hotel.getFacility().getSauna())
-            .swimmingPool(hotel.getFacility().getSwimmingPool())
-            .restaurant(hotel.getFacility().getRestaurant())
-            .roofTop(hotel.getFacility().getRoofTop())
-            .fitness(hotel.getFacility().getFitness())
-            .dryer(hotel.getFacility().getDryer())
-            .breakfast(hotel.getFacility().getBreakfast())
-            .smokingArea(hotel.getFacility().getSmokingArea())
-            .allTimeDesk(hotel.getFacility().getAllTimeDesk())
-            .luggageStorage(hotel.getFacility().getLuggageStorage())
-            .snackBar(hotel.getFacility().getSnackBar())
-            .petFriendly(hotel.getFacility().getPetFriendly())
-            .build();
+                .name(hotel.getName())
+                .category(hotel.getCategory())
+                .description(hotel.getDescription())
+                .notice(hotel.getNotice())
+                .province(hotel.getProvince())
+                .city(hotel.getCity())
+                .district(hotel.getDistrict())
+                .detailedAddress(hotel.getDetailedAddress())
+                .latitude(hotel.getLatitude())
+                .longtitude(hotel.getLongtitude())
+                .mainImage(hotel.getMainImage())
+                .businessNumber(hotel.getBusinessNumber())
+                .certUrl(hotel.getCertUrl())
+                .visitGuidance(hotel.getVisitGuidance())
+                .parkingLot(hotel.getFacility().getParkingLot())
+                .wifi(hotel.getFacility().getWifi())
+                .barbecue(hotel.getFacility().getBarbecue())
+                .sauna(hotel.getFacility().getSauna())
+                .swimmingPool(hotel.getFacility().getSwimmingPool())
+                .restaurant(hotel.getFacility().getRestaurant())
+                .roofTop(hotel.getFacility().getRoofTop())
+                .fitness(hotel.getFacility().getFitness())
+                .dryer(hotel.getFacility().getDryer())
+                .breakfast(hotel.getFacility().getBreakfast())
+                .smokingArea(hotel.getFacility().getSmokingArea())
+                .allTimeDesk(hotel.getFacility().getAllTimeDesk())
+                .luggageStorage(hotel.getFacility().getLuggageStorage())
+                .snackBar(hotel.getFacility().getSnackBar())
+                .petFriendly(hotel.getFacility().getPetFriendly())
+                .hotelImageUrls(hotelImages)
+                .build();
     }
 }
