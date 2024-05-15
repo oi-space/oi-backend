@@ -3,6 +3,7 @@ package com.pser.hotel.domain.hotel.dao;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryConverter;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.pser.hotel.domain.hotel.domain.QHotel;
+import com.pser.hotel.domain.hotel.domain.QHotelImage;
 import com.pser.hotel.domain.hotel.dto.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
 import com.pser.hotel.domain.hotel.dto.QHotelResponse;
@@ -86,6 +87,15 @@ public class HotelDaoImpl implements HotelDaoCustom {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
+
+        for (HotelResponse hotelResponseExcludeImages : content) {
+            List<String> images = queryFactory
+                    .select(QHotelImage.hotelImage.imageUrl)
+                    .from(QHotelImage.hotelImage)
+                    .where(QHotelImage.hotelImage.hotel.id.eq(hotelResponseExcludeImages.getId()))
+                    .fetch();
+            hotelResponseExcludeImages.setHotelImageUrls(images);
+        }
 
         boolean hasNext = false;
         if (content.size() > pageable.getPageSize()) {
