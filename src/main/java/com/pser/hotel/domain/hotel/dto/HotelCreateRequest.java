@@ -72,6 +72,6 @@ public class HotelCreateRequest {
     private Boolean snackBar;
     @NotBlank
     private Boolean petFriendly;
-    @NotBlank
+
     private List<String> hotelImageUrls;
 }
