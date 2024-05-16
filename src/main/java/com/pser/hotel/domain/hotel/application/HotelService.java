@@ -13,7 +13,6 @@ import com.pser.hotel.domain.hotel.dto.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
 import com.pser.hotel.domain.hotel.dto.HotelUpdateRequest;
 import com.pser.hotel.domain.member.domain.User;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,19 +68,16 @@ public class HotelService {
         Facility facility = facilityDao.findByHotelId(hotelId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "not found facility"));
 
+        List<HotelImage> hotelImages = hotelUpdateRequest.getHotelImageUrls().stream()
+                .map(url -> hotelImageDao.findByImageUrl(url)
+                        .orElseGet(() -> hotelImageDao.save(createImage(hotel, url))))
+                .toList();
+
+        hotel.getImages().clear();
+        hotel.getImages().addAll(hotelImages);
+
         hotelMapper.updateHotelFromDto(hotelUpdateRequest, hotel);
         hotelMapper.updateFacilityFromDto(hotelUpdateRequest, facility);
-
-        List<HotelImage> previousImages = hotelImageDao.findByHotelId(hotelId);
-        List<String> newImages = hotelUpdateRequest.getHotelImageUrls();
-
-        List<String> addedImages = findAddedImages(previousImages, newImages);
-        List<HotelImage> removedImages = findRemovedImages(previousImages, newImages);
-
-        saveNewImages(addedImages, hotel);
-        deleteRemovedImages(removedImages);
-
-        hotelDao.save(hotel);
     }
 
     @Transactional
@@ -103,34 +99,5 @@ public class HotelService {
         return hotelImgs.stream()
                 .map(url -> createImage(hotel, url))
                 .collect(Collectors.toList());
-    }
-
-    private List<String> findAddedImages(List<HotelImage> previousImages, List<String> newImages) {
-        return newImages.stream()
-                .filter(newImage -> previousImages.stream()
-                        .noneMatch(previousImage -> previousImage.getImageUrl().equals(newImage)))
-                .toList();
-    }
-
-    private List<HotelImage> findRemovedImages(List<HotelImage> previousImages, List<String> newImages) {
-        return previousImages.stream()
-                .filter(previousImage -> newImages.stream()
-                        .noneMatch(newImage -> newImage.equals(previousImage.getImageUrl())))
-                .toList();
-    }
-
-    private void saveNewImages(List<String> addedImages, Hotel hotel) {
-        for (String addedImage : addedImages) {
-            HotelImage newImage = new HotelImage();
-            newImage.setImageUrl(addedImage);
-            newImage.setHotel(hotel);
-            hotelImageDao.save(newImage);
-        }
-    }
-
-    private void deleteRemovedImages(List<HotelImage> removedImages) {
-        for (HotelImage removedImage : removedImages) {
-            hotelImageDao.delete(removedImage);
-        }
     }
 }
