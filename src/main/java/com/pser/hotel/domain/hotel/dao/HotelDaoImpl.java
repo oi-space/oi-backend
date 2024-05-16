@@ -88,14 +88,14 @@ public class HotelDaoImpl implements HotelDaoCustom {
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        for (HotelResponse hotelResponseExcludeImages : content) {
+        content.forEach(hotelResponse -> {
             List<String> images = queryFactory
                     .select(QHotelImage.hotelImage.imageUrl)
                     .from(QHotelImage.hotelImage)
-                    .where(QHotelImage.hotelImage.hotel.id.eq(hotelResponseExcludeImages.getId()))
+                    .where(QHotelImage.hotelImage.hotel.id.eq(hotelResponse.getId()))
                     .fetch();
-            hotelResponseExcludeImages.setHotelImageUrls(images);
-        }
+            hotelResponse.setHotelImageUrls(images);
+        });
 
         boolean hasNext = false;
         if (content.size() > pageable.getPageSize()) {
