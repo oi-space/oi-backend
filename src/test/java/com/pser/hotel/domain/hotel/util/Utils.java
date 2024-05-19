@@ -40,7 +40,7 @@ public class Utils {
                 .inAnnex(rnd.nextBoolean()).kitchen(rnd.nextBoolean())
                 .bathtub(rnd.nextBoolean()).heatingSystem(rnd.nextBoolean())
                 .coffeeMachine(rnd.nextBoolean()).refrigerator(rnd.nextBoolean()).terrace(rnd.nextBoolean())
-                .internet(rnd.nextBoolean())
+                .internet(rnd.nextBoolean()).washer(rnd.nextBoolean())
                 .room(room)
                 .build();
     }
@@ -102,7 +102,7 @@ public class Utils {
 
     public static List<Hotel> createHotels(User user, int count) {
         List<Hotel> list = new ArrayList<>();
-        for(int i=0; i < count; i++){
+        for (int i = 0; i < count; i++) {
             Hotel hotel = createHotel(user);
             Facility facility = createFacility(hotel);
             list.add(hotel);
@@ -110,13 +110,13 @@ public class Utils {
         return list;
     }
 
-    public static Facility createFacility(Hotel hotel){
+    public static Facility createFacility(Hotel hotel) {
         return Facility.builder()
-            .hotel(hotel)
-            .parkingLot(rnd.nextBoolean())
-            .wifi(rnd.nextBoolean())
-            .barbecue(rnd.nextBoolean())
-            .build();
+                .hotel(hotel)
+                .parkingLot(rnd.nextBoolean())
+                .wifi(rnd.nextBoolean())
+                .barbecue(rnd.nextBoolean())
+                .build();
     }
 
     public static Reservation createReservation(User user, Room room) {
