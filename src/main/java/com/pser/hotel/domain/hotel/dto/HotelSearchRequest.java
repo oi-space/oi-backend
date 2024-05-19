@@ -56,10 +56,13 @@ public class HotelSearchRequest extends SearchQuery {
 
     @Builder
     public HotelSearchRequest(String keyword, LocalDateTime createdAfter, LocalDateTime createdBefore,
-        LocalDateTime updatedAfter, LocalDateTime updatedBefore, String name, HotelCategoryEnum category, String province,
-        String city, String district, String detailedAddress, Boolean parkingLot, Boolean wifi, Boolean barbecue, Boolean sauna, Boolean swimmingPool,
-        Boolean restaurant, Boolean roofTop, Boolean fitness, Boolean dryer, Boolean breakfast, Boolean smokingArea,
-        Boolean allTimeDesk, Boolean luggageStorage, Boolean snackBar, Boolean petFriendly){
+                              LocalDateTime updatedAfter, LocalDateTime updatedBefore, String name,
+                              HotelCategoryEnum category, String province,
+                              String city, String district, String detailedAddress, Boolean parkingLot, Boolean wifi,
+                              Boolean barbecue, Boolean sauna, Boolean swimmingPool,
+                              Boolean restaurant, Boolean roofTop, Boolean fitness, Boolean dryer, Boolean breakfast,
+                              Boolean smokingArea,
+                              Boolean allTimeDesk, Boolean luggageStorage, Boolean snackBar, Boolean petFriendly) {
         super(keyword, createdAfter, createdBefore, updatedAfter, updatedBefore);
         this.name = name;
         this.category = category;

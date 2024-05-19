@@ -2,6 +2,8 @@ package com.pser.hotel.domain.hotel.dto;
 
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.querydsl.core.annotations.QueryProjection;
+import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class HotelResponse {
     private Long id;
 
@@ -72,14 +75,19 @@ public class HotelResponse {
 
     private Boolean petFriendly;
 
+    private List<String> hotelImageUrls;
 
     @QueryProjection
     public HotelResponse(Long id, Long userId, String name, HotelCategoryEnum category, String description,
-        String notice, String province, String city, String district, String detailedAddress, Double latitude,
-        Double longtitude, String mainImage, String businessNumber, String certUrl, String visitGuidance,
-        Boolean parkingLot, Boolean wifi, Boolean barbecue, Boolean sauna, Boolean swimmingPool, Boolean restaurant,
-        Boolean roofTop, Boolean fitness, Boolean dryer, Boolean breakfast, Boolean smokingArea, Boolean allTimeDesk,
-        Boolean luggageStorage, Boolean snackBar, Boolean petFriendly) {
+                         String notice, String province, String city, String district, String detailedAddress,
+                         Double latitude,
+                         Double longtitude, String mainImage, String businessNumber, String certUrl,
+                         String visitGuidance,
+                         Boolean parkingLot, Boolean wifi, Boolean barbecue, Boolean sauna, Boolean swimmingPool,
+                         Boolean restaurant,
+                         Boolean roofTop, Boolean fitness, Boolean dryer, Boolean breakfast, Boolean smokingArea,
+                         Boolean allTimeDesk,
+                         Boolean luggageStorage, Boolean snackBar, Boolean petFriendly) {
         this.id = id;
         this.userId = userId;
         this.name = name;
