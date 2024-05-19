@@ -32,7 +32,7 @@ class FacilityTest {
     User user;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         em = testEntityManager.getEntityManager();
         user = createUser();
         hotel = createHotel();
@@ -42,15 +42,16 @@ class FacilityTest {
     }
 
     @AfterEach
-    public void clear(){
+    public void clear() {
     }
 
     @Test
     @DisplayName("Facility 생성 테스트")
-    public void save(){
+    public void save() {
         Assertions.assertThat(em.contains(facility)).isTrue();
     }
-    private Profile createProfile(User user){
+
+    private Profile createProfile(User user) {
         return Profile.builder()
                 .user(user)
                 .username("test_username")
@@ -60,7 +61,7 @@ class FacilityTest {
                 .build();
     }
 
-    private Facility createFacility(){
+    private Facility createFacility() {
         return facility = Facility.builder()
                 .parkingLot(true)
                 .barbecue(true)
@@ -80,8 +81,9 @@ class FacilityTest {
                 .hotel(hotel)
                 .build();
     }
-    private Hotel createHotel(){
-        Hotel hotel =Hotel.builder()
+
+    private Hotel createHotel() {
+        Hotel hotel = Hotel.builder()
                 .name("업체명")
                 .category(HotelCategoryEnum.HOTEL)
                 .description("설명")
@@ -100,7 +102,8 @@ class FacilityTest {
                 .build();
         return hotel;
     }
-    private User createUser(){
+
+    private User createUser() {
         return User.builder().email("test_email").password("123").build();
     }
 

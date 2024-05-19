@@ -5,6 +5,7 @@ import com.pser.hotel.domain.hotel.domain.Amenity;
 import com.pser.hotel.domain.hotel.domain.Facility;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
+import com.pser.hotel.domain.hotel.domain.HotelImage;
 import com.pser.hotel.domain.hotel.domain.Reservation;
 import com.pser.hotel.domain.hotel.domain.ReservationEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
@@ -116,7 +117,28 @@ public class Utils {
             .parkingLot(rnd.nextBoolean())
             .wifi(rnd.nextBoolean())
             .barbecue(rnd.nextBoolean())
+            .sauna(rnd.nextBoolean())
+            .swimmingPool(rnd.nextBoolean())
+            .restaurant(rnd.nextBoolean())
+            .roofTop(rnd.nextBoolean())
+            .fitness(rnd.nextBoolean())
+            .dryer(rnd.nextBoolean())
+            .breakfast(rnd.nextBoolean())
+            .smokingArea(rnd.nextBoolean())
+            .allTimeDesk(rnd.nextBoolean())
+            .luggageStorage(rnd.nextBoolean())
+            .snackBar(rnd.nextBoolean())
+            .petFriendly(rnd.nextBoolean())
             .build();
+    }
+
+    public static List<String> createHotelImages(){
+        ArrayList<String> arrayList = new ArrayList<>();
+        for(int i=1; i <= 3; i++) {
+            String uuid = UUID.randomUUID().toString().substring(1, 10);
+            arrayList.add(String.format("image_%s", uuid));
+        }
+        return arrayList;
     }
 
     public static Reservation createReservation(User user, Room room) {
