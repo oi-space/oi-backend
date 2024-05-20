@@ -16,7 +16,9 @@ import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.dto.RoomRequest;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,6 +50,7 @@ public class RoomPreAuthorizeTest {
     Room room;
     RoomRequest roomRequest;
     Long userId = 1L;
+    Random rnd = new Random();
 
     @BeforeEach
     public void setUp() {
@@ -176,14 +179,16 @@ public class RoomPreAuthorizeTest {
                 1L,
                 "객실이름", "설명", "주의사항", 1000, LocalTime.of(15, 00), LocalTime.of(11, 00),
                 1, 1, 1,
-                true, true, true, true,
-                true, true, true, true,
-                true, true, true, true, true, true
+                rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(),
+                rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(),
+                rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(),
+                rnd.nextBoolean(), List.of("test.jpg")
         );
     }
 
     public String getRoomByJson() {
         RoomRequest dto = createRoomRequestDto();
+
         return String.format(
                 "{\"hotelId\" : \"%d\", \"name\" : \"%s\", \"description\" : \"%s\","
                         + " \"precaution\" : \"%s\", \"price\" : \"%d\", \"checkIn\" : \"%s\",\"checkOut\" : \"%s\",\"standardCapacity\" : \"%d\","
@@ -192,13 +197,14 @@ public class RoomPreAuthorizeTest {
                         + " \"washer\" : \"%s\", \"terrace\" : \"%s\", \"coffeeMachine\" : \"%s\","
                         + " \"internet\" : \"%s\", \"kitchen\" : \"%s\", \"bathtub\" : \"%s\","
                         + " \"iron\" : \"%s\", \"pool\" : \"%s\", \"pet\" : \"%s\","
-                        + " \"inAnnex\" : \"%s\"}"
+                        + " \"inAnnex\" : \"%s\", \"imgUrls\" : [\"%s\"]}"
                 , dto.getHotelId(), dto.getName(), dto.getDescription(), dto.getPrecaution(),
                 dto.getPrice(), dto.getCheckIn(), dto.getCheckOut(), dto.getStandardCapacity(), dto.getMaxCapacity(),
                 dto.getTotalRooms(),
                 dto.getHeatingSystem(), dto.getTv(), dto.getRefrigerator(), dto.getAirConditioner(),
                 dto.getWasher(), dto.getTerrace(),
                 dto.getCoffeeMachine(), dto.getInternet(), dto.getKitchen(), dto.getBathtub(), dto.getIron(),
-                dto.getPool(), dto.getPet(), dto.getInAnnex());
+                dto.getPool(), dto.getPet(), dto.getInAnnex(),
+                "http://image.com");
     }
 }
