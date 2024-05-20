@@ -9,6 +9,7 @@ import com.pser.hotel.domain.hotel.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,15 +22,15 @@ public class ReservationApi {
     public ResponseEntity<ReservationFindResponseDto> findAll(@RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam("userEmail") String userEmail){
         return ResponseEntity.ok(reservationService.findAllByUserEmail(page, userEmail));
     }
-    @PostMapping("/save")
-    public ResponseEntity<ReservationSaveRequestDto> save(@RequestBody ReservationSaveRequestDto reservationSaveRequestDto){
+    @PostMapping
+    public ResponseEntity<ReservationSaveRequestDto> save(@Validated @RequestBody ReservationSaveRequestDto reservationSaveRequestDto){
         return new ResponseEntity(reservationService.save(reservationSaveRequestDto), HttpStatus.CREATED);
     }
-    @PutMapping("/update")
-    public ResponseEntity<ReservationUpdateResponseDto> update(@RequestBody ReservationUpdateRequestDto reservationUpdateRequestDto){
+    @PutMapping
+    public ResponseEntity<ReservationUpdateResponseDto> update(@Validated @RequestBody ReservationUpdateRequestDto reservationUpdateRequestDto){
         return ResponseEntity.ok(reservationService.update(reservationUpdateRequestDto));
     }
-    @DeleteMapping("/delete")
+    @DeleteMapping
     public ResponseEntity<ReservationDeleteResponseDto> delete(@RequestParam(name = "roomName") String roomName){
         return new ResponseEntity(reservationService.delete(roomName), HttpStatus.OK);
     }
