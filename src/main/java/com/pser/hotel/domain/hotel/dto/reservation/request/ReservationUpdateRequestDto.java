@@ -1,6 +1,9 @@
 package com.pser.hotel.domain.hotel.dto.reservation.request;
 
 import com.pser.hotel.domain.hotel.domain.ReservationEnum;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,9 +16,14 @@ import java.time.LocalDate;
 @Builder
 public class ReservationUpdateRequestDto {
     private String roomName;
+
     private LocalDate startAt;
+
     private LocalDate endAt;
+
     private Integer adultCapacity;
+
     private Integer childCapacity;
+
     private ReservationEnum status;
 }
