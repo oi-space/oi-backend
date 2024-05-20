@@ -49,13 +49,12 @@ public class Reservation extends BaseEntity {
     private int childCapacity;
     @Column(nullable = false)
     private ReservationEnum status;
-    @Column(nullable = false)
-    private String tid;
+
 
     @Builder
     public Reservation(User user, Room room, int price, LocalDate startAt, LocalDate endAt,
                        int reservationCapacity,
-                       int adultCapacity, int childCapacity, ReservationEnum status, String tid) {
+                       int adultCapacity, int childCapacity, ReservationEnum status) {
         setUser(user);
         setRoom(room);
         this.price = price;
@@ -65,7 +64,7 @@ public class Reservation extends BaseEntity {
         this.adultCapacity = adultCapacity;
         this.childCapacity = childCapacity;
         this.status = status;
-        this.tid = tid;
+
     }
 
     @PrePersist
@@ -75,11 +74,4 @@ public class Reservation extends BaseEntity {
         }
     }
 
-    public void updateInformation(ReservationUpdateRequestDto reservationUpdateRequestDto){
-        this.startAt = reservationUpdateRequestDto.getStartAt();
-        this.endAt = reservationUpdateRequestDto.getEndAt();
-        this.adultCapacity = reservationUpdateRequestDto.getAdultCapacity();
-        this.childCapacity = reservationUpdateRequestDto.getChildCapacity();
-        this.status = reservationUpdateRequestDto.getStatus();
-    }
 }
