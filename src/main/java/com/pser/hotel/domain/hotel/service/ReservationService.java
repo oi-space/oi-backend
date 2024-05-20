@@ -9,6 +9,7 @@ import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationSaveReques
 import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationUpdateRequestDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.*;
 import com.pser.hotel.domain.member.domain.User;
+import com.pser.hotel.global.util.ReservationUpdateMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -34,7 +35,7 @@ public class ReservationService {
     // 페이징을 위한 페이지 사이즈 - 수정 하시면 됩니다.
     // 혹은 yml에 따로 지정한 뒤 나중에 @Value 이용하셔서 관리하셔도 됩니다.
     private final Integer pageSize = 10;
-
+    private final ReservationUpdateMapper reservationUpdateMapper;
     public ReservationFindResponseDto findAllByUserEmail(Integer page, String userEmail){
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<Reservation> result = reservationDao.findByUserEmail(pageable, userEmail);
@@ -104,8 +105,7 @@ public class ReservationService {
         Reservation reservation = reservationDao.findByRoomName(roomName)
                 .orElseThrow(() -> new IllegalArgumentException("reservation not found"));
 
-        reservation.updateInformation(reservationUpdateRequestDto);
-
+        reservationUpdateMapper.updateReservationInfoFromRequest(reservationUpdateRequestDto, reservation);
         Reservation save = reservationDao.save(reservation);
 
         // 차후에 user를 추가하고싶으시면 user, room dao에서 불러오시면 됩니다.
