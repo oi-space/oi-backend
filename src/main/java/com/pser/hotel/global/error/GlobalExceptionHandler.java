@@ -48,7 +48,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(ApiResponse.error(message));
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class, StatusUpdateException.class})
     ResponseEntity<ApiResponse<Void>> handleBadRequestException(RuntimeException exception) {
         logger.error("message", exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
