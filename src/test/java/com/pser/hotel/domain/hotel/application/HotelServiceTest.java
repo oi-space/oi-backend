@@ -12,7 +12,6 @@ import com.pser.hotel.domain.hotel.dao.UserDao;
 import com.pser.hotel.domain.hotel.domain.Facility;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
-import com.pser.hotel.domain.hotel.domain.HotelImage;
 import com.pser.hotel.domain.hotel.dto.HotelCreateRequest;
 import com.pser.hotel.domain.hotel.dto.HotelMapper;
 import com.pser.hotel.domain.hotel.dto.HotelResponse;
@@ -20,6 +19,7 @@ import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
 import com.pser.hotel.domain.hotel.dto.HotelUpdateRequest;
 import com.pser.hotel.domain.hotel.util.Utils;
 import com.pser.hotel.domain.member.domain.User;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
@@ -30,8 +30,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -80,9 +78,10 @@ public class HotelServiceTest {
         Pageable pageable = createPageable();
 
         List<Hotel> hotels = Utils.createHotels(user, 10);
-        Page<Hotel> page = new PageImpl<>(hotels, pageable, 10);
+        List<HotelResponse> list = createHotelResponseList(hotels);
+        Slice<HotelResponse> pageHotelData = new SliceImpl<>(list, pageable, true);
 
-        lenient().when(hotelDao.findAll(any(Pageable.class))).thenReturn(page);
+        lenient().when(hotelDao.findAllWithGradeAndPrice(any(Pageable.class))).thenReturn(pageHotelData);
 
         //when
         HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
@@ -99,8 +98,8 @@ public class HotelServiceTest {
         Pageable pageable = createPageable();
 
         List<Hotel> hotels = Utils.createHotels(user, 10);
-        Slice<HotelResponse> pageHotelData = new SliceImpl<>(hotels, pageable, true).map(
-                hotelMapper::changeToHotelResponse);
+        List<HotelResponse> list = createHotelResponseList(hotels);
+        Slice<HotelResponse> pageHotelData = new SliceImpl<>(list, pageable, true);
 
         lenient().when(hotelDao.search(hotelSearchRequest, pageable)).thenReturn(pageHotelData);
 
@@ -116,12 +115,15 @@ public class HotelServiceTest {
     @DisplayName("특정 숙소 조회 service 테스트")
     public void getHotelDataByIdServiceTest() {
         //given
-        Optional<Hotel> optionalHotel = Optional.ofNullable(hotel);
-        lenient().when(hotelDao.findById(any())).thenReturn(optionalHotel);
+        double average = Utils.createAverageRating();
+        int salePrice = Utils.createSalePrice();
+        int previousPirce = salePrice + 5000;
+        HotelResponse response =  createHotelResponse(hotel, average, salePrice, previousPirce);
+        lenient().when(hotelDao.findHotel(any())).thenReturn(response);
 
         //when
         HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
-        Optional<HotelResponse> hotelResponse = hotelService.getHotelDataById(1L);
+        HotelResponse hotelResponse = hotelService.getHotelDataById(1L);
 
         //then
         Assertions.assertThat(hotelResponse).isNotNull();
@@ -138,7 +140,6 @@ public class HotelServiceTest {
         lenient().when(facilityDao.save(any(Facility.class))).thenReturn(facility);
         lenient().when(hotelMapper.changeToHotel(hotelCreateRequest, user)).thenReturn(hotel);
         lenient().when(hotelMapper.changeToFacility(hotelCreateRequest, hotel)).thenReturn(facility);
-        System.out.println("크리에이트 리쿼스트 : " + hotelCreateRequest);
         //when
         HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
         Long hotelId = hotelService.saveHotelData(hotelCreateRequest, 1L);
@@ -269,5 +270,56 @@ public class HotelServiceTest {
                 .petFriendly(hotel.getFacility().getPetFriendly())
                 .hotelImageUrls(hotelImages)
                 .build();
+    }
+
+    private HotelResponse createHotelResponse(Hotel hotel, double average, int salePrice, int previousPrice){
+        return HotelResponse.builder()
+                .id(hotel.getId())
+                .userId(hotel.getUser().getId())
+                .name(hotel.getName())
+                .category(hotel.getCategory())
+                .description(hotel.getDescription())
+                .notice(hotel.getNotice())
+                .province(hotel.getProvince())
+                .city(hotel.getCity())
+                .district(hotel.getDistrict())
+                .detailedAddress(hotel.getDetailedAddress())
+                .latitude(hotel.getLatitude())
+                .longtitude(hotel.getLongtitude())
+                .mainImage(hotel.getMainImage())
+                .businessNumber(hotel.getBusinessNumber())
+                .certUrl(hotel.getCertUrl())
+                .visitGuidance(hotel.getVisitGuidance())
+                .parkingLot(hotel.getFacility().getParkingLot())
+                .wifi(hotel.getFacility().getWifi())
+                .barbecue(hotel.getFacility().getBarbecue())
+                .sauna(hotel.getFacility().getSauna())
+                .swimmingPool(hotel.getFacility().getSwimmingPool())
+                .restaurant(hotel.getFacility().getRestaurant())
+                .roofTop(hotel.getFacility().getRoofTop())
+                .fitness(hotel.getFacility().getFitness())
+                .dryer(hotel.getFacility().getDryer())
+                .breakfast(hotel.getFacility().getBreakfast())
+                .smokingArea(hotel.getFacility().getSmokingArea())
+                .allTimeDesk(hotel.getFacility().getAllTimeDesk())
+                .luggageStorage(hotel.getFacility().getLuggageStorage())
+                .snackBar(hotel.getFacility().getSnackBar())
+                .petFriendly(hotel.getFacility().getPetFriendly())
+                .gradeAverage(average)
+                .salePrice(salePrice)
+                .previousPrice(previousPrice)
+                .build();
+    }
+
+    private List<HotelResponse> createHotelResponseList(List<Hotel> hotels) {
+        List<HotelResponse> list = new ArrayList<>();
+        for(Hotel ele : hotels) {
+            double average = Utils.createAverageRating();
+            int salePrice = Utils.createSalePrice();
+            int previousPirce = salePrice + 5000;
+            HotelResponse hotelResponse = createHotelResponse(ele, average, salePrice, previousPirce);
+            list.add(hotelResponse);
+        }
+        return list;
     }
 }
