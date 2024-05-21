@@ -1,5 +1,6 @@
 package com.pser.hotel.domain.hotel.domain;
 
+import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationUpdateRequestDto;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.domain.model.BaseEntity;
 import jakarta.persistence.CascadeType;
@@ -48,13 +49,12 @@ public class Reservation extends BaseEntity {
     private int childCapacity;
     @Column(nullable = false)
     private ReservationEnum status;
-    @Column(nullable = false)
-    private String tid;
+
 
     @Builder
     public Reservation(User user, Room room, int price, LocalDate startAt, LocalDate endAt,
                        int reservationCapacity,
-                       int adultCapacity, int childCapacity, ReservationEnum status, String tid) {
+                       int adultCapacity, int childCapacity, ReservationEnum status) {
         setUser(user);
         setRoom(room);
         this.price = price;
@@ -64,7 +64,7 @@ public class Reservation extends BaseEntity {
         this.adultCapacity = adultCapacity;
         this.childCapacity = childCapacity;
         this.status = status;
-        this.tid = tid;
+
     }
 
     @PrePersist
@@ -73,4 +73,5 @@ public class Reservation extends BaseEntity {
             throw new IllegalArgumentException("기준 인원이 최대 인원보다 클 수 없습니다");
         }
     }
+
 }

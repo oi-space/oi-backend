@@ -150,7 +150,6 @@ public class Utils {
                 .adultCapacity(3)
                 .childCapacity(2)
                 .status(ReservationEnum.BEFORE_ENTER_DEFAULT)
-                .tid("test_tid")
                 .user(user)
                 .room(room)
                 .build();
@@ -166,7 +165,6 @@ public class Utils {
                 .adultCapacity(adultCapacity)
                 .childCapacity(childCapacity)
                 .status(ReservationEnum.BEFORE_ENTER_DEFAULT)
-                .tid("test_tid")
                 .user(user)
                 .room(room)
                 .build();
