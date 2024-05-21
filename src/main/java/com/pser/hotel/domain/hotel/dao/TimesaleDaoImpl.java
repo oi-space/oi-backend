@@ -6,7 +6,6 @@ import com.pser.hotel.domain.hotel.domain.QRoom;
 import com.pser.hotel.domain.hotel.domain.QTimeSale;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.domain.TimeSale;
-import com.pser.hotel.domain.hotel.dto.TimesaleCreateRequest;
 import com.pser.hotel.domain.hotel.dto.TimesaleHotelResponse;
 import com.pser.hotel.domain.hotel.dto.TimesaleMapper;
 import com.pser.hotel.domain.hotel.dto.TimesaleRoomResponse;
@@ -30,7 +29,6 @@ import org.springframework.stereotype.Repository;
 public class TimesaleDaoImpl implements TimesaleCustom {
     private final JPAQueryFactory queryFactory;
     private final TimesaleMapper timesaleMapper;
-    private final TimesaleDao timesaleDao;
 
     @Override
     public Optional<Hotel> findHotelByRoomId(Long roomId) {
@@ -111,22 +109,5 @@ public class TimesaleDaoImpl implements TimesaleCustom {
         boolean hasNext = end < filteredHotelResponses.size();
 
         return new SliceImpl<>(subList, pageable, hasNext);
-    }
-
-    @Override
-    public boolean checkTimesaleTimeIsValid(TimesaleCreateRequest dto) {
-        List<TimeSale> timeSaleList = timesaleDao.findByRoomId(dto.getRoomId());
-        if (timeSaleList.isEmpty()) { // 같은 객실 타임특가가 없다면 체킹할 필요 X
-            return true;
-        }
-        for (TimeSale timeSale : timeSaleList) {
-            if (timeSale.getStartAt().isAfter(dto.getEndAt()) || timeSale.getEndAt().isBefore(dto.getStartAt())) {
-                continue;
-            } else {
-                // 겹치는 시간이 존재하면 return false;
-                return false;
-            }
-        }
-        return true;
     }
 }
