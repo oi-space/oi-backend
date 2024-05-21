@@ -77,6 +77,12 @@ public class HotelResponse {
 
     private List<String> hotelImageUrls;
 
+    private Double gradeAverage;
+
+    private int salePrice;
+
+    private int previousPrice;
+
     @QueryProjection
     public HotelResponse(Long id, Long userId, String name, HotelCategoryEnum category, String description,
                          String notice, String province, String city, String district, String detailedAddress,
