@@ -16,12 +16,15 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = ComponentModel.SPRING)
 public interface HotelMapper {
-    default HotelResponse changeToHotelResponse(Hotel hotel) {
+    default HotelResponse changeToHotelResponse(Hotel hotel, double averageRating, int salePrice, int previousPrice) {
         HotelResponse hotelResponse = changeToHotelResponseExcludeImage(hotel);
         List<String> imageUrls = hotel.getImages().stream()
                 .map(HotelImage::getImageUrl)
                 .collect(Collectors.toList());
         hotelResponse.setHotelImageUrls(imageUrls);
+        hotelResponse.setGradeAverage(averageRating);
+        hotelResponse.setSalePrice(salePrice);
+        hotelResponse.setPreviousPrice(previousPrice);
         return hotelResponse;
     }
 
