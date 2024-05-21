@@ -5,6 +5,7 @@ import com.pser.hotel.domain.model.StatusHolderEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
@@ -55,13 +56,13 @@ public class Reservation extends StatusHolderEntity<ReservationStatusEnum> {
     private int childCapacity;
 
     @Column(nullable = false)
-    private ReservationStatusEnum status;
-
+    @Convert(converter = ReservationStatusEnumConverter.class)
+    private ReservationStatusEnum status = ReservationStatusEnum.CREATED;
 
     @Builder
     public Reservation(User user, Room room, int price, LocalDate startAt, LocalDate endAt,
                        int reservationCapacity,
-                       int adultCapacity, int childCapacity, ReservationStatusEnum status) {
+                       int adultCapacity, int childCapacity) {
         setUser(user);
         setRoom(room);
         this.price = price;
@@ -70,7 +71,6 @@ public class Reservation extends StatusHolderEntity<ReservationStatusEnum> {
         this.reservationCapacity = reservationCapacity;
         this.adultCapacity = adultCapacity;
         this.childCapacity = childCapacity;
-        this.status = status;
     }
 
     @PrePersist
