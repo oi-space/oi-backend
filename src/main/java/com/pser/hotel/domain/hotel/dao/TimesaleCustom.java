@@ -1,7 +1,6 @@
 package com.pser.hotel.domain.hotel.dao;
 
 import com.pser.hotel.domain.hotel.domain.Hotel;
-import com.pser.hotel.domain.hotel.dto.TimesaleCreateRequest;
 import com.pser.hotel.domain.hotel.dto.TimesaleHotelResponse;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +12,4 @@ public interface TimesaleCustom {
     Optional<Hotel> findHotelByTimesaleId(Long timesaleId);
 
     Slice<TimesaleHotelResponse> findNowTimesaleHotel(Pageable pageable);
-
-    boolean checkTimesaleTimeIsValid(TimesaleCreateRequest timesaleCreateRequest);
 }
