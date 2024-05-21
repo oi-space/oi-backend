@@ -131,6 +131,18 @@ public class Utils {
             .build();
     }
 
+    public static double createAverageRating() {
+        double min = 1.0;
+        double max = 5.0;
+        double randomValue = min + (max - min) * rnd.nextDouble();
+        return Math.round(randomValue * 100.0) / 100.0;
+    }
+
+    public static int createSalePrice() {
+        int max = 400000 / 1000;
+        return rnd.nextInt(max + 1) * 1000;
+    }
+
     public static List<String> createHotelImages(){
         ArrayList<String> arrayList = new ArrayList<>();
         for(int i=1; i <= 3; i++) {
