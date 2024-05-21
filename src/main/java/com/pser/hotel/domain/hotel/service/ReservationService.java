@@ -3,7 +3,7 @@ package com.pser.hotel.domain.hotel.service;
 import com.pser.hotel.domain.hotel.dao.ReservationDao;
 import com.pser.hotel.domain.hotel.dao.RoomDao;
 import com.pser.hotel.domain.hotel.domain.Reservation;
-import com.pser.hotel.domain.hotel.domain.ReservationEnum;
+import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationSaveRequestDto;
 import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationUpdateRequestDto;
@@ -91,7 +91,7 @@ public class ReservationService {
                     .reservationCapacity(reservationSaveRequestDto.getReservationCapacity())
                     // status는 입장 전이라 이렇게 설정했습니다.
                     // 차후에 수정하시면 됩니다.
-                    .status(ReservationEnum.BEFORE_ENTER_DEFAULT)
+                    .status(ReservationStatusEnum.BEFORE_CHECKIN)
                     .build();
             reservationDao.save(res);
             return new ReservationSaveResponseDto(res, reservationSaveRequestDto.getUserEmail(), roomName);

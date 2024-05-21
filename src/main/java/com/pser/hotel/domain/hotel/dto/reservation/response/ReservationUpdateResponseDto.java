@@ -1,6 +1,6 @@
 package com.pser.hotel.domain.hotel.dto.reservation.response;
 
-import com.pser.hotel.domain.hotel.domain.ReservationEnum;
+import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +22,6 @@ public class ReservationUpdateResponseDto {
     // 어린이 가용인원
     private Integer childCapacity;
     // 예약 상태
-    private ReservationEnum status;
+    private ReservationStatusEnum status;
 
 }

@@ -5,9 +5,8 @@ import com.pser.hotel.domain.hotel.domain.Amenity;
 import com.pser.hotel.domain.hotel.domain.Facility;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
-import com.pser.hotel.domain.hotel.domain.HotelImage;
 import com.pser.hotel.domain.hotel.domain.Reservation;
-import com.pser.hotel.domain.hotel.domain.ReservationEnum;
+import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.domain.RoomImage;
 import com.pser.hotel.domain.member.domain.User;
@@ -149,7 +148,7 @@ public class Utils {
                 .reservationCapacity(5)
                 .adultCapacity(3)
                 .childCapacity(2)
-                .status(ReservationEnum.BEFORE_ENTER_DEFAULT)
+                .status(ReservationStatusEnum.BEFORE_CHECKIN)
                 .user(user)
                 .room(room)
                 .build();
@@ -164,7 +163,7 @@ public class Utils {
                 .reservationCapacity(reservationCapacity)
                 .adultCapacity(adultCapacity)
                 .childCapacity(childCapacity)
-                .status(ReservationEnum.BEFORE_ENTER_DEFAULT)
+                .status(ReservationStatusEnum.BEFORE_CHECKIN)
                 .user(user)
                 .room(room)
                 .build();

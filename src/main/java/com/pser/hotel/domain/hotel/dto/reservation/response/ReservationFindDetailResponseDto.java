@@ -1,7 +1,7 @@
 package com.pser.hotel.domain.hotel.dto.reservation.response;
 
 import com.pser.hotel.domain.hotel.domain.Reservation;
-import com.pser.hotel.domain.hotel.domain.ReservationEnum;
+import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +34,7 @@ public class ReservationFindDetailResponseDto {
     // 어린이 가용인원
     private Integer childCapacity;
     // 예약 상태
-    private ReservationEnum status;
+    private ReservationStatusEnum status;
 
     public ReservationFindDetailResponseDto(Reservation reservation, String userEmail, String roomName){
             this.id = reservation.getId();

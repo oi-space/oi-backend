@@ -1,8 +1,7 @@
 package com.pser.hotel.domain.hotel.domain;
 
-import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationUpdateRequestDto;
 import com.pser.hotel.domain.member.domain.User;
-import com.pser.hotel.domain.model.BaseEntity;
+import com.pser.hotel.domain.model.StatusHolderEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
@@ -24,37 +23,45 @@ import lombok.ToString;
 @Setter
 @Entity
 @NoArgsConstructor
-@ToString(of = {"price", "startAt", "endAt", "reservationCapacity", "adultCapacity", "childCapacity", "status", "tid"})
-public class Reservation extends BaseEntity {
+@ToString(of = {"price", "startAt", "endAt", "reservationCapacity", "adultCapacity", "childCapacity", "status"})
+public class Reservation extends StatusHolderEntity<ReservationStatusEnum> {
     @ManyToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
+
     @ManyToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Room room;
+
     @Column(nullable = false)
     private int price;
+
     @Column(nullable = false)
     private LocalDate startAt;
+
     @Column(nullable = false)
     private LocalDate endAt;
+
     @Column(nullable = false)
     @Min(0)
     private int reservationCapacity;
+
     @Column(nullable = false)
     @Min(0)
     private int adultCapacity;
+
     @Column(nullable = false)
     @Min(0)
     private int childCapacity;
+
     @Column(nullable = false)
-    private ReservationEnum status;
+    private ReservationStatusEnum status;
 
 
     @Builder
     public Reservation(User user, Room room, int price, LocalDate startAt, LocalDate endAt,
                        int reservationCapacity,
-                       int adultCapacity, int childCapacity, ReservationEnum status) {
+                       int adultCapacity, int childCapacity, ReservationStatusEnum status) {
         setUser(user);
         setRoom(room);
         this.price = price;
@@ -64,7 +71,6 @@ public class Reservation extends BaseEntity {
         this.adultCapacity = adultCapacity;
         this.childCapacity = childCapacity;
         this.status = status;
-
     }
 
     @PrePersist
