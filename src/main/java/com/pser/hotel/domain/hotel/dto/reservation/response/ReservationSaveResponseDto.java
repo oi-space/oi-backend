@@ -1,7 +1,7 @@
 package com.pser.hotel.domain.hotel.dto.reservation.response;
 
 import com.pser.hotel.domain.hotel.domain.Reservation;
-import com.pser.hotel.domain.hotel.domain.ReservationEnum;
+import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class ReservationSaveResponseDto {
     private Integer reservationCapacity;
     private Integer adultCapacity;
     private Integer childCapacity;
-    private ReservationEnum status;
+    private ReservationStatusEnum status;
 
 
     public ReservationSaveResponseDto(Reservation reservation, String userEmail, String roomName){
