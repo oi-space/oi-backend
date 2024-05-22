@@ -5,7 +5,7 @@ import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationUpdateRequ
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationDeleteResponseDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationFindResponseDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationUpdateResponseDto;
-import com.pser.hotel.domain.hotel.service.ReservationService;
+import com.pser.hotel.domain.hotel.application.ReservationService;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
