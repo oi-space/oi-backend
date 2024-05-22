@@ -1,4 +1,4 @@
-package com.pser.hotel.domain.hotel.service;
+package com.pser.hotel.domain.hotel.application;
 
 import com.pser.hotel.domain.hotel.dao.ReservationDao;
 import com.pser.hotel.domain.hotel.dao.RoomDao;
