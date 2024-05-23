@@ -10,8 +10,10 @@ import com.pser.hotel.domain.hotel.domain.Reservation;
 import com.pser.hotel.domain.hotel.domain.ReservationEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.domain.RoomImage;
+import com.pser.hotel.domain.hotel.domain.TimeSale;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -181,6 +183,15 @@ public class Utils {
                 .tid("test_tid")
                 .user(user)
                 .room(room)
+                .build();
+    }
+
+    public static TimeSale createTimesale(Room room) {
+        return TimeSale.builder()
+                .room(room)
+                .price(99000)
+                .startAt(LocalDateTime.of(2024, 5, 22, 12, 30))
+                .endAt(LocalDateTime.of(2024, 5, 22, 18, 30))
                 .build();
     }
 }
