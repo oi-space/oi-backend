@@ -1,6 +1,7 @@
 package com.pser.hotel.domain.hotel.api;
 
 import com.pser.hotel.domain.hotel.application.ReservationService;
+import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
 import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationCreateRequest;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationFindResponseDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationResponse;
@@ -45,14 +46,15 @@ public class ReservationApi {
         return ResponseEntity.created(URI.create("/reservations/%s".formatted(id))).build();
     }
 
-    @PutMapping
-    public ResponseEntity<ReservationUpdateResponseDto> update(
-            @Validated @RequestBody ReservationUpdateRequestDto reservationUpdateRequestDto) {
-        return ResponseEntity.ok(reservationService.update(reservationUpdateRequestDto));
+    @PostMapping("/{reservationId}/refund")
+    public ResponseEntity<Void> refund(@PathVariable long reservationId) {
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping
-    public ResponseEntity<ReservationDeleteResponseDto> delete(@RequestParam(name = "roomName") String roomName) {
-        return new ResponseEntity(reservationService.delete(roomName), HttpStatus.OK);
+    @PostMapping("/{reservationId}/check-payment")
+    public ResponseEntity<ApiResponse<ReservationStatusEnum>> checkPayment(@PathVariable long reservationId,
+                                                                           @RequestBody String impUid) {
+        ReservationStatusEnum response = reservationService.checkPayment(reservationId, impUid);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 }

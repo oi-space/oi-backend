@@ -9,14 +9,15 @@ import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.dto.ReservationDto;
 import com.pser.hotel.domain.hotel.dto.ReservationMapper;
 import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationCreateRequest;
-import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationUpdateRequestDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationDeleteResponseDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationFindDetailResponseDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationFindResponseDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationResponse;
-import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationUpdateResponseDto;
 import com.pser.hotel.domain.hotel.kafka.producer.ReservationStatusProducer;
 import com.pser.hotel.domain.member.domain.User;
+import com.pser.hotel.global.common.PaymentDto;
+import com.pser.hotel.global.common.RefundDto;
+import com.pser.hotel.global.error.ValidationFailedException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,8 +30,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-// 모든 에러는 IllegalArgException으로 작성 하였습니다.
-// 차후에 exception handler 적용하시면 됩니다.
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -89,25 +88,94 @@ public class ReservationService {
         return reservation.getId();
     }
 
-    public ReservationUpdateResponseDto update(ReservationUpdateRequestDto reservationUpdateRequestDto) {
-        String roomName = reservationUpdateRequestDto.getRoomName();
+    @Transactional
+    public long refund(long reservationId) {
+        Reservation reservation = reservationDao.findById(reservationId)
+                .orElseThrow();
+        RefundDto.builder().build();
+        return 1;
+    }
 
-        Reservation reservation = reservationDao.findByRoomName(roomName)
-                .orElseThrow(() -> new IllegalArgumentException("reservation not found"));
+    @Transactional
+    public ReservationStatusEnum checkPayment(long reservationId, String impUid) {
+        Reservation reservation = reservationDao.findById(reservationId)
+                .orElseThrow();
+        ReservationStatusEnum status = reservation.getStatus();
 
-        reservationMapper.updateReservationInfoFromRequest(reservationUpdateRequestDto, reservation);
-        Reservation save = reservationDao.save(reservation);
+        if (status.equals(ReservationStatusEnum.CREATED)) {
+            PaymentDto paymentDto = PaymentDto.builder()
+                    .impUid(impUid)
+                    .amount(reservation.getPrice())
+                    .merchantUid(reservation.getMerchantUid())
+                    .build();
+            updateToPaymentValidationRequired(paymentDto);
+        }
+        return status;
+    }
 
-        // 차후에 user를 추가하고싶으시면 user, room dao에서 불러오시면 됩니다.
-        // 여기에 getUser 쓰면 쿼리가 더 많이 날라가서 일단 삽입하지 않았습니다.
-        // 서버에 부담이 안될것 같다고 사료되시면 삽입하시면 됩니다.
-        return ReservationUpdateResponseDto.builder()
-                .roomName(roomName)
-                .childCapacity(save.getChildCount())
-                .adultCapacity(save.getAdultCount())
-                .startAt(save.getStartAt())
-                .endAt(save.getEndAt())
-                .build();
+    @Transactional
+    public void updateToPaymentValidationRequired(PaymentDto paymentDto) {
+        Reservation reservation = reservationDao.findByMerchantUid(paymentDto.getMerchantUid())
+                .orElseThrow();
+        ReservationStatusEnum status = reservation.getStatus();
+        ReservationStatusEnum targetStatus = ReservationStatusEnum.PAYMENT_VALIDATION_REQUIRED;
+
+        int paidAmount = paymentDto.getAmount();
+
+        if (reservation.getPrice() != paidAmount) {
+            throw new ValidationFailedException("결제 금액 불일치");
+        }
+
+        if (status.equals(ReservationStatusEnum.CREATED)) {
+            reservation.updateImpUid(paymentDto.getImpUid());
+            reservation.updateStatus(targetStatus);
+            reservationStatusProducer.producePaymentValidationRequired(paymentDto);
+        }
+    }
+
+    @Transactional
+    public void updateToBeforeCheckin(PaymentDto paymentDto) {
+        Reservation reservation = reservationDao.findByMerchantUid(paymentDto.getMerchantUid())
+                .orElseThrow();
+        ReservationStatusEnum status = reservation.getStatus();
+        ReservationStatusEnum targetStatus = ReservationStatusEnum.BEFORE_CHECKIN;
+        int paidAmount = paymentDto.getAmount();
+
+        if (reservation.getPrice() != paidAmount) {
+            throw new ValidationFailedException("결제 금액 불일치");
+        }
+
+        if (status.equals(ReservationStatusEnum.PAYMENT_VALIDATION_REQUIRED)) {
+            reservation.updateStatus(targetStatus);
+        }
+    }
+
+    @Transactional
+    public void rollbackToCreated(String merchantUid) {
+        Reservation reservation = reservationDao.findByMerchantUid(merchantUid)
+                .orElseThrow();
+        ReservationStatusEnum status = reservation.getStatus();
+        ReservationStatusEnum targetStatus = ReservationStatusEnum.CREATED;
+
+        if (!status.equals(targetStatus)) {
+            reservation.updateStatus(targetStatus);
+        }
+    }
+
+    @Transactional
+    public void updateToRefundRequired(PaymentDto paymentDto) {
+        Reservation reservation = reservationDao.findByMerchantUid(paymentDto.getMerchantUid())
+                .orElseThrow();
+        ReservationStatusEnum targetStatus = ReservationStatusEnum.REFUND_REQUIRED;
+
+        if (!targetStatus.equals(reservation.getStatus())) {
+            reservation.updateStatus(targetStatus);
+            RefundDto refundDto = RefundDto.builder()
+                    .impUid(paymentDto.getImpUid())
+                    .merchantUid(paymentDto.getMerchantUid())
+                    .build();
+            reservationStatusProducer.produceRefundRequired(refundDto);
+        }
     }
 
     @Transactional
