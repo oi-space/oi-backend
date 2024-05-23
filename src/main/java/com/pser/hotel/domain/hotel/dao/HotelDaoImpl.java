@@ -72,7 +72,8 @@ public class HotelDaoImpl implements HotelDaoCustom {
                         getLuggageStoragePredicate(hotelSearchRequest.getLuggageStorage()),
                         getSnackBarPredicate(hotelSearchRequest.getSnackBar()),
                         getPetFriendlyPredicate(hotelSearchRequest.getPetFriendly()),
-                        getReservationBetweenPredicate(hotelSearchRequest.getSearchStartAt(), // 숙박 시작일 ~ 숙박 종료일 동안 예약이 가능한 객실을 보유한 호텔만 리스트에 담는다
+                        getReservationBetweenPredicate(hotelSearchRequest.getSearchStartAt(),
+                                // 숙박 시작일 ~ 숙박 종료일 동안 예약이 가능한 객실을 보유한 호텔만 리스트에 담는다
                                 hotelSearchRequest.getSearchEndAt()),
                         containsKeywordPredicate(hotelSearchRequest.getKeyword()),
                         getPeoplePredicate(hotelSearchRequest.getPeople()) // 인원보다 많은 인원을 수용할 수 있는 객실을 보유한 호텔만 리스트에 담는다

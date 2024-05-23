@@ -14,17 +14,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class HotelSummaryResponse {
     private Long id;
+
     private String name;
+
     private HotelCategoryEnum category;
+
     private String description;
+
     private String mainImage;
+
     private List<String> hotelImageUrls;
+
     private Double gradeAverage;
+
     private int salePrice;
+
     private int previousPrice;
+
     @QueryProjection
     public HotelSummaryResponse(Long id, String name, HotelCategoryEnum category, String description,
-                         String mainImage) {
+                                String mainImage) {
         this.id = id;
         this.name = name;
         this.category = category;

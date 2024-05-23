@@ -43,7 +43,8 @@ public class TimesaleApi {
 
     @DeleteMapping("/{timesaleId}") // 타임특가 삭제 api
     @PreAuthorize("@methodAuthorizationManager.isTimesaleByIdAndTimesaleId(#userId, #timesaleId)")
-    public ResponseEntity<ApiResponse<Void>> deleteTimesale(@PathVariable Long timesaleId, @RequestHeader("user-id") long userId) {
+    public ResponseEntity<ApiResponse<Void>> deleteTimesale(@PathVariable Long timesaleId,
+                                                            @RequestHeader("user-id") long userId) {
         timesaleService.deleteTimesaleData(timesaleId);
         return ResponseEntity.noContent().build();
     }

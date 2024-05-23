@@ -6,19 +6,14 @@ import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.pser.hotel.domain.hotel.domain.Reservation;
 import com.pser.hotel.domain.hotel.domain.Room;
-import com.pser.hotel.domain.hotel.dto.HotelMapper;
-import com.pser.hotel.domain.hotel.dto.HotelMapperImpl;
 import com.pser.hotel.domain.hotel.dto.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
 import com.pser.hotel.domain.hotel.dto.HotelSummaryResponse;
-import com.pser.hotel.domain.hotel.dto.TimesaleMapper;
-import com.pser.hotel.domain.hotel.dto.TimesaleMapperImpl;
 import com.pser.hotel.domain.hotel.util.Utils;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.config.QueryDslConfig;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
-import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,8 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -171,8 +164,8 @@ public class HotelDaoImplTest {
 
     private HotelSearchRequest createSearchRequestByDate() {
         return HotelSearchRequest.builder()
-                .searchStartAt(LocalDate.of(2024,4,18))
-                .searchEndAt(LocalDate.of(2024,4,19))
+                .searchStartAt(LocalDate.of(2024, 4, 18))
+                .searchEndAt(LocalDate.of(2024, 4, 19))
                 .build();
     }
 

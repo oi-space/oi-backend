@@ -64,8 +64,8 @@ public class TimesaleDaoTest {
     public void findByRoomIdTest() {
         List<TimeSale> timeSaleList = timesaleDao.findByRoomId(room.getId());
         boolean isTimesaleExist = false;
-        for(TimeSale ele : timeSaleList) {
-            if(ele.getId().equals(timeSale.getId())){
+        for (TimeSale ele : timeSaleList) {
+            if (ele.getId().equals(timeSale.getId())) {
                 isTimesaleExist = true;
                 break;
             }

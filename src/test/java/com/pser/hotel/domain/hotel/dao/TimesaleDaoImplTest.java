@@ -80,8 +80,8 @@ public class TimesaleDaoImplTest {
     public void findNowTimesaleHotel() {
         Slice<TimesaleHotelResponse> timesaleHotelList = timesaleDao.findNowTimesaleHotel(pageRequest);
         boolean isHotelExist = false;
-        for(TimesaleHotelResponse response : timesaleHotelList) {
-            if(response.getName().equals(hotel.getName())) {
+        for (TimesaleHotelResponse response : timesaleHotelList) {
+            if (response.getName().equals(hotel.getName())) {
                 isHotelExist = true;
                 break;
             }
