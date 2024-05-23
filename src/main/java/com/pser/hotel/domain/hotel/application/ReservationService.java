@@ -1,30 +1,29 @@
-package com.pser.hotel.domain.hotel.service;
+package com.pser.hotel.domain.hotel.application;
 
 import com.pser.hotel.domain.hotel.dao.ReservationDao;
 import com.pser.hotel.domain.hotel.dao.RoomDao;
+import com.pser.hotel.domain.hotel.dao.UserDao;
 import com.pser.hotel.domain.hotel.domain.Reservation;
 import com.pser.hotel.domain.hotel.domain.Room;
-import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationSaveRequestDto;
+import com.pser.hotel.domain.hotel.dto.ReservationMapper;
+import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationCreateRequest;
 import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationUpdateRequestDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationDeleteResponseDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationFindDetailResponseDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationFindResponseDto;
-import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationSaveResponseDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationUpdateResponseDto;
 import com.pser.hotel.domain.member.domain.User;
-import com.pser.hotel.global.util.ReservationUpdateMapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 // 모든 에러는 IllegalArgException으로 작성 하였습니다.
 // 차후에 exception handler 적용하시면 됩니다.
@@ -34,10 +33,11 @@ import org.springframework.stereotype.Service;
 public class ReservationService {
     private final ReservationDao reservationDao;
     private final RoomDao roomDao;
+    private final UserDao userDao;
     // 페이징을 위한 페이지 사이즈 - 수정 하시면 됩니다.
     // 혹은 yml에 따로 지정한 뒤 나중에 @Value 이용하셔서 관리하셔도 됩니다.
     private final Integer pageSize = 10;
-    private final ReservationUpdateMapper reservationUpdateMapper;
+    private final ReservationMapper reservationMapper;
 
     public ReservationFindResponseDto findAllByUserEmail(Integer page, String userEmail) {
         Pageable pageable = PageRequest.of(page, pageSize);
@@ -60,41 +60,19 @@ public class ReservationService {
                 .build();
     }
 
-    public ReservationSaveResponseDto save(ReservationSaveRequestDto reservationSaveRequestDto) {
-        String roomName = reservationSaveRequestDto.getRoomName();
-        LocalDate startAt = reservationSaveRequestDto.getStartAt();
-        LocalDate endAt = reservationSaveRequestDto.getEndAt();
+    @Transactional
+    public long save(ReservationCreateRequest request) {
+        checkSchedule(request);
 
-        if (endAt.isBefore(startAt)) {
-            throw new IllegalArgumentException("end at is before start at");
-        }
-        // 인원 계산 규칙을 몰라 일단 합연산 진행 했습니다.
-        if (reservationSaveRequestDto.getReservationCapacity()
-                < reservationSaveRequestDto.getAdultCapacity() + reservationSaveRequestDto.getChildCapacity()) {
-            throw new IllegalArgumentException("허용 인원 초과");
-        }
-        Optional<Reservation> result = reservationDao.findValidReservation(roomName, startAt, endAt);
+        User user = userDao.findById(request.getAuthId())
+                .orElseThrow();
+        Room room = roomDao.findById(request.getRoomId())
+                .orElseThrow();
+        request.setUser(user);
+        request.setRoom(room);
 
-        if (result.isPresent()) {
-            throw new IllegalArgumentException("reservation already exist");
-        } else {
-            Room room = roomDao.findByName(reservationSaveRequestDto.getRoomName())
-                    .orElseThrow(() -> new IllegalArgumentException("room doesn't exist"));
-            Reservation res = Reservation.builder()
-                    // 여기에 차후 User dao 만드셔서 삽입하시면 됩니다.
-                    .user(new User())
-                    .room(room)
-                    .price(reservationSaveRequestDto.getPrice())
-                    .startAt(reservationSaveRequestDto.getStartAt())
-                    .endAt(reservationSaveRequestDto.getEndAt())
-                    .adultCapacity(reservationSaveRequestDto.getAdultCapacity())
-                    .childCapacity(reservationSaveRequestDto.getChildCapacity())
-                    .reservationCapacity(reservationSaveRequestDto.getReservationCapacity())
-                    .build();
-            reservationDao.save(res);
-            return new ReservationSaveResponseDto(res, reservationSaveRequestDto.getUserEmail(), roomName);
-        }
-
+        Reservation reservation = reservationMapper.toEntity(request);
+        return reservationDao.save(reservation).getId();
     }
 
     public ReservationUpdateResponseDto update(ReservationUpdateRequestDto reservationUpdateRequestDto) {
@@ -103,7 +81,7 @@ public class ReservationService {
         Reservation reservation = reservationDao.findByRoomName(roomName)
                 .orElseThrow(() -> new IllegalArgumentException("reservation not found"));
 
-        reservationUpdateMapper.updateReservationInfoFromRequest(reservationUpdateRequestDto, reservation);
+        reservationMapper.updateReservationInfoFromRequest(reservationUpdateRequestDto, reservation);
         Reservation save = reservationDao.save(reservation);
 
         // 차후에 user를 추가하고싶으시면 user, room dao에서 불러오시면 됩니다.
@@ -111,8 +89,8 @@ public class ReservationService {
         // 서버에 부담이 안될것 같다고 사료되시면 삽입하시면 됩니다.
         return ReservationUpdateResponseDto.builder()
                 .roomName(roomName)
-                .childCapacity(save.getChildCapacity())
-                .adultCapacity(save.getAdultCapacity())
+                .childCapacity(save.getChildCount())
+                .adultCapacity(save.getAdultCount())
                 .startAt(save.getStartAt())
                 .endAt(save.getEndAt())
                 .build();
@@ -128,5 +106,20 @@ public class ReservationService {
                 .roomName(roomName)
                 .deletedAt(LocalDateTime.now())
                 .build();
+    }
+
+    private void checkSchedule(ReservationCreateRequest request) {
+        Room room = roomDao.findById(request.getRoomId())
+                .orElseThrow();
+        LocalDate startAt = request.getStartAt();
+
+        if (startAt.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("과거 일자로 예약할 수 없습니다");
+        }
+
+        int overlappingCount = reservationDao.countOverlappingReservations(request);
+        if (overlappingCount >= room.getMaxCapacity()) {
+            throw new IllegalArgumentException("해당 객실은 요청 일자에 비어 있지 않습니다");
+        }
     }
 }

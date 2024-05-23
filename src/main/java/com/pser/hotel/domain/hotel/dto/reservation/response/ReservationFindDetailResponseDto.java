@@ -2,12 +2,11 @@ package com.pser.hotel.domain.hotel.dto.reservation.response;
 
 import com.pser.hotel.domain.hotel.domain.Reservation;
 import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -36,17 +35,17 @@ public class ReservationFindDetailResponseDto {
     // 예약 상태
     private ReservationStatusEnum status;
 
-    public ReservationFindDetailResponseDto(Reservation reservation, String userEmail, String roomName){
-            this.id = reservation.getId();
-            this.userEmail = userEmail;
-            this.roomName = roomName;
-            this.price = reservation.getPrice();
-            this.startAt = reservation.getStartAt();
-            this.endAt = reservation.getEndAt();
-            this.reservationCapacity = reservation.getReservationCapacity();
-            this.adultCapacity = reservation.getAdultCapacity();
-            this.childCapacity = reservation.getChildCapacity();
-            this.status = reservation.getStatus();
+    public ReservationFindDetailResponseDto(Reservation reservation, String userEmail, String roomName) {
+        this.id = reservation.getId();
+        this.userEmail = userEmail;
+        this.roomName = roomName;
+        this.price = reservation.getPrice();
+        this.startAt = reservation.getStartAt();
+        this.endAt = reservation.getEndAt();
+        this.reservationCapacity = reservation.getVisitorCount();
+        this.adultCapacity = reservation.getAdultCount();
+        this.childCapacity = reservation.getChildCount();
+        this.status = reservation.getStatus();
 
     }
 }
