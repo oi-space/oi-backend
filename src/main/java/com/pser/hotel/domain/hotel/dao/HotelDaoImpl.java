@@ -100,7 +100,7 @@ public class HotelDaoImpl implements HotelDaoCustom {
                         getReservationBetweenPredicate(hotelSearchRequest.getSearchStartAt(), // 숙박 시작일 ~ 숙박 종료일 동안 예약이 가능한 객실을 보유한 호텔만 리스트에 담는다
                                 hotelSearchRequest.getSearchEndAt()),
                         containsKeywordPredicate(hotelSearchRequest.getKeyword()),
-                        QRoom.room.maxCapacity.goe(hotelSearchRequest.getPeople()) // 인원보다 많은 인원을 수용할 수 있는 객실을 보유한 호텔만 리스트에 담는다
+                        getPeoplePredicate(hotelSearchRequest.getPeople()) // 인원보다 많은 인원을 수용할 수 있는 객실을 보유한 호텔만 리스트에 담는다
                 ).groupBy(QHotel.hotel.id)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
@@ -313,6 +313,10 @@ public class HotelDaoImpl implements HotelDaoCustom {
         HotelCategoryConverter hotelCategoryConverter = new HotelCategoryConverter();
         return categoryEnum != null ? QHotel.hotel.category.stringValue()
                 .eq(hotelCategoryConverter.convertToDatabaseColumn(categoryEnum).toString()) : null;
+    }
+
+    private Predicate getPeoplePredicate(Integer people) {
+        return people != null ? QRoom.room.maxCapacity.goe(people) : null;
     }
 
     private Predicate getReservationBetweenPredicate(LocalDate searchStartAt, LocalDate searchEndAt) {
