@@ -27,20 +27,6 @@ import org.springframework.context.annotation.Import;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({QueryDslConfig.class, MapperConfig.class})
 public class HotelDaoTest {
-
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        public HotelMapper hotelMapper() {
-            return new HotelMapperImpl();
-        }
-
-        @Bean
-        public TimesaleMapper timesaleMapper() {
-            return new TimesaleMapperImpl();
-        }
-    }
-
     @Autowired
     HotelDao hotelDao;
     @Autowired
@@ -70,5 +56,4 @@ public class HotelDaoTest {
         Hotel findHotel = hotelDao.findById(hotel.getId()).get();
         Assertions.assertThat(findHotel.getId()).isEqualTo(hotel.getId());
     }
-
 }
