@@ -1,5 +1,9 @@
 package com.pser.hotel.domain.hotel.dao;
 
+import com.pser.hotel.domain.hotel.dto.HotelMapper;
+import com.pser.hotel.domain.hotel.dto.HotelMapperImpl;
+import com.pser.hotel.domain.hotel.dto.TimesaleMapper;
+import com.pser.hotel.domain.hotel.dto.TimesaleMapperImpl;
 import com.pser.hotel.domain.hotel.util.Utils;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.config.QueryDslConfig;
@@ -11,14 +15,32 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({QueryDslConfig.class})
 public class UserDaoTest {
+
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        public HotelMapper hotelMapper() {
+            return new HotelMapperImpl();
+        }
+
+        @Bean
+        public TimesaleMapper timesaleMapper() {
+            return new TimesaleMapperImpl();
+        }
+    }
+
     @Autowired
     UserDao userDao;
+    @Autowired
+    HotelMapper hotelMapper;
     @Autowired
     EntityManager entityManager;
     User user;
