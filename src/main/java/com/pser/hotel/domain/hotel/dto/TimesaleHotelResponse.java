@@ -2,9 +2,15 @@ package com.pser.hotel.domain.hotel.dto;
 
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.querydsl.core.annotations.QueryProjection;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TimesaleHotelResponse {
     private Long id;
 
@@ -65,6 +71,8 @@ public class TimesaleHotelResponse {
     private Boolean snackBar;
 
     private Boolean petFriendly;
+
+    private Double gradeAverage;
 
     private int salePrice;
 
