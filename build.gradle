@@ -67,6 +67,9 @@ dependencies {
 
     // Quartz
     implementation 'org.springframework.boot:spring-boot-starter-quartz'
+
+    // Vavr
+    implementation 'io.vavr:vavr:0.10.4'
 }
 
 tasks.named('test') {

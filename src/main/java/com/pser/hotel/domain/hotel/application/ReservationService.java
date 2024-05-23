@@ -4,7 +4,9 @@ import com.pser.hotel.domain.hotel.dao.ReservationDao;
 import com.pser.hotel.domain.hotel.dao.RoomDao;
 import com.pser.hotel.domain.hotel.dao.UserDao;
 import com.pser.hotel.domain.hotel.domain.Reservation;
+import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
+import com.pser.hotel.domain.hotel.dto.ReservationDto;
 import com.pser.hotel.domain.hotel.dto.ReservationMapper;
 import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationCreateRequest;
 import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationUpdateRequestDto;
@@ -12,6 +14,7 @@ import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationDeleteRes
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationFindDetailResponseDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationFindResponseDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationUpdateResponseDto;
+import com.pser.hotel.domain.hotel.kafka.producer.ReservationStatusProducer;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,6 +41,7 @@ public class ReservationService {
     // 혹은 yml에 따로 지정한 뒤 나중에 @Value 이용하셔서 관리하셔도 됩니다.
     private final Integer pageSize = 10;
     private final ReservationMapper reservationMapper;
+    private final ReservationStatusProducer reservationStatusProducer;
 
     public ReservationFindResponseDto findAllByUserEmail(Integer page, String userEmail) {
         Pageable pageable = PageRequest.of(page, pageSize);
@@ -72,7 +76,10 @@ public class ReservationService {
         request.setRoom(room);
 
         Reservation reservation = reservationMapper.toEntity(request);
-        return reservationDao.save(reservation).getId();
+        reservationDao.save(reservation);
+        ReservationDto reservationDto = reservationMapper.toDto(reservation);
+        reservationStatusProducer.produceCreated(reservationDto);
+        return reservation.getId();
     }
 
     public ReservationUpdateResponseDto update(ReservationUpdateRequestDto reservationUpdateRequestDto) {
@@ -121,5 +128,13 @@ public class ReservationService {
         if (overlappingCount >= room.getMaxCapacity()) {
             throw new IllegalArgumentException("해당 객실은 요청 일자에 비어 있지 않습니다");
         }
+    }
+
+    @Transactional
+    public void closeReservation(long reservationId) {
+        Reservation reservation = reservationDao.findById(reservationId)
+                .orElseThrow();
+        ReservationStatusEnum targetStatus = ReservationStatusEnum.PAST;
+        reservation.updateStatus(targetStatus);
     }
 }

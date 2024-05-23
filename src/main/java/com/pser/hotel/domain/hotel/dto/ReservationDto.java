@@ -2,6 +2,7 @@ package com.pser.hotel.domain.hotel.dto;
 
 import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservationDto {
+    private Long id;
+
     private Long userId;
 
     private Long roomId;
@@ -21,6 +24,10 @@ public class ReservationDto {
     private LocalDate startAt;
 
     private LocalDate endAt;
+
+    private LocalTime checkIn;
+
+    private LocalTime checkOut;
 
     private Integer visitorCount;
 
