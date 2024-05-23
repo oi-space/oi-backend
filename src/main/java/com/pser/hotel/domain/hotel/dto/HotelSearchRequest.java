@@ -55,7 +55,7 @@ public class HotelSearchRequest extends SearchQuery {
 
     private Boolean petFriendly;
 
-    private int people;
+    private Integer people;
 
     private LocalDate searchStartAt;
 
@@ -69,7 +69,8 @@ public class HotelSearchRequest extends SearchQuery {
                               Boolean barbecue, Boolean sauna, Boolean swimmingPool,
                               Boolean restaurant, Boolean roofTop, Boolean fitness, Boolean dryer, Boolean breakfast,
                               Boolean smokingArea,
-                              Boolean allTimeDesk, Boolean luggageStorage, Boolean snackBar, Boolean petFriendly) {
+                              Boolean allTimeDesk, Boolean luggageStorage, Boolean snackBar, Boolean petFriendly,
+                              Integer people, LocalDate searchStartAt, LocalDate searchEndAt) {
         super(keyword, createdAfter, createdBefore, updatedAfter, updatedBefore);
         this.name = name;
         this.category = category;
@@ -92,5 +93,8 @@ public class HotelSearchRequest extends SearchQuery {
         this.luggageStorage = luggageStorage;
         this.snackBar = snackBar;
         this.petFriendly = petFriendly;
+        this.people = people;
+        this.searchStartAt = searchStartAt;
+        this.searchEndAt = searchEndAt;
     }
 }
