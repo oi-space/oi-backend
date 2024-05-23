@@ -1,5 +1,6 @@
 package com.pser.hotel.domain.hotel.dao;
 
+import com.pser.hotel.domain.hotel.config.MapperConfig;
 import com.pser.hotel.domain.hotel.dto.HotelMapper;
 import com.pser.hotel.domain.hotel.dto.HotelMapperImpl;
 import com.pser.hotel.domain.hotel.dto.TimesaleMapper;
@@ -21,21 +22,8 @@ import org.springframework.context.annotation.Import;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import({QueryDslConfig.class})
+@Import({QueryDslConfig.class, MapperConfig.class})
 public class UserDaoTest {
-
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        public HotelMapper hotelMapper() {
-            return new HotelMapperImpl();
-        }
-
-        @Bean
-        public TimesaleMapper timesaleMapper() {
-            return new TimesaleMapperImpl();
-        }
-    }
 
     @Autowired
     UserDao userDao;
