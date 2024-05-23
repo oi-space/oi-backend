@@ -1,27 +1,41 @@
 package com.pser.hotel.domain.hotel.dao;
 
+import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryConverter;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.pser.hotel.domain.hotel.domain.QHotel;
 import com.pser.hotel.domain.hotel.domain.QHotelImage;
+import com.pser.hotel.domain.hotel.domain.QReservation;
+import com.pser.hotel.domain.hotel.domain.QReview;
+import com.pser.hotel.domain.hotel.domain.QRoom;
+import com.pser.hotel.domain.hotel.domain.QTimeSale;
+import com.pser.hotel.domain.hotel.dto.HotelMapper;
 import com.pser.hotel.domain.hotel.dto.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
 import com.pser.hotel.domain.hotel.dto.QHotelResponse;
+import com.pser.hotel.domain.model.GradeEnum;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import java.util.List;
+import org.springframework.web.server.ResponseStatusException;
 
 @Repository
 @RequiredArgsConstructor
 public class HotelDaoImpl implements HotelDaoCustom {
     private final JPAQueryFactory queryFactory;
+    private final HotelMapper hotelMapper;
 
     @Override
     public Slice<HotelResponse> search(HotelSearchRequest hotelSearchRequest, Pageable pageable) {
@@ -60,6 +74,7 @@ public class HotelDaoImpl implements HotelDaoCustom {
                         QHotel.hotel.facility.petFriendly
                 ))
                 .from(QHotel.hotel)
+                .leftJoin(QRoom.room).on(QRoom.room.hotel.id.eq(QHotel.hotel.id))
                 .where(
                         getNamePredicate(hotelSearchRequest.getName()),
                         getProvincePredicate(hotelSearchRequest.getProvince()),
@@ -82,20 +97,28 @@ public class HotelDaoImpl implements HotelDaoCustom {
                         getLuggageStoragePredicate(hotelSearchRequest.getLuggageStorage()),
                         getSnackBarPredicate(hotelSearchRequest.getSnackBar()),
                         getPetFriendlyPredicate(hotelSearchRequest.getPetFriendly()),
-                        containsKeywordPredicate(hotelSearchRequest.getKeyword())
-                )
+                        getReservationBetweenPredicate(hotelSearchRequest.getSearchStartAt(), // 숙박 시작일 ~ 숙박 종료일 동안 예약이 가능한 객실을 보유한 호텔만 리스트에 담는다
+                                hotelSearchRequest.getSearchEndAt()),
+                        containsKeywordPredicate(hotelSearchRequest.getKeyword()),
+                        QRoom.room.maxCapacity.goe(hotelSearchRequest.getPeople()) // 인원보다 많은 인원을 수용할 수 있는 객실을 보유한 호텔만 리스트에 담는다
+                ).groupBy(QHotel.hotel.id)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        content.forEach(hotelResponse -> {
+        content = content.stream().map(hotelResponse -> {
             List<String> images = queryFactory
                     .select(QHotelImage.hotelImage.imageUrl)
                     .from(QHotelImage.hotelImage)
                     .where(QHotelImage.hotelImage.hotel.id.eq(hotelResponse.getId()))
                     .fetch();
             hotelResponse.setHotelImageUrls(images);
-        });
+            hotelResponse.setGradeAverage(getHotelGrade(hotelResponse.getId()));
+            int previousPrice = getPreviousPrice(hotelResponse.getId());
+            hotelResponse.setPreviousPrice(previousPrice);
+            hotelResponse.setSalePrice(getSalePrice(hotelResponse.getId(), previousPrice));
+            return hotelResponse;
+        }).collect(Collectors.toList());
 
         boolean hasNext = false;
         if (content.size() > pageable.getPageSize()) {
@@ -104,6 +127,106 @@ public class HotelDaoImpl implements HotelDaoCustom {
         }
 
         return new SliceImpl<>(content, pageable, hasNext);
+    }
+
+    @Override
+    public double getHotelGrade(Long hotelId) {
+
+        List<GradeEnum> gradeEnumList = queryFactory.select(QReview.review.grade)
+                .from(QReview.review)
+                .join(QReview.review.reservation, QReservation.reservation)
+                .join(QReservation.reservation.room, QRoom.room)
+                .join(QRoom.room.hotel, QHotel.hotel)
+                .where(QHotel.hotel.id.eq(hotelId))
+                .fetch();
+
+        return calculateGradeEnum(gradeEnumList);
+    }
+
+    @Override
+    public Slice<HotelResponse> findAllWithGradeAndPrice(Pageable pageable) {
+        QHotel qHotel = QHotel.hotel;
+
+        List<Hotel> hotels = queryFactory.selectFrom(qHotel)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+
+        List<HotelResponse> hotelResponses = hotels.stream()
+                .map(hotel -> {
+                    double hotelGrade = getHotelGrade(hotel.getId());
+                    int previousPrice = getPreviousPrice(hotel.getId());
+                    int salePrice = getSalePrice(hotel.getId(), previousPrice);
+                    return hotelMapper.changeToHotelResponse(hotel, hotelGrade, salePrice, previousPrice);
+                })
+                .collect(Collectors.toList());
+
+        boolean hasNext = hotelResponses.size() > pageable.getPageSize();
+        if (hasNext) {
+            hotelResponses.remove(hotelResponses.size() - 1);
+        }
+
+        return new SliceImpl<>(hotelResponses, pageable, hasNext);
+    }
+
+    @Override
+    public HotelResponse findHotel(Long hotelId) {
+        QHotel qHotel = QHotel.hotel;
+
+        Hotel hotel = queryFactory.selectFrom(qHotel)
+                .where(qHotel.id.eq(hotelId))
+                .fetchOne();
+
+        if (hotel == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Hotel not found");
+        }
+
+        double hotelGrade = getHotelGrade(hotelId);
+        int previousPrice = getPreviousPrice(hotelId);
+        int salePrice = getSalePrice(hotelId, previousPrice);
+
+        return hotelMapper.changeToHotelResponse(hotel, hotelGrade, salePrice, previousPrice);
+
+    }
+
+    private int getSalePrice(Long hotelId, int previousPrice) {
+        QTimeSale qTimeSale = QTimeSale.timeSale;
+        QRoom qRoom = QRoom.room;
+        LocalDateTime now = LocalDateTime.now();
+
+        Integer salePrice = queryFactory.select(qTimeSale.price.min())
+                .from(qTimeSale)
+                .join(qTimeSale.room, qRoom)
+                .where(qRoom.hotel.id.eq(hotelId))
+                .where(qTimeSale.startAt.before(now).and(qTimeSale.endAt.after(now)))
+                .fetchOne();
+
+        if (salePrice == null || previousPrice < salePrice) {
+            salePrice = previousPrice;
+        }
+
+        return salePrice;
+    }
+
+    private int getPreviousPrice(Long hotelId) {
+        QRoom qRoom = QRoom.room;
+
+        Integer previousPrice = queryFactory.select(qRoom.price.min())
+                .from(qRoom)
+                .where(qRoom.hotel.id.eq(hotelId))
+                .fetchOne();
+
+        return previousPrice != null ? previousPrice : 0;
+    }
+
+    private double calculateGradeEnum(List<GradeEnum> gradeEnumList) {
+        if (gradeEnumList.isEmpty()) {
+            return 0.0;
+        }
+        return gradeEnumList.stream()
+                .mapToInt(GradeEnum::getValue)
+                .average()
+                .orElse(0.0);
     }
 
     private Predicate getNamePredicate(String name) {
@@ -192,6 +315,22 @@ public class HotelDaoImpl implements HotelDaoCustom {
                 .eq(hotelCategoryConverter.convertToDatabaseColumn(categoryEnum).toString()) : null;
     }
 
+    private Predicate getReservationBetweenPredicate(LocalDate searchStartAt, LocalDate searchEndAt) {
+        if (searchStartAt == null || searchEndAt == null) {
+            return null;
+        }
+
+        QRoom qRoom = QRoom.room;
+        QReservation qReservation = QReservation.reservation;
+
+        return qRoom.id.notIn(
+                JPAExpressions.select(qReservation.room.id)
+                        .from(qReservation)
+                        .where(qReservation.startAt.loe(searchEndAt)
+                                .and(qReservation.endAt.goe(searchStartAt)))
+        );
+    }
+
     private Predicate containsKeywordPredicate(String keyword) {
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -204,5 +343,6 @@ public class HotelDaoImpl implements HotelDaoCustom {
             builder.or(hotel.detailedAddress.contains(keyword));
         }
         return builder.getValue();
+
     }
 }
