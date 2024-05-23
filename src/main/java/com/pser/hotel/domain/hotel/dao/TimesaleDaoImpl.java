@@ -29,6 +29,7 @@ import org.springframework.stereotype.Repository;
 public class TimesaleDaoImpl implements TimesaleCustom {
     private final JPAQueryFactory queryFactory;
     private final TimesaleMapper timesaleMapper;
+    private final HotelDao hotelDao;
 
     @Override
     public Optional<Hotel> findHotelByRoomId(Long roomId) {
@@ -84,11 +85,16 @@ public class TimesaleDaoImpl implements TimesaleCustom {
                     TimesaleRoomResponse roomResponse = timesaleMapper.changeToTimesaleRoomResponse(room,
                             Objects.requireNonNull(timeSale).getPrice());
 
-                    return timesaleMapper.changeToTimeHotelResponse(
+                    TimesaleHotelResponse hotelResponse = timesaleMapper.changeToTimeHotelResponse(
                             hotel,
                             roomResponse.getPreviousPrice(),
                             roomResponse.getSalePrice()
                     );
+
+                    double hotelGrade = hotelDao.getHotelGrade(Objects.requireNonNull(hotel).getId());
+                    hotelResponse.setGradeAverage(hotelGrade);
+
+                    return hotelResponse;
                 })
                 .toList();
 
