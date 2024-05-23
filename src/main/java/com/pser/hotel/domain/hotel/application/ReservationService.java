@@ -13,6 +13,7 @@ import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationUpdateRequ
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationDeleteResponseDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationFindDetailResponseDto;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationFindResponseDto;
+import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationResponse;
 import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationUpdateResponseDto;
 import com.pser.hotel.domain.hotel.kafka.producer.ReservationStatusProducer;
 import com.pser.hotel.domain.member.domain.User;
@@ -42,6 +43,12 @@ public class ReservationService {
     private final Integer pageSize = 10;
     private final ReservationMapper reservationMapper;
     private final ReservationStatusProducer reservationStatusProducer;
+
+    public ReservationResponse getById(long reservationId) {
+        Reservation reservation = reservationDao.findById(reservationId)
+                .orElseThrow();
+        return reservationMapper.toResponse(reservation);
+    }
 
     public ReservationFindResponseDto findAllByUserEmail(Integer page, String userEmail) {
         Pageable pageable = PageRequest.of(page, pageSize);
@@ -101,6 +108,19 @@ public class ReservationService {
                 .startAt(save.getStartAt())
                 .endAt(save.getEndAt())
                 .build();
+    }
+
+    @Transactional
+    public void updateToAuctionOngoingStatus(long reservationId) {
+        Reservation reservation = reservationDao.findById(reservationId)
+                .orElseThrow();
+        ReservationStatusEnum status = reservation.getStatus();
+        ReservationStatusEnum targetStatus = ReservationStatusEnum.AUCTION_ONGOING;
+
+        if (status.equals(targetStatus)) {
+            return;
+        }
+        reservation.updateStatus(targetStatus);
     }
 
     public ReservationDeleteResponseDto delete(String roomName) {
