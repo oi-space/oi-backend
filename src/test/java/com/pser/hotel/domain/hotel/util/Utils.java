@@ -6,7 +6,6 @@ import com.pser.hotel.domain.hotel.domain.Facility;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.pser.hotel.domain.hotel.domain.Reservation;
-import com.pser.hotel.domain.hotel.domain.ReservationEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.domain.RoomImage;
 import com.pser.hotel.domain.hotel.domain.TimeSale;
@@ -114,23 +113,32 @@ public class Utils {
 
     public static Facility createFacility(Hotel hotel) {
         return Facility.builder()
-            .hotel(hotel)
-            .parkingLot(rnd.nextBoolean())
-            .wifi(rnd.nextBoolean())
-            .barbecue(rnd.nextBoolean())
-            .sauna(rnd.nextBoolean())
-            .swimmingPool(rnd.nextBoolean())
-            .restaurant(rnd.nextBoolean())
-            .roofTop(rnd.nextBoolean())
-            .fitness(rnd.nextBoolean())
-            .dryer(rnd.nextBoolean())
-            .breakfast(rnd.nextBoolean())
-            .smokingArea(rnd.nextBoolean())
-            .allTimeDesk(rnd.nextBoolean())
-            .luggageStorage(rnd.nextBoolean())
-            .snackBar(rnd.nextBoolean())
-            .petFriendly(rnd.nextBoolean())
-            .build();
+                .hotel(hotel)
+                .parkingLot(rnd.nextBoolean())
+                .wifi(rnd.nextBoolean())
+                .barbecue(rnd.nextBoolean())
+                .sauna(rnd.nextBoolean())
+                .swimmingPool(rnd.nextBoolean())
+                .restaurant(rnd.nextBoolean())
+                .roofTop(rnd.nextBoolean())
+                .fitness(rnd.nextBoolean())
+                .dryer(rnd.nextBoolean())
+                .breakfast(rnd.nextBoolean())
+                .smokingArea(rnd.nextBoolean())
+                .allTimeDesk(rnd.nextBoolean())
+                .luggageStorage(rnd.nextBoolean())
+                .snackBar(rnd.nextBoolean())
+                .petFriendly(rnd.nextBoolean())
+                .build();
+    }
+
+    public static List<String> createHotelImages() {
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            String uuid = UUID.randomUUID().toString().substring(1, 10);
+            arrayList.add(String.format("image_%s", uuid));
+        }
+        return arrayList;
     }
 
     public static double createAverageRating() {
@@ -145,25 +153,14 @@ public class Utils {
         return rnd.nextInt(max + 1) * 1000;
     }
 
-    public static List<String> createHotelImages(){
-        ArrayList<String> arrayList = new ArrayList<>();
-        for(int i=1; i <= 3; i++) {
-            String uuid = UUID.randomUUID().toString().substring(1, 10);
-            arrayList.add(String.format("image_%s", uuid));
-        }
-        return arrayList;
-    }
-
     public static Reservation createReservation(User user, Room room) {
         return Reservation.builder()
                 .price(1000)
                 .startAt(LocalDate.of(2024, 4, 17))
                 .endAt(LocalDate.of(2024, 4, 17))
-                .reservationCapacity(5)
-                .adultCapacity(3)
-                .childCapacity(2)
-                .status(ReservationEnum.BEFORE_ENTER_DEFAULT)
-                .tid("test_tid")
+                .visitorCount(5)
+                .adultCount(3)
+                .childCount(2)
                 .user(user)
                 .room(room)
                 .build();
@@ -175,11 +172,9 @@ public class Utils {
                 .price(1000)
                 .startAt(LocalDate.of(2024, 4, 17))
                 .endAt(LocalDate.of(2024, 4, 17))
-                .reservationCapacity(reservationCapacity)
-                .adultCapacity(adultCapacity)
-                .childCapacity(childCapacity)
-                .status(ReservationEnum.BEFORE_ENTER_DEFAULT)
-                .tid("test_tid")
+                .visitorCount(reservationCapacity)
+                .adultCount(adultCapacity)
+                .childCount(childCapacity)
                 .user(user)
                 .room(room)
                 .build();
