@@ -120,7 +120,7 @@ public class HotelDaoImpl implements HotelDaoCustom {
     }
 
     @Override
-    public Slice<HotelResponse> findAllWithGradeAndPrice(Pageable pageable) {
+    public Slice<HotelSummaryResponse> findAllWithGradeAndPrice(Pageable pageable) {
         QHotel qHotel = QHotel.hotel;
 
         List<Hotel> hotels = queryFactory.selectFrom(qHotel)
@@ -128,12 +128,12 @@ public class HotelDaoImpl implements HotelDaoCustom {
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        List<HotelResponse> hotelResponses = hotels.stream()
+        List<HotelSummaryResponse> hotelResponses = hotels.stream()
                 .map(hotel -> {
                     double hotelGrade = getHotelGrade(hotel.getId());
                     int previousPrice = getPreviousPrice(hotel.getId());
                     int salePrice = getSalePrice(hotel.getId(), previousPrice);
-                    return hotelMapper.changeToHotelResponse(hotel, hotelGrade, salePrice, previousPrice);
+                    return hotelMapper.changeToHotelSummaryResponse(hotel, hotelGrade, salePrice, previousPrice);
                 })
                 .collect(Collectors.toList());
 

@@ -6,7 +6,7 @@ import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Reservation;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.domain.TimeSale;
-import com.pser.hotel.domain.hotel.dto.TimesaleHotelResponse;
+import com.pser.hotel.domain.hotel.dto.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.dto.TimesaleMapper;
 import com.pser.hotel.domain.hotel.util.Utils;
 import com.pser.hotel.domain.member.domain.User;
@@ -78,9 +78,9 @@ public class TimesaleDaoImplTest {
     @Test
     @DisplayName("타임특가 적용 숙소 전체 조회 기능 테스트")
     public void findNowTimesaleHotel() {
-        Slice<TimesaleHotelResponse> timesaleHotelList = timesaleDao.findNowTimesaleHotel(pageRequest);
+        Slice<HotelSummaryResponse> timesaleHotelList = timesaleDao.findNowTimesaleHotel(pageRequest);
         boolean isHotelExist = false;
-        for (TimesaleHotelResponse response : timesaleHotelList) {
+        for (HotelSummaryResponse response : timesaleHotelList) {
             if (response.getName().equals(hotel.getName())) {
                 isHotelExist = true;
                 break;

@@ -5,8 +5,8 @@ import com.pser.hotel.domain.hotel.dao.RoomDao;
 import com.pser.hotel.domain.hotel.dao.TimesaleDao;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.domain.TimeSale;
+import com.pser.hotel.domain.hotel.dto.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.dto.TimesaleCreateRequest;
-import com.pser.hotel.domain.hotel.dto.TimesaleHotelResponse;
 import com.pser.hotel.domain.hotel.dto.TimesaleMapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ public class TimesaleService {
         return timeSale.getId();
     }
 
-    public Slice<TimesaleHotelResponse> getAllTimesaleHotelData(Pageable pageable) {
+    public Slice<HotelSummaryResponse> getAllTimesaleHotelData(Pageable pageable) {
         return timesaleDao.findNowTimesaleHotel(pageable);
     }
 

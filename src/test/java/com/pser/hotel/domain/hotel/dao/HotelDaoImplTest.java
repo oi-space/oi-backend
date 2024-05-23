@@ -180,7 +180,7 @@ public class HotelDaoImplTest {
     @DisplayName("숙소 전체 조회 테스트")
     public void fndAllTest() {
         Pageable pageable = createPageable();
-        Slice<HotelResponse> hotelResponse = hotelDao.findAllWithGradeAndPrice(pageable);
+        Slice<HotelSummaryResponse> hotelResponse = hotelDao.findAllWithGradeAndPrice(pageable);
         Assertions.assertThat(hotelResponse).isNotEmpty();
     }
 

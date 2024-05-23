@@ -11,7 +11,7 @@ public interface HotelDaoCustom {
 
     double getHotelGrade(Long hotelId);
 
-    Slice<HotelResponse> findAllWithGradeAndPrice(Pageable pageable);
+    Slice<HotelSummaryResponse> findAllWithGradeAndPrice(Pageable pageable);
 
     HotelResponse findHotel(Long hotelId);
 }

@@ -6,7 +6,8 @@ import com.pser.hotel.domain.hotel.domain.QRoom;
 import com.pser.hotel.domain.hotel.domain.QTimeSale;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.domain.TimeSale;
-import com.pser.hotel.domain.hotel.dto.TimesaleHotelResponse;
+import com.pser.hotel.domain.hotel.dto.HotelMapper;
+import com.pser.hotel.domain.hotel.dto.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.dto.TimesaleMapper;
 import com.pser.hotel.domain.hotel.dto.TimesaleRoomResponse;
 import com.querydsl.core.Tuple;
@@ -30,6 +31,7 @@ public class TimesaleDaoImpl implements TimesaleCustom {
     private final JPAQueryFactory queryFactory;
     private final TimesaleMapper timesaleMapper;
     private final HotelDao hotelDao;
+    private final HotelMapper hotelMapper;
 
     @Override
     public Optional<Hotel> findHotelByRoomId(Long roomId) {
@@ -62,7 +64,7 @@ public class TimesaleDaoImpl implements TimesaleCustom {
     }
 
     @Override
-    public Slice<TimesaleHotelResponse> findNowTimesaleHotel(Pageable pageable) {
+    public Slice<HotelSummaryResponse> findNowTimesaleHotel(Pageable pageable) {
         QRoom qRoom = QRoom.room;
         QHotel qHotel = QHotel.hotel;
         QTimeSale qTimeSale = QTimeSale.timeSale;
@@ -76,7 +78,7 @@ public class TimesaleDaoImpl implements TimesaleCustom {
                 .where(qTimeSale.startAt.before(now).and(qTimeSale.endAt.after(now)))
                 .fetch();
 
-        List<TimesaleHotelResponse> timesaleHotelResponses = timesaleData.stream()
+        List<HotelSummaryResponse> timesaleHotelResponses = timesaleData.stream()
                 .map(tuple -> {
                     TimeSale timeSale = tuple.get(qTimeSale);
                     Room room = tuple.get(qRoom);
@@ -85,32 +87,28 @@ public class TimesaleDaoImpl implements TimesaleCustom {
                     TimesaleRoomResponse roomResponse = timesaleMapper.changeToTimesaleRoomResponse(room,
                             Objects.requireNonNull(timeSale).getPrice());
 
-                    TimesaleHotelResponse hotelResponse = timesaleMapper.changeToTimeHotelResponse(
-                            hotel,
-                            roomResponse.getPreviousPrice(),
-                            roomResponse.getSalePrice()
-                    );
-
                     double hotelGrade = hotelDao.getHotelGrade(Objects.requireNonNull(hotel).getId());
-                    hotelResponse.setGradeAverage(hotelGrade);
 
-                    return hotelResponse;
+                    HotelSummaryResponse summaryResponse = hotelMapper.changeToHotelSummaryResponse(hotel, hotelGrade, roomResponse.getSalePrice(),
+                            roomResponse.getPreviousPrice());
+
+                    return summaryResponse;
                 })
                 .toList();
 
-        Map<String, TimesaleHotelResponse> hotelResponseMap = timesaleHotelResponses.stream()
+        Map<String, HotelSummaryResponse> hotelResponseMap = timesaleHotelResponses.stream()
                 .collect(Collectors.toMap(
-                        TimesaleHotelResponse::getName,
+                        HotelSummaryResponse::getName,
                         response -> response,
                         (existing, replacement) -> existing.getSalePrice() < replacement.getSalePrice() ? existing
                                 : replacement
                 ));
 
-        List<TimesaleHotelResponse> filteredHotelResponses = new ArrayList<>(hotelResponseMap.values());
+        List<HotelSummaryResponse> filteredHotelResponses = new ArrayList<>(hotelResponseMap.values());
 
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), filteredHotelResponses.size());
-        List<TimesaleHotelResponse> subList = filteredHotelResponses.subList(start, end);
+        List<HotelSummaryResponse> subList = filteredHotelResponses.subList(start, end);
 
         boolean hasNext = end < filteredHotelResponses.size();
 

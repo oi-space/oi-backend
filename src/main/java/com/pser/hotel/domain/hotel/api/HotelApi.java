@@ -38,7 +38,7 @@ public class HotelApi {
     }
 
     @GetMapping // 숙소 전체 조회 api
-    public ResponseEntity<ApiResponse<Slice<HotelResponse>>> getAllHotel(@PageableDefault Pageable pageable){
+    public ResponseEntity<ApiResponse<Slice<HotelSummaryResponse>>> getAllHotel(@PageableDefault Pageable pageable){
         return ResponseEntity.ok(ApiResponse.success(hotelService.getAllHotelData(pageable)));
     }
 

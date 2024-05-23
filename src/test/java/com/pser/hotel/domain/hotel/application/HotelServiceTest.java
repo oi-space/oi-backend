@@ -79,14 +79,14 @@ public class HotelServiceTest {
         Pageable pageable = createPageable();
 
         List<Hotel> hotels = Utils.createHotels(user, 10);
-        List<HotelResponse> list = createHotelResponseList(hotels);
-        Slice<HotelResponse> pageHotelData = new SliceImpl<>(list, pageable, true);
+        List<HotelSummaryResponse> list = createHotelSummaryResponseList(hotels);
+        Slice<HotelSummaryResponse> pageHotelData = new SliceImpl<>(list, pageable, true);
 
         lenient().when(hotelDao.findAllWithGradeAndPrice(any(Pageable.class))).thenReturn(pageHotelData);
 
         //when
         HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
-        Slice<HotelResponse> sliceData = hotelService.getAllHotelData(pageable);
+        Slice<HotelSummaryResponse> sliceData = hotelService.getAllHotelData(pageable);
 
         //then
         Assertions.assertThat(sliceData.getContent().size()).isEqualTo(10);
@@ -99,7 +99,7 @@ public class HotelServiceTest {
         Pageable pageable = createPageable();
 
         List<Hotel> hotels = Utils.createHotels(user, 10);
-        List<HotelSummaryResponse> list = createHotelSummaryList(hotels);
+        List<HotelSummaryResponse> list = createHotelSummaryResponseList(hotels);
         Slice<HotelSummaryResponse> pageHotelData = new SliceImpl<>(list, pageable, true);
 
         lenient().when(hotelDao.search(hotelSearchRequest, pageable)).thenReturn(pageHotelData);
@@ -312,19 +312,7 @@ public class HotelServiceTest {
                 .build();
     }
 
-    private List<HotelResponse> createHotelResponseList(List<Hotel> hotels) {
-        List<HotelResponse> list = new ArrayList<>();
-        for(Hotel ele : hotels) {
-            double average = Utils.createAverageRating();
-            int salePrice = Utils.createSalePrice();
-            int previousPirce = salePrice + 5000;
-            HotelResponse hotelResponse = createHotelResponse(ele, average, salePrice, previousPirce);
-            list.add(hotelResponse);
-        }
-        return list;
-    }
-
-    private List<HotelSummaryResponse> createHotelSummaryList(List<Hotel> hotels) {
+    private List<HotelSummaryResponse> createHotelSummaryResponseList(List<Hotel> hotels) {
         List<HotelSummaryResponse> list = new ArrayList<>();
         for(Hotel ele : hotels) {
             double average = Utils.createAverageRating();

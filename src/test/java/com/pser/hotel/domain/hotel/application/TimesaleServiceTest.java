@@ -6,8 +6,8 @@ import com.pser.hotel.domain.hotel.dao.TimesaleDao;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.domain.TimeSale;
+import com.pser.hotel.domain.hotel.dto.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.dto.TimesaleCreateRequest;
-import com.pser.hotel.domain.hotel.dto.TimesaleHotelResponse;
 import com.pser.hotel.domain.hotel.dto.TimesaleMapper;
 import com.pser.hotel.domain.hotel.util.Utils;
 import com.pser.hotel.domain.member.domain.User;
@@ -99,14 +99,14 @@ public class TimesaleServiceTest {
         Pageable pageable = createPageable();
 
         List<Hotel> hotels = Utils.createHotels(user, 10);
-        List<TimesaleHotelResponse> list = createTimesaleHotelResponseList(hotels);
-        Slice<TimesaleHotelResponse> pageTimesaleHotelData = new SliceImpl<>(list, pageable, true);
+        List<HotelSummaryResponse> list = createTimesaleHotelResponseList(hotels);
+        Slice<HotelSummaryResponse> pageTimesaleHotelData = new SliceImpl<>(list, pageable, true);
 
         BDDMockito.lenient().when(timesaleDao.findNowTimesaleHotel(BDDMockito.any(Pageable.class))).thenReturn(pageTimesaleHotelData);
 
         //when
         TimesaleService timesaleService = new TimesaleService(timesaleMapper, timesaleDao, roomDao, hotelDao);
-        Slice<TimesaleHotelResponse> sliceData = timesaleService.getAllTimesaleHotelData(pageable);
+        Slice<HotelSummaryResponse> sliceData = timesaleService.getAllTimesaleHotelData(pageable);
 
         //then
         Assertions.assertThat(sliceData.getContent().size()).isEqualTo(10);
@@ -125,50 +125,24 @@ public class TimesaleServiceTest {
         return PageRequest.of(0, 10);
     }
 
-    private List<TimesaleHotelResponse> createTimesaleHotelResponseList(List<Hotel> hotels) {
-        List<TimesaleHotelResponse> list = new ArrayList<>();
+    private List<HotelSummaryResponse> createTimesaleHotelResponseList(List<Hotel> hotels) {
+        List<HotelSummaryResponse> list = new ArrayList<>();
         for(Hotel ele : hotels) {
             double average = Utils.createAverageRating();
             int salePrice = Utils.createSalePrice();
             int previousPirce = salePrice + 5000;
-            TimesaleHotelResponse hotelResponse = createHotelResponse(ele, average, salePrice, previousPirce);
+            HotelSummaryResponse hotelResponse = createHotelResponse(ele, average, salePrice, previousPirce);
             list.add(hotelResponse);
         }
         return list;
     }
 
-    private TimesaleHotelResponse createHotelResponse(Hotel hotel, double average, int salePrice, int previousPrice){
-        return TimesaleHotelResponse.builder()
+    private HotelSummaryResponse createHotelResponse(Hotel hotel, double average, int salePrice, int previousPrice){
+        return HotelSummaryResponse.builder()
                 .id(hotel.getId())
                 .name(hotel.getName())
                 .category(hotel.getCategory())
                 .description(hotel.getDescription())
-                .notice(hotel.getNotice())
-                .province(hotel.getProvince())
-                .city(hotel.getCity())
-                .district(hotel.getDistrict())
-                .detailedAddress(hotel.getDetailedAddress())
-                .latitude(hotel.getLatitude())
-                .longtitude(hotel.getLongtitude())
-                .mainImage(hotel.getMainImage())
-                .businessNumber(hotel.getBusinessNumber())
-                .certUrl(hotel.getCertUrl())
-                .visitGuidance(hotel.getVisitGuidance())
-                .parkingLot(hotel.getFacility().getParkingLot())
-                .wifi(hotel.getFacility().getWifi())
-                .barbecue(hotel.getFacility().getBarbecue())
-                .sauna(hotel.getFacility().getSauna())
-                .swimmingPool(hotel.getFacility().getSwimmingPool())
-                .restaurant(hotel.getFacility().getRestaurant())
-                .roofTop(hotel.getFacility().getRoofTop())
-                .fitness(hotel.getFacility().getFitness())
-                .dryer(hotel.getFacility().getDryer())
-                .breakfast(hotel.getFacility().getBreakfast())
-                .smokingArea(hotel.getFacility().getSmokingArea())
-                .allTimeDesk(hotel.getFacility().getAllTimeDesk())
-                .luggageStorage(hotel.getFacility().getLuggageStorage())
-                .snackBar(hotel.getFacility().getSnackBar())
-                .petFriendly(hotel.getFacility().getPetFriendly())
                 .salePrice(salePrice)
                 .previousPrice(previousPrice)
                 .gradeAverage(average)

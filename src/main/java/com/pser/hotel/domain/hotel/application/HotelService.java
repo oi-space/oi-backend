@@ -34,7 +34,7 @@ public class HotelService {
     private final HotelImageDao hotelImageDao;
     private final HotelMapper hotelMapper;
 
-    public Slice<HotelResponse> getAllHotelData(Pageable pageable) {
+    public Slice<HotelSummaryResponse> getAllHotelData(Pageable pageable) {
         return hotelDao.findAllWithGradeAndPrice(pageable);
     }
 

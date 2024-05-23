@@ -1,8 +1,8 @@
 package com.pser.hotel.domain.hotel.api;
 
 import com.pser.hotel.domain.hotel.application.TimesaleService;
+import com.pser.hotel.domain.hotel.dto.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.dto.TimesaleCreateRequest;
-import com.pser.hotel.domain.hotel.dto.TimesaleHotelResponse;
 import com.pser.hotel.global.common.response.ApiResponse;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +35,9 @@ public class TimesaleApi {
     }
 
     @GetMapping // 타임특가 숙소 전체 조회 api
-    public ResponseEntity<ApiResponse<Slice<TimesaleHotelResponse>>> getAllTimesaleHotel(
+    public ResponseEntity<ApiResponse<Slice<HotelSummaryResponse>>> getAllTimesaleHotel(
             @PageableDefault Pageable pageable) {
-        Slice<TimesaleHotelResponse> timesaleHotelResponses = timesaleService.getAllTimesaleHotelData(pageable);
+        Slice<HotelSummaryResponse> timesaleHotelResponses = timesaleService.getAllTimesaleHotelData(pageable);
         return ResponseEntity.ok(ApiResponse.success(timesaleHotelResponses));
     }
 
