@@ -40,7 +40,7 @@ public class Utils {
                 .inAnnex(rnd.nextBoolean()).kitchen(rnd.nextBoolean())
                 .bathtub(rnd.nextBoolean()).heatingSystem(rnd.nextBoolean())
                 .coffeeMachine(rnd.nextBoolean()).refrigerator(rnd.nextBoolean()).terrace(rnd.nextBoolean())
-                .internet(rnd.nextBoolean())
+                .internet(rnd.nextBoolean()).washer(rnd.nextBoolean())
                 .room(room)
                 .build();
     }
