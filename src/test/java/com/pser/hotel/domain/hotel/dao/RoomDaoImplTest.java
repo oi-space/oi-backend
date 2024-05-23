@@ -1,5 +1,6 @@
 package com.pser.hotel.domain.hotel.dao;
 
+import com.pser.hotel.domain.hotel.config.MapperConfig;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.dto.RoomResponse;
@@ -24,7 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import({QueryDslConfig.class})
+@Import({QueryDslConfig.class, MapperConfig.class})
 @ActiveProfiles("test")
 @DisplayName("RoomDaoImpl 테스트")
 class RoomDaoImplTest {

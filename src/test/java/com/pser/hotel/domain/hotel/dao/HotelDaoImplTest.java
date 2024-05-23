@@ -1,5 +1,6 @@
 package com.pser.hotel.domain.hotel.dao;
 
+import com.pser.hotel.domain.hotel.config.MapperConfig;
 import com.pser.hotel.domain.hotel.domain.Facility;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
@@ -23,7 +24,7 @@ import org.springframework.data.domain.Slice;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import({QueryDslConfig.class})
+@Import({QueryDslConfig.class, MapperConfig.class})
 public class HotelDaoImplTest {
     @Autowired
     HotelDao hotelDao;

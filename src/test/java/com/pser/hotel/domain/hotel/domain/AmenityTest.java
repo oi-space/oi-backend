@@ -1,5 +1,6 @@
 package com.pser.hotel.domain.hotel.domain;
 
+import com.pser.hotel.domain.hotel.config.MapperConfig;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.config.QueryDslConfig;
 import java.time.LocalTime;
@@ -16,7 +17,7 @@ import org.springframework.context.annotation.Import;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import({QueryDslConfig.class})
+@Import({QueryDslConfig.class, MapperConfig.class})
 @DisplayName("Amenity 엔티티 테스트")
 @Slf4j
 class AmenityTest {

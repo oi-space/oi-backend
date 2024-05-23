@@ -1,5 +1,6 @@
 package com.pser.hotel.domain.hotel.domain;
 
+import com.pser.hotel.domain.hotel.config.MapperConfig;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.config.QueryDslConfig;
 import jakarta.persistence.EntityManager;
@@ -17,25 +18,26 @@ import org.springframework.context.annotation.Import;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import({QueryDslConfig.class})
+@Import({QueryDslConfig.class, MapperConfig.class})
 @DisplayName("Hotel 엔티티 테스트")
 class HotelTest {
     @Autowired
     TestEntityManager testEntityManager;
     EntityManager em;
     Hotel hotel;
+
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         em = testEntityManager.getEntityManager();
     }
 
     @AfterEach
-    public void clear(){
+    public void clear() {
     }
 
     @Test
     @DisplayName("Hotel 생성 테스트")
-    public void save(){
+    public void save() {
         hotel = createHotel();
         em.persist(hotel);
 
@@ -46,23 +48,23 @@ class HotelTest {
         Assertions.assertThat(hotel.getImages().size()).isEqualTo(2);
     }
 
-    private User createUser(){
+    private User createUser() {
         return User.builder().email("test_email").password("123").build();
     }
 
-    private HotelImage createHotelImage(){
+    private HotelImage createHotelImage() {
         return HotelImage.builder()
                 .imageUrl(getRandomUUID())
                 .hotel(hotel)
                 .build();
     }
 
-    private String getRandomUUID(){
-        return UUID.randomUUID().toString().substring(1,10);
+    private String getRandomUUID() {
+        return UUID.randomUUID().toString().substring(1, 10);
     }
 
-    private Hotel createHotel(){
-        Hotel hotel =Hotel.builder()
+    private Hotel createHotel() {
+        Hotel hotel = Hotel.builder()
                 .name("업체명")
                 .category(HotelCategoryEnum.HOTEL)
                 .description("설명")
