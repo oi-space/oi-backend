@@ -1,6 +1,7 @@
 package com.pser.hotel.domain.hotel.domain;
 
 
+import com.pser.hotel.domain.hotel.config.MapperConfig;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.config.QueryDslConfig;
 import jakarta.persistence.EntityManager;
@@ -18,7 +19,7 @@ import org.springframework.context.annotation.Import;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import({QueryDslConfig.class})
+@Import({QueryDslConfig.class, MapperConfig.class})
 @DisplayName("HotelImage 엔티티 테스트")
 class HotelImageTest {
     @Autowired

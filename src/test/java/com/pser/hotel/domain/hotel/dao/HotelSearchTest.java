@@ -4,6 +4,7 @@ import static com.pser.hotel.domain.hotel.domain.QHotel.hotel;
 import static com.pser.hotel.domain.hotel.domain.QRoom.room;
 import static com.pser.hotel.domain.hotel.util.Utils.createAmenity;
 
+import com.pser.hotel.domain.hotel.config.MapperConfig;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
@@ -45,7 +46,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import({QueryDslConfig.class})
+@Import({QueryDslConfig.class, MapperConfig.class})
 @Transactional
 @Slf4j
 public class HotelSearchTest {
