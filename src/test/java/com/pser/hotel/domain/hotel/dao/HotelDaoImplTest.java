@@ -10,6 +10,7 @@ import com.pser.hotel.domain.hotel.dto.HotelMapper;
 import com.pser.hotel.domain.hotel.dto.HotelMapperImpl;
 import com.pser.hotel.domain.hotel.dto.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
+import com.pser.hotel.domain.hotel.dto.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.dto.TimesaleMapper;
 import com.pser.hotel.domain.hotel.dto.TimesaleMapperImpl;
 import com.pser.hotel.domain.hotel.util.Utils;
@@ -74,7 +75,7 @@ public class HotelDaoImplTest {
     public void nameSearchTest() {
         Pageable pageable = createPageable();
         hotelSearchRequest = createSearchRequestByName(hotel.getName());
-        Slice<HotelResponse> nameResponse = hotelDao.search(hotelSearchRequest, pageable);
+        Slice<HotelSummaryResponse> nameResponse = hotelDao.search(hotelSearchRequest, pageable);
         Assertions.assertThat(nameResponse.getContent()).isNotEmpty();
     }
 
@@ -89,7 +90,7 @@ public class HotelDaoImplTest {
     public void categorySearchTest() {
         Pageable pageable = createPageable();
         hotelSearchRequest = createSearchRequestByCategory(hotel.getCategory());
-        Slice<HotelResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
+        Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
         Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
     }
 
@@ -104,7 +105,7 @@ public class HotelDaoImplTest {
     public void provinceSearchTest() {
         Pageable pageable = createPageable();
         hotelSearchRequest = creatSearchRequestByProvince(hotel.getProvince());
-        Slice<HotelResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
+        Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
         Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
     }
 
@@ -119,7 +120,7 @@ public class HotelDaoImplTest {
     public void districtSearchTest() {
         Pageable pageable = createPageable();
         hotelSearchRequest = createSearchRequestByDistrict(hotel.getDistrict());
-        Slice<HotelResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
+        Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
         Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
     }
 
@@ -134,7 +135,7 @@ public class HotelDaoImplTest {
     public void detailedAddressTest() {
         Pageable pageable = createPageable();
         hotelSearchRequest = createSearchRequestByDetailedAddress(hotel.getDetailedAddress());
-        Slice<HotelResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
+        Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
         Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
     }
 
@@ -149,7 +150,7 @@ public class HotelDaoImplTest {
     public void peopleTest() {
         Pageable pageable = createPageable();
         hotelSearchRequest = createSearchRequestByPeople(room.getMaxCapacity());
-        Slice<HotelResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
+        Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
         Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
     }
 
@@ -164,7 +165,7 @@ public class HotelDaoImplTest {
     public void dateTest() {
         Pageable pageable = createPageable();
         hotelSearchRequest = createSearchRequestByDate();
-        Slice<HotelResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
+        Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
         Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
     }
 

@@ -16,6 +16,7 @@ import com.pser.hotel.domain.hotel.dto.HotelCreateRequest;
 import com.pser.hotel.domain.hotel.dto.HotelMapper;
 import com.pser.hotel.domain.hotel.dto.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
+import com.pser.hotel.domain.hotel.dto.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.dto.HotelUpdateRequest;
 import com.pser.hotel.domain.hotel.util.Utils;
 import com.pser.hotel.domain.member.domain.User;
@@ -98,14 +99,14 @@ public class HotelServiceTest {
         Pageable pageable = createPageable();
 
         List<Hotel> hotels = Utils.createHotels(user, 10);
-        List<HotelResponse> list = createHotelResponseList(hotels);
-        Slice<HotelResponse> pageHotelData = new SliceImpl<>(list, pageable, true);
+        List<HotelSummaryResponse> list = createHotelSummaryList(hotels);
+        Slice<HotelSummaryResponse> pageHotelData = new SliceImpl<>(list, pageable, true);
 
         lenient().when(hotelDao.search(hotelSearchRequest, pageable)).thenReturn(pageHotelData);
 
         //when
         HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
-        Slice<HotelResponse> sliceData = hotelService.searchHotelData(hotelSearchRequest, pageable);
+        Slice<HotelSummaryResponse> sliceData = hotelService.searchHotelData(hotelSearchRequest, pageable);
 
         //then
         Assertions.assertThat(sliceData.getContent().size()).isEqualTo(10);
@@ -321,5 +322,29 @@ public class HotelServiceTest {
             list.add(hotelResponse);
         }
         return list;
+    }
+
+    private List<HotelSummaryResponse> createHotelSummaryList(List<Hotel> hotels) {
+        List<HotelSummaryResponse> list = new ArrayList<>();
+        for(Hotel ele : hotels) {
+            double average = Utils.createAverageRating();
+            int salePrice = Utils.createSalePrice();
+            int previousPirce = salePrice + 5000;
+            HotelSummaryResponse hotelSummaryResponse = createHotelSummaryResponse(ele, average, salePrice, previousPirce);
+            list.add(hotelSummaryResponse);
+        }
+        return list;
+    }
+    private HotelSummaryResponse createHotelSummaryResponse(Hotel ele, double average, int salePrice, int previousPrice) {
+        return HotelSummaryResponse.builder()
+                .id(ele.getId())
+                .name(ele.getName())
+                .category(ele.getCategory())
+                .description(ele.getDescription())
+                .mainImage(ele.getMainImage())
+                .gradeAverage(average)
+                .salePrice(salePrice)
+                .previousPrice(previousPrice)
+                .build();
     }
 }

@@ -11,6 +11,7 @@ import com.pser.hotel.domain.hotel.dto.HotelCreateRequest;
 import com.pser.hotel.domain.hotel.dto.HotelMapper;
 import com.pser.hotel.domain.hotel.dto.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
+import com.pser.hotel.domain.hotel.dto.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.dto.HotelUpdateRequest;
 import com.pser.hotel.domain.member.domain.User;
 import java.util.List;
@@ -41,8 +42,8 @@ public class HotelService {
         return hotelDao.findHotel(id);
     }
 
-    public Slice<HotelResponse> searchHotelData(HotelSearchRequest hotelSearchRequest,
-                                                Pageable pageable) {
+    public Slice<HotelSummaryResponse> searchHotelData(HotelSearchRequest hotelSearchRequest,
+                                                       Pageable pageable) {
         return hotelDao.search(hotelSearchRequest, pageable);
     }
 

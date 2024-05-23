@@ -12,7 +12,8 @@ import com.pser.hotel.domain.hotel.domain.QTimeSale;
 import com.pser.hotel.domain.hotel.dto.HotelMapper;
 import com.pser.hotel.domain.hotel.dto.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
-import com.pser.hotel.domain.hotel.dto.QHotelResponse;
+import com.pser.hotel.domain.hotel.dto.HotelSummaryResponse;
+import com.pser.hotel.domain.hotel.dto.QHotelSummaryResponse;
 import com.pser.hotel.domain.model.GradeEnum;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
@@ -38,40 +39,14 @@ public class HotelDaoImpl implements HotelDaoCustom {
     private final HotelMapper hotelMapper;
 
     @Override
-    public Slice<HotelResponse> search(HotelSearchRequest hotelSearchRequest, Pageable pageable) {
-        List<HotelResponse> content = queryFactory
-                .select(new QHotelResponse(
+    public Slice<HotelSummaryResponse> search(HotelSearchRequest hotelSearchRequest, Pageable pageable) {
+        List<HotelSummaryResponse> content = queryFactory
+                .select(new QHotelSummaryResponse(
                         QHotel.hotel.id,
-                        QHotel.hotel.user.id,
                         QHotel.hotel.name,
                         QHotel.hotel.category,
                         QHotel.hotel.description,
-                        QHotel.hotel.notice,
-                        QHotel.hotel.province,
-                        QHotel.hotel.city,
-                        QHotel.hotel.district,
-                        QHotel.hotel.detailedAddress,
-                        QHotel.hotel.latitude,
-                        QHotel.hotel.longtitude,
-                        QHotel.hotel.mainImage,
-                        QHotel.hotel.businessNumber,
-                        QHotel.hotel.certUrl,
-                        QHotel.hotel.visitGuidance,
-                        QHotel.hotel.facility.parkingLot,
-                        QHotel.hotel.facility.wifi,
-                        QHotel.hotel.facility.barbecue,
-                        QHotel.hotel.facility.sauna,
-                        QHotel.hotel.facility.swimmingPool,
-                        QHotel.hotel.facility.restaurant,
-                        QHotel.hotel.facility.roofTop,
-                        QHotel.hotel.facility.fitness,
-                        QHotel.hotel.facility.dryer,
-                        QHotel.hotel.facility.breakfast,
-                        QHotel.hotel.facility.smokingArea,
-                        QHotel.hotel.facility.allTimeDesk,
-                        QHotel.hotel.facility.luggageStorage,
-                        QHotel.hotel.facility.snackBar,
-                        QHotel.hotel.facility.petFriendly
+                        QHotel.hotel.mainImage
                 ))
                 .from(QHotel.hotel)
                 .leftJoin(QRoom.room).on(QRoom.room.hotel.id.eq(QHotel.hotel.id))
@@ -106,18 +81,18 @@ public class HotelDaoImpl implements HotelDaoCustom {
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        content = content.stream().map(hotelResponse -> {
+        content = content.stream().map(hotelSummaryResponse -> {
             List<String> images = queryFactory
                     .select(QHotelImage.hotelImage.imageUrl)
                     .from(QHotelImage.hotelImage)
-                    .where(QHotelImage.hotelImage.hotel.id.eq(hotelResponse.getId()))
+                    .where(QHotelImage.hotelImage.hotel.id.eq(hotelSummaryResponse.getId()))
                     .fetch();
-            hotelResponse.setHotelImageUrls(images);
-            hotelResponse.setGradeAverage(getHotelGrade(hotelResponse.getId()));
-            int previousPrice = getPreviousPrice(hotelResponse.getId());
-            hotelResponse.setPreviousPrice(previousPrice);
-            hotelResponse.setSalePrice(getSalePrice(hotelResponse.getId(), previousPrice));
-            return hotelResponse;
+            hotelSummaryResponse.setHotelImageUrls(images);
+            hotelSummaryResponse.setGradeAverage(getHotelGrade(hotelSummaryResponse.getId()));
+            int previousPrice = getPreviousPrice(hotelSummaryResponse.getId());
+            hotelSummaryResponse.setPreviousPrice(previousPrice);
+            hotelSummaryResponse.setSalePrice(getSalePrice(hotelSummaryResponse.getId(), previousPrice));
+            return hotelSummaryResponse;
         }).collect(Collectors.toList());
 
         boolean hasNext = false;

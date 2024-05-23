@@ -4,10 +4,10 @@ import com.pser.hotel.domain.hotel.application.HotelService;
 import com.pser.hotel.domain.hotel.dto.HotelCreateRequest;
 import com.pser.hotel.domain.hotel.dto.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
+import com.pser.hotel.domain.hotel.dto.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.dto.HotelUpdateRequest;
 import com.pser.hotel.global.common.response.ApiResponse;
 import java.net.URI;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -43,8 +43,8 @@ public class HotelApi {
     }
 
     @GetMapping("/search") // 숙소 검색 조회 api
-    public ResponseEntity<ApiResponse<Slice<HotelResponse>>> searchHotel(HotelSearchRequest hotelSearchRequest, @PageableDefault Pageable pageable){
-        Slice<HotelResponse> result = hotelService.searchHotelData(hotelSearchRequest, pageable);
+    public ResponseEntity<ApiResponse<Slice<HotelSummaryResponse>>> searchHotel(HotelSearchRequest hotelSearchRequest, @PageableDefault Pageable pageable){
+        Slice<HotelSummaryResponse> result = hotelService.searchHotelData(hotelSearchRequest, pageable);
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 
