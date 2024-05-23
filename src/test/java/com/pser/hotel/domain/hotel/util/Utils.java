@@ -187,11 +187,15 @@ public class Utils {
     }
 
     public static TimeSale createTimesale(Room room) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startAt = now.minusDays(1);
+        LocalDateTime endAt = now.plusDays(1);
+
         return TimeSale.builder()
                 .room(room)
                 .price(99000)
-                .startAt(LocalDateTime.of(2024, 5, 22, 12, 30))
-                .endAt(LocalDateTime.of(2024, 5, 22, 18, 30))
+                .startAt(startAt)
+                .endAt(endAt)
                 .build();
     }
 }
