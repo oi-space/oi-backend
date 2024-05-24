@@ -17,11 +17,15 @@ import com.pser.hotel.domain.hotel.kafka.producer.ReservationStatusProducer;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.common.PaymentDto;
 import com.pser.hotel.global.common.RefundDto;
+import com.pser.hotel.global.common.StatusUpdateDto;
+import com.pser.hotel.global.error.SameStatusException;
 import com.pser.hotel.global.error.ValidationFailedException;
+import io.vavr.control.Try;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -45,6 +49,12 @@ public class ReservationService {
 
     public ReservationResponse getById(long reservationId) {
         Reservation reservation = reservationDao.findById(reservationId)
+                .orElseThrow();
+        return reservationMapper.toResponse(reservation);
+    }
+
+    public ReservationResponse getByMerchantUid(String merchantUid) {
+        Reservation reservation = reservationDao.findByMerchantUid(merchantUid)
                 .orElseThrow();
         return reservationMapper.toResponse(reservation);
     }
@@ -115,80 +125,60 @@ public class ReservationService {
 
     @Transactional
     public void updateToPaymentValidationRequired(PaymentDto paymentDto) {
-        Reservation reservation = reservationDao.findByMerchantUid(paymentDto.getMerchantUid())
-                .orElseThrow();
-        ReservationStatusEnum status = reservation.getStatus();
-        ReservationStatusEnum targetStatus = ReservationStatusEnum.PAYMENT_VALIDATION_REQUIRED;
+        Try.run(() -> {
+                    StatusUpdateDto<ReservationStatusEnum> statusUpdateDto = StatusUpdateDto.<ReservationStatusEnum>builder()
+                            .merchantUid(paymentDto.getMerchantUid())
+                            .targetStatus(ReservationStatusEnum.PAYMENT_VALIDATION_REQUIRED)
+                            .build();
+                    updateStatus(statusUpdateDto, reservation -> {
+                        int paidAmount = paymentDto.getAmount();
 
-        int paidAmount = paymentDto.getAmount();
-
-        if (reservation.getPrice() != paidAmount) {
-            throw new ValidationFailedException("결제 금액 불일치");
-        }
-
-        if (status.equals(ReservationStatusEnum.CREATED)) {
-            reservation.updateImpUid(paymentDto.getImpUid());
-            reservation.updateStatus(targetStatus);
-            reservationStatusProducer.producePaymentValidationRequired(paymentDto);
-        }
+                        if (reservation.getPrice() != paidAmount) {
+                            throw new ValidationFailedException("결제 금액 불일치");
+                        }
+                        reservation.updateImpUid(paymentDto.getImpUid());
+                    });
+                })
+                .onSuccess(unused -> reservationStatusProducer.producePaymentValidationRequired(paymentDto))
+                .recover(SameStatusException.class, e -> null)
+                .get();
     }
 
     @Transactional
-    public void updateToBeforeCheckin(PaymentDto paymentDto) {
-        Reservation reservation = reservationDao.findByMerchantUid(paymentDto.getMerchantUid())
-                .orElseThrow();
-        ReservationStatusEnum status = reservation.getStatus();
-        ReservationStatusEnum targetStatus = ReservationStatusEnum.BEFORE_CHECKIN;
-        int paidAmount = paymentDto.getAmount();
-
-        if (reservation.getPrice() != paidAmount) {
-            throw new ValidationFailedException("결제 금액 불일치");
-        }
-
-        if (status.equals(ReservationStatusEnum.PAYMENT_VALIDATION_REQUIRED)) {
-            reservation.updateStatus(targetStatus);
-        }
+    public void updateStatus(StatusUpdateDto<ReservationStatusEnum> statusUpdateDto) {
+        updateStatus(statusUpdateDto, null);
     }
 
     @Transactional
-    public void rollbackToCreated(String merchantUid) {
-        Reservation reservation = reservationDao.findByMerchantUid(merchantUid)
+    public void updateStatus(StatusUpdateDto<ReservationStatusEnum> statusUpdateDto, Consumer<Reservation> validator) {
+        Reservation reservation = reservationDao.findById(statusUpdateDto.getId())
                 .orElseThrow();
-        ReservationStatusEnum status = reservation.getStatus();
-        ReservationStatusEnum targetStatus = ReservationStatusEnum.CREATED;
+        ReservationStatusEnum targetStatus = (ReservationStatusEnum) statusUpdateDto.getTargetStatus();
 
-        if (!status.equals(targetStatus)) {
-            reservation.updateStatus(targetStatus);
+        if (validator != null) {
+            validator.accept(reservation);
         }
-    }
 
-    @Transactional
-    public void updateToRefundRequired(PaymentDto paymentDto) {
-        Reservation reservation = reservationDao.findByMerchantUid(paymentDto.getMerchantUid())
-                .orElseThrow();
-        ReservationStatusEnum targetStatus = ReservationStatusEnum.REFUND_REQUIRED;
-
-        if (!targetStatus.equals(reservation.getStatus())) {
-            reservation.updateStatus(targetStatus);
-            RefundDto refundDto = RefundDto.builder()
-                    .impUid(paymentDto.getImpUid())
-                    .merchantUid(paymentDto.getMerchantUid())
-                    .build();
-            reservationStatusProducer.produceRefundRequired(refundDto);
-        }
-    }
-
-    @Transactional
-    public void updateToAuctionOngoingStatus(long reservationId) {
-        Reservation reservation = reservationDao.findById(reservationId)
-                .orElseThrow();
-        ReservationStatusEnum status = reservation.getStatus();
-        ReservationStatusEnum targetStatus = ReservationStatusEnum.AUCTION_ONGOING;
-
-        if (status.equals(targetStatus)) {
-            return;
-        }
         reservation.updateStatus(targetStatus);
+    }
+
+    @Transactional
+    public void rollbackStatus(StatusUpdateDto<ReservationStatusEnum> statusUpdateDto) {
+        rollbackStatus(statusUpdateDto, null);
+    }
+
+    @Transactional
+    public void rollbackStatus(StatusUpdateDto<ReservationStatusEnum> statusUpdateDto,
+                               Consumer<Reservation> validator) {
+        Reservation reservation = reservationDao.findById(statusUpdateDto.getId())
+                .orElseThrow();
+        ReservationStatusEnum targetStatus = (ReservationStatusEnum) statusUpdateDto.getTargetStatus();
+
+        if (validator != null) {
+            validator.accept(reservation);
+        }
+
+        reservation.rollbackStatusTo(targetStatus);
     }
 
     public ReservationDeleteResponseDto delete(String roomName) {

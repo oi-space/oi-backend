@@ -14,46 +14,40 @@ public enum AuctionStatusEnum implements StatusEnum {
     CREATED(0) {
         @Override
         public List<StatusEnum> getNext() {
-            return List.of(ONGOING);
+            return List.of(PAYMENT_REQUIRED, NO_BID);
         }
     },
-    ONGOING(1) {
+    PAYMENT_REQUIRED(1) {
         @Override
         public List<StatusEnum> getNext() {
-            return List.of(PAYMENT_VALIDATION_REQUIRED, FAILURE);
+            return List.of(PAYMENT_VALIDATION_REQUIRED, BID_REFUSAL, REFUND_REQUIRED);
         }
     },
-    PAYMENT_REQUIRED(2) {
+    PAYMENT_VALIDATION_REQUIRED(2) {
         @Override
         public List<StatusEnum> getNext() {
-            return List.of(PAYMENT_VALIDATION_REQUIRED, PAYMENT_DENIAL);
+            return List.of(PAID, BID_REFUSAL, REFUND_REQUIRED);
         }
     },
-    PAYMENT_VALIDATION_REQUIRED(3) {
-        @Override
-        public List<StatusEnum> getNext() {
-            return List.of(PAYMENT_REQUIRED, PAID, PAYMENT_DENIAL, REFUND_REQUIRED);
-        }
-    },
-    REFUND_REQUIRED(4) {
+    REFUND_REQUIRED(3) {
         @Override
         public List<StatusEnum> getNext() {
             return List.of(PAYMENT_REQUIRED);
         }
     },
-    PAID(5) {
+    PAID(4) {
         @Override
         public List<StatusEnum> getNext() {
             return null;
         }
     },
-    PAYMENT_DENIAL(6) {
+    BID_REFUSAL(5) {
         @Override
         public List<StatusEnum> getNext() {
             return null;
         }
     },
-    FAILURE(7) {
+    NO_BID(6) {
         @Override
         public List<StatusEnum> getNext() {
             return null;

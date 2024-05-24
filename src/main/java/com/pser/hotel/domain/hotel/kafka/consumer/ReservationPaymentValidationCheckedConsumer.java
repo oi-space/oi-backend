@@ -1,27 +1,18 @@
 package com.pser.hotel.domain.hotel.kafka.consumer;
 
 import com.pser.hotel.domain.hotel.application.ReservationService;
-import com.pser.hotel.domain.hotel.dto.ReservationDto;
-import com.pser.hotel.domain.hotel.quartz.ReservationClosingJob;
+import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
+import com.pser.hotel.domain.hotel.kafka.producer.ReservationStatusProducer;
 import com.pser.hotel.global.common.PaymentDto;
+import com.pser.hotel.global.common.RefundDto;
+import com.pser.hotel.global.common.StatusUpdateDto;
 import com.pser.hotel.global.config.kafka.KafkaTopics;
+import com.pser.hotel.global.error.SameStatusException;
 import com.pser.hotel.global.error.ValidationFailedException;
 import io.vavr.control.Try;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.quartz.JobBuilder;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
 import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
@@ -32,21 +23,48 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ReservationPaymentValidationCheckedConsumer {
     private final ReservationService reservationService;
+    private final ReservationStatusProducer reservationStatusProducer;
 
     @RetryableTopic(kafkaTemplate = "paymentDtoValueKafkaTemplate", attempts = "5")
     @KafkaListener(topics = KafkaTopics.RESERVATION_PAYMENT_VALIDATION_CHECKED, groupId = "${kafka.consumer-group-id}", containerFactory = "paymentDtoValueListenerContainerFactory")
     public void updateToPaymentValidationChecked(PaymentDto paymentDto) {
-        Try.run(() -> reservationService.updateToBeforeCheckin(paymentDto))
-                .recover(ValidationFailedException.class, (e) -> {
-                    reservationService.updateToRefundRequired(paymentDto);
-                    return null;
-                })
+        Try.run(() -> check(paymentDto))
+                .recover(SameStatusException.class, (e) -> null)
+                .recover(ValidationFailedException.class, (e) -> refund(paymentDto))
                 .get();
     }
 
     @DltHandler
     public void dltHandler(ConsumerRecord<String, PaymentDto> record) {
         PaymentDto paymentDto = record.value();
-        reservationService.updateToRefundRequired(paymentDto);
+        refund(paymentDto);
+    }
+
+    private void check(PaymentDto paymentDto) {
+        StatusUpdateDto<ReservationStatusEnum> statusUpdateDto = StatusUpdateDto.<ReservationStatusEnum>builder()
+                .merchantUid(paymentDto.getMerchantUid())
+                .targetStatus(ReservationStatusEnum.BEFORE_CHECKIN)
+                .build();
+        reservationService.updateStatus(statusUpdateDto, reservation -> {
+            int paidAmount = paymentDto.getAmount();
+            if (reservation.getPrice() != paidAmount) {
+                throw new ValidationFailedException("결제 금액 불일치");
+            }
+        });
+    }
+
+    private Void refund(PaymentDto paymentDto) {
+        StatusUpdateDto<ReservationStatusEnum> statusUpdateDto = StatusUpdateDto.<ReservationStatusEnum>builder()
+                .merchantUid(paymentDto.getMerchantUid())
+                .targetStatus(ReservationStatusEnum.REFUND_REQUIRED)
+                .build();
+        reservationService.updateStatus(statusUpdateDto);
+
+        RefundDto refundDto = RefundDto.builder()
+                .impUid(paymentDto.getImpUid())
+                .merchantUid(paymentDto.getMerchantUid())
+                .build();
+        reservationStatusProducer.produceRefundRequired(refundDto);
+        return null;
     }
 }
