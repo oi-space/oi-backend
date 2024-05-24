@@ -1,31 +1,36 @@
 package com.pser.hotel.domain.hotel.dao;
 
 import static com.pser.hotel.domain.hotel.domain.QHotel.hotel;
+import static com.pser.hotel.domain.hotel.domain.QReservation.reservation;
 import static com.pser.hotel.domain.hotel.domain.QRoom.room;
 import static com.pser.hotel.domain.hotel.util.Utils.createAmenity;
 
 import com.pser.hotel.domain.hotel.config.MapperConfig;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
+import com.pser.hotel.domain.hotel.domain.Reservation;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.config.QueryDslConfig;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,16 +42,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
-import org.springframework.transaction.support.TransactionTemplate;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({QueryDslConfig.class, MapperConfig.class})
+@DisplayName("Hotel 검색 테스트")
 @Transactional
 @Slf4j
 public class HotelSearchTest {
@@ -55,17 +56,24 @@ public class HotelSearchTest {
     JPAQueryFactory queryFactory;
 
     @Autowired
+    UserDao userDao;
+
+    @Autowired
     RoomDao roomDao;
+
+    @Autowired
+    ReservationDao reservationDao;
 
     @Autowired
     EntityManager em;
 
-    @Autowired
-    PlatformTransactionManager transactionManager;
-
     Random rnd = new Random();
 
-    Integer confirmMaxCapacity = 0;
+    List<Hotel> hotels = new ArrayList<>();
+
+    List<Room> rooms = new ArrayList<>();
+
+    List<Reservation> reservations = new ArrayList<>();
 
     List<String> locations = List.of("서울", "경기", "인천", "강원", "충북", "충남", "제주");
 
@@ -81,47 +89,240 @@ public class HotelSearchTest {
 
     @BeforeEach
     public void setUp() {
-        em.createQuery("DELETE FROM Room").executeUpdate();
+        // @Transactional 어노테이션은 데이터 정합성을 위해 AUTO_INCREMENT를 롤백해주지 않아서 nativeQuery를 작성했습니다.
+        this.em.createNativeQuery("ALTER TABLE user AUTO_INCREMENT = 1").executeUpdate();
+        this.em.createNativeQuery("ALTER TABLE hotel AUTO_INCREMENT = 1").executeUpdate();
+        this.em.createNativeQuery("ALTER TABLE room AUTO_INCREMENT = 1").executeUpdate();
+        this.em.createNativeQuery("ALTER TABLE reservation AUTO_INCREMENT = 1").executeUpdate();
     }
 
     @Test
-    @DisplayName("여행지 (province) 키워드에 따른 검색 테스트")
-    public void searchByLocation() {
+    @Transactional
+    @DisplayName("keyword 조건에 따른 호텔 검색 테스트")
+    public void searchTestByKeyword() {
         // Given
-        createTestData(rnd.nextInt(10));
         String keyword = locations.get(rnd.nextInt(0, locations.size()));
         HotelSearchRequest request = HotelSearchRequest.builder()
-                .province(keyword).build();
+                .keyword(keyword)
+                .build();
+
+        createHotelAndRoomData(10, 20);
+        createReservationData(30);
 
         // When
-        List<Hotel> fetch = queryFactory.selectFrom(hotel)
+        List<Hotel> fetch = queryFactory.select(hotel)
+                .from(hotel)
                 .where(
-                        provinceEq(request.getProvince())
+                        hotelIdIn(request),
+                        provinceEq(request.getKeyword())
                 )
                 .fetch();
 
         // Then
-        Assertions.assertThat(fetch.size()).isEqualTo(locationMap.get(keyword));
+        Set<Long> collect = hotels.stream()
+                .filter(hotel -> hotel.getProvince().equals(request.getKeyword()))
+                .map(hotel -> hotel.getId())
+                .collect(Collectors.toSet());
+
+        fetch.stream().forEach(hotel -> {
+            Assertions.assertThat(collect.contains(hotel.getId())).isTrue();
+        });
+        Assertions.assertThat(collect.size()).isEqualTo(fetch.size());
     }
 
     @Test
-    @DisplayName("최대 수용인원 조건에 따른 검색 테스트")
-    public void searchByMaxCapacity() {
+    @Transactional
+    @DisplayName("keyword, maxCapacity 조건에 따른 호텔 검색 테스트")
+    public void searchTestByKeywordAndMaxCapacity() {
         // Given
         Integer requestMaxCapacity = rnd.nextInt(6, 16);
-        createTestData(requestMaxCapacity);
+
+        String keyword = locations.get(rnd.nextInt(0, locations.size()));
+
+        HotelSearchRequest request = HotelSearchRequest.builder()
+                .keyword(keyword)
+                .people(requestMaxCapacity)
+                .build();
+
+        createHotelAndRoomData(10, 20);
+        createReservationData(30);
 
         // When
-        List<Long> ids = queryFactory.select(room.hotel.id)
-                .from(room)
-                .where(maxCapacityGt(requestMaxCapacity))
-                .distinct().fetch();
+//        List<Long> ids = queryFactory.select(room.hotel.id)
+//                .from(room)
+//                .where(
+//                        maxCapacityGt(request.getPeople())
+//                )
+//                .distinct().fetch();
 
-        List<Hotel> fetch = queryFactory.selectFrom(hotel)
-                .where(hotel.id.in(ids))
+        List<Hotel> fetch = queryFactory.select(hotel)
+                .from(hotel)
+                .where(
+                        hotelIdIn(request),
+                        provinceEq(request.getKeyword())
+                )
                 .fetch();
+
         // Then
-        Assertions.assertThat(fetch.size()).isEqualTo(confirmMaxCapacity);
+        Set<Long> collect = rooms.stream()
+                .filter(room -> room.getMaxCapacity() > request.getPeople())
+                .map(room -> room.getHotel())
+                .filter(hotel -> hotel.getProvince().equals(request.getKeyword()))
+                .map(hotel -> hotel.getId())
+                .collect(Collectors.toSet());
+
+        fetch.stream().forEach(hotel -> {
+            Assertions.assertThat(collect.contains(hotel.getId())).isTrue();
+        });
+        Assertions.assertThat(collect.size()).isEqualTo(fetch.size());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("keyword, searchStartAt, searchEndAt 조건에 따른 호텔 검색 테스트")
+    public void searchTestByKeywordAndSearchStartAtAndSearchEndAt() {
+        // Given
+        String keyword = locations.get(rnd.nextInt(0, locations.size()));
+
+        LocalDate startAt = getRandomDateBetween(LocalDate.of(2024, 4, 10), LocalDate.of(2024, 4, 25));
+        LocalDate endAt = startAt.plusDays(2);
+
+        HotelSearchRequest request = HotelSearchRequest.builder()
+                .keyword(keyword)
+                .searchStartAt(startAt)
+                .searchEndAt(endAt)
+                .build();
+
+        createHotelAndRoomData(10, 20);
+        createReservationData(30);
+
+        // When
+//        List<Long> ids = queryFactory.select(room.hotel.id)
+//                .from(room)
+//                .innerJoin(reservation)
+//                .on(room.id.eq(reservation.room.id))
+//                .where(
+//                        searchCondition(request)
+//                )
+//                .distinct().fetch();
+
+        List<Hotel> fetch = queryFactory.select(hotel)
+                .from(hotel)
+                .where(
+                        hotelIdIn(request),
+                        provinceEq(request.getKeyword())
+                )
+                .fetch();
+
+        // Then
+        Set<Long> collect = reservations.stream()
+                .filter(reservation -> (reservation.getEndAt().isBefore(request.getSearchStartAt().plusDays(1))
+                        || reservation.getStartAt().isAfter(request.getSearchEndAt())
+                )).map(e -> e.getRoom())
+                .map(e -> e.getHotel())
+                .filter(e -> e.getProvince().equals(request.getKeyword()))
+                .map(e -> e.getId())
+                .collect(Collectors.toSet());
+
+        fetch.stream().forEach(hotel -> {
+            Assertions.assertThat(collect.contains(hotel.getId())).isTrue();
+        });
+        Assertions.assertThat(collect.size()).isEqualTo(fetch.size());
+    }
+
+
+    @Test
+    @Transactional
+    @DisplayName("keyword, maxCapacity, searchStartAt, searchEndAt 조건에 따른 호텔 검색 테스트")
+    public void searchTestByKeywordAndMaxCapacityAndSearchStartAtAndSearchEndAt() {
+        // Given
+        Integer requestMaxCapacity = rnd.nextInt(6, 16);
+
+        String keyword = locations.get(rnd.nextInt(0, locations.size()));
+
+        LocalDate startAt = getRandomDateBetween(LocalDate.of(2024, 4, 10), LocalDate.of(2024, 4, 25));
+        LocalDate endAt = startAt.plusDays(2);
+
+        HotelSearchRequest request = HotelSearchRequest.builder()
+                .keyword(keyword)
+                .people(requestMaxCapacity)
+                .searchStartAt(startAt)
+                .searchEndAt(endAt)
+                .build();
+
+        createHotelAndRoomData(10, 20);
+        createReservationData(30);
+
+        // When
+//        List<Long> ids = queryFactory.select(room.hotel.id)
+//                .from(room)
+//                .innerJoin(reservation)
+//                .on(room.id.eq(reservation.room.id))
+//                .where(
+//                        searchCondition(request)
+//                )
+//                .distinct().fetch();
+
+        List<Hotel> fetch = queryFactory.select(hotel)
+                .from(hotel)
+                .where(
+                        hotelIdIn(request),
+                        provinceEq(request.getKeyword())
+                )
+                .fetch();
+
+        // Then
+        Set<Long> collect = reservations.stream()
+                .filter(reservation -> (reservation.getEndAt().isBefore(request.getSearchStartAt().plusDays(1))
+                        || reservation.getStartAt().isAfter(request.getSearchEndAt())
+                )).map(e -> e.getRoom())
+                .filter(e -> e.getMaxCapacity() > request.getPeople())
+                .map(e -> e.getHotel())
+                .filter(e -> e.getProvince().equals(request.getKeyword()))
+                .map(e -> e.getId())
+                .collect(Collectors.toSet());
+
+        fetch.stream().forEach(hotel -> {
+            Assertions.assertThat(collect.contains(hotel.getId())).isTrue();
+        });
+        Assertions.assertThat(collect.size()).isEqualTo(fetch.size());
+    }
+
+    private Predicate hotelIdIn(HotelSearchRequest request) {
+        if (request.getPeople() == null && (request.getSearchStartAt() == null || request.getSearchEndAt() == null)) {
+            return null;
+        } else if (request.getSearchStartAt() == null || request.getSearchEndAt() == null) {
+            return hotel.id.in(
+                    JPAExpressions.select(room.hotel.id)
+                            .from(room)
+                            .where(
+                                    maxCapacityGt(request.getPeople())
+                            )
+                            .distinct()
+            );
+        }
+        return hotel.id.in(
+                JPAExpressions.select(room.hotel.id)
+                        .from(room)
+                        .innerJoin(reservation)
+                        .on(room.id.eq(reservation.room.id))
+                        .where(
+                                searchCondition(request)
+                        ).distinct()
+        );
+    }
+
+    private BooleanBuilder searchCondition(HotelSearchRequest request) {
+        return new BooleanBuilder()
+                .and(maxCapacityGt(request.getPeople()))
+                .and(searchDateBetween(request.getSearchStartAt(), request.getSearchEndAt()));
+    }
+
+    private BooleanExpression searchDateBetween(LocalDate startAt, LocalDate endAt) {
+        return startAt != null && endAt != null ?
+                reservation.endAt.loe(startAt)
+                        .or(reservation.startAt.gt(endAt))
+                : null;
     }
 
     private BooleanExpression maxCapacityGt(Integer requestMaxCapacity) {
@@ -132,45 +333,53 @@ public class HotelSearchTest {
         return province != null ? hotel.province.eq(province) : null;
     }
 
-    public void createTestData(int maxCapacity) {
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
+    // 호텔 생성 개수 = hotelCount * 10
+    // 객실 생성 개수 = 호텔 생성 개수 * roomCount
+    public void createHotelAndRoomData(int hotelCount, int roomCount) {
+        IntStream.rangeClosed(1, 10).forEach(i -> {
+            String location = locations.get(rnd.nextInt(0, locations.size()));
 
-        List<? extends Future<?>> futures = Stream.generate(
-                () -> executorService.submit(() -> {
-                    TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
-                    transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-                    transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-                        @Override
-                        protected void doInTransactionWithoutResult(TransactionStatus status) {
-                            String location = locations.get(rnd.nextInt(0, locations.size()));
-                            locationMap.put(location, locationMap.get(location) + 10);
-                            createHotels(10, location, "시흥시",
-                                    "능곡동").stream().forEach(hotel -> {
-                                List<Room> rooms = IntStream.rangeClosed(1, 5)
-                                        .mapToObj(e -> {
-                                            Room room = createRoom(hotel);
-                                            createAmenity(room);
-                                            return room;
-                                        }).toList();
-                                if (rooms.stream().filter(e -> e.getMaxCapacity() > maxCapacity).toList().size() > 0) {
-                                    confirmMaxCapacity++;
-                                }
-                                roomDao.saveAll(rooms);
-                            });
-                        }
-                    });
-                })
-        ).limit(10).toList();
+            locationMap.put(location, locationMap.get(location) + hotelCount);
 
-        futures.forEach(future -> {
-            try {
-                future.get();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
-            }
+            createHotels(hotelCount, location, randomUUID(),
+                    randomUUID()).stream().forEach(hotel -> {
+                List<Room> saveRooms = IntStream.rangeClosed(1, roomCount)
+                        .mapToObj(e -> {
+                            Room room = createRoom(hotel);
+                            createAmenity(room);
+                            return room;
+                        }).toList();
+                rooms.addAll(saveRooms);
+                roomDao.saveAll(saveRooms);
+            });
         });
+    }
+
+    // idx 개수 만큼 Reservation 생성
+    public void createReservationData(int idx) {
+        IntStream.rangeClosed(1, idx).forEach(e -> {
+            User user = userDao.findById(rnd.nextLong(1, 10)).get();
+            Room room = roomDao.findById(rnd.nextLong(1, 2000)).get();
+
+            LocalDate startAt = getRandomDateBetween(LocalDate.of(2024, 4, 10), LocalDate.of(2024, 4, 25));
+            LocalDate endAt = startAt.plusDays(2);
+            Reservation saveReservation = createReservation(user, room, startAt, endAt);
+            reservationDao.save(saveReservation);
+            reservations.add(saveReservation);
+        });
+    }
+
+    public Reservation createReservation(User user, Room room, LocalDate startAt, LocalDate endAt) {
+        return Reservation.builder()
+                .price(1000)
+                .startAt(startAt)
+                .endAt(endAt)
+                .visitorCount(5)
+                .adultCount(2)
+                .childCount(3)
+                .user(user)
+                .room(room)
+                .build();
     }
 
     private User createUser() {
@@ -201,11 +410,13 @@ public class HotelSearchTest {
     }
 
     public List<Hotel> createHotels(int idx, String province, String city, String district) {
-        return IntStream.rangeClosed(1, idx)
+        List<Hotel> saveHotels = IntStream.rangeClosed(1, idx)
                 .mapToObj(e -> {
                     User user = createUser();
                     return createHotel(province, city, district, user);
                 }).toList();
+        hotels.addAll(saveHotels);
+        return saveHotels;
     }
 
     public Room createRoom(Hotel hotel) {
@@ -225,6 +436,14 @@ public class HotelSearchTest {
 
     private Pageable createPageable(int offset, int size) {
         return PageRequest.of(offset, size);
+    }
+
+    public static LocalDate getRandomDateBetween(LocalDate startDate, LocalDate endDate) {
+        long startEpochDay = startDate.toEpochDay();
+        long endEpochDay = endDate.toEpochDay();
+        long randomEpochDay = ThreadLocalRandom.current().nextLong(startEpochDay, endEpochDay + 1);
+
+        return LocalDate.ofEpochDay(randomEpochDay);
     }
 
     public String randomUUID() {
