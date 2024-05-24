@@ -81,7 +81,7 @@ public class ReservationService {
         Reservation reservation = reservationDao.findByRoomName(roomName)
                 .orElseThrow(() -> new IllegalArgumentException("reservation not found"));
 
-        reservationMapper.updateReservationInfoFromRequest(reservationUpdateRequestDto, reservation);
+        reservationMapper.updateReservationFromDto(reservationUpdateRequestDto, reservation);
         Reservation save = reservationDao.save(reservation);
 
         // 차후에 user를 추가하고싶으시면 user, room dao에서 불러오시면 됩니다.

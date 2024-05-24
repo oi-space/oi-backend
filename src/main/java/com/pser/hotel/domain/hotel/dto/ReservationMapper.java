@@ -8,13 +8,14 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ReservationMapper {
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateReservationInfoFromRequest(ReservationUpdateRequestDto reservationUpdateRequestDto,
-                                          @MappingTarget Reservation reservation);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+    void updateReservationFromDto(ReservationUpdateRequestDto reservationUpdateRequestDto,
+                                  @MappingTarget Reservation reservation);
 
     ReservationResponse toResponse(Reservation reservation);
 
