@@ -3,12 +3,14 @@ package com.pser.hotel.global.common.request;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class SearchQuery {
     private String keyword;
 

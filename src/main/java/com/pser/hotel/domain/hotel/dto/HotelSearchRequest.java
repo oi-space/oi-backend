@@ -7,11 +7,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class HotelSearchRequest extends SearchQuery {
+
+    private Long nextCursorId;
+
+    private LocalDateTime nextCursorCreatedAt;
 
     private String name;
 
@@ -61,10 +67,12 @@ public class HotelSearchRequest extends SearchQuery {
 
     private LocalDate searchEndAt;
 
+
     @Builder
     public HotelSearchRequest(String keyword, LocalDateTime createdAfter, LocalDateTime createdBefore,
-                              LocalDateTime updatedAfter, LocalDateTime updatedBefore, String name,
-                              HotelCategoryEnum category, String province,
+                              LocalDateTime updatedAfter, LocalDateTime updatedBefore, Long nextCursorId,
+                              LocalDateTime nextCursorCreatedAt,
+                              String name, HotelCategoryEnum category, String province,
                               String city, String district, String detailedAddress, Boolean parkingLot, Boolean wifi,
                               Boolean barbecue, Boolean sauna, Boolean swimmingPool,
                               Boolean restaurant, Boolean roofTop, Boolean fitness, Boolean dryer, Boolean breakfast,
@@ -72,6 +80,8 @@ public class HotelSearchRequest extends SearchQuery {
                               Boolean allTimeDesk, Boolean luggageStorage, Boolean snackBar, Boolean petFriendly,
                               Integer people, LocalDate searchStartAt, LocalDate searchEndAt) {
         super(keyword, createdAfter, createdBefore, updatedAfter, updatedBefore);
+        this.nextCursorId = nextCursorId;
+        this.nextCursorCreatedAt = nextCursorCreatedAt;
         this.name = name;
         this.category = category;
         this.province = province;
