@@ -99,11 +99,25 @@ public class ReservationService {
     }
 
     @Transactional
-    public long refund(long reservationId) {
+    public void refund(long reservationId) {
         Reservation reservation = reservationDao.findById(reservationId)
                 .orElseThrow();
-        RefundDto.builder().build();
-        return 1;
+        int price = reservation.getPrice();
+        LocalDate reservationStartDate = reservation.getStartAt();
+        int refundPrice = calculateRefundPrice(price, reservationStartDate);
+        RefundDto refundDto = RefundDto.builder()
+                .impUid(reservation.getImpUid())
+                .merchantUid(reservation.getMerchantUid())
+                .amount(refundPrice)
+                .build();
+
+        StatusUpdateDto<ReservationStatusEnum> statusUpdateDto = StatusUpdateDto.<ReservationStatusEnum>builder()
+                .id(reservationId)
+                .targetStatus(ReservationStatusEnum.REFUND_REQUIRED)
+                .build();
+        updateStatus(statusUpdateDto);
+
+        reservationStatusProducer.produceRefundRequired(refundDto);
     }
 
     @Transactional
@@ -214,5 +228,17 @@ public class ReservationService {
                 .orElseThrow();
         ReservationStatusEnum targetStatus = ReservationStatusEnum.PAST;
         reservation.updateStatus(targetStatus);
+    }
+
+    private int calculateRefundPrice(int price, LocalDate reservationStartDate) {
+        LocalDate now = LocalDate.now();
+        LocalDate dateFor100Percent = reservationStartDate.minusDays(6);
+        LocalDate dateFor50Percent = reservationStartDate.minusDays(3);
+        if (now.isBefore(dateFor100Percent)) {
+            return price;
+        } else if (now.isBefore(dateFor50Percent)) {
+            return price / 2;
+        }
+        throw new IllegalArgumentException("환불 가능 기한이 아닙니다");
     }
 }

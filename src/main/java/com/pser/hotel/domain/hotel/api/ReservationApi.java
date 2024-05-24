@@ -48,6 +48,7 @@ public class ReservationApi {
 
     @PostMapping("/{reservationId}/refund")
     public ResponseEntity<Void> refund(@PathVariable long reservationId) {
+        reservationService.refund(reservationId);
         return ResponseEntity.noContent().build();
     }
 
