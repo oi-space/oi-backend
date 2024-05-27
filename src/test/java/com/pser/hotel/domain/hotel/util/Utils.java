@@ -8,8 +8,10 @@ import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.pser.hotel.domain.hotel.domain.Reservation;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.domain.RoomImage;
+import com.pser.hotel.domain.hotel.domain.TimeSale;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -139,6 +141,18 @@ public class Utils {
         return arrayList;
     }
 
+    public static double createAverageRating() {
+        double min = 1.0;
+        double max = 5.0;
+        double randomValue = min + (max - min) * rnd.nextDouble();
+        return Math.round(randomValue * 100.0) / 100.0;
+    }
+
+    public static int createSalePrice() {
+        int max = 400000 / 1000;
+        return rnd.nextInt(max + 1) * 1000;
+    }
+
     public static Reservation createReservation(User user, Room room) {
         return Reservation.builder()
                 .price(1000)
@@ -163,6 +177,19 @@ public class Utils {
                 .childCount(childCapacity)
                 .user(user)
                 .room(room)
+                .build();
+    }
+
+    public static TimeSale createTimesale(Room room) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startAt = now.minusDays(1);
+        LocalDateTime endAt = now.plusDays(1);
+
+        return TimeSale.builder()
+                .room(room)
+                .price(99000)
+                .startAt(startAt)
+                .endAt(endAt)
                 .build();
     }
 }

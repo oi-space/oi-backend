@@ -3,6 +3,7 @@ package com.pser.hotel.domain.hotel.dto;
 
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.pser.hotel.global.common.request.SearchQuery;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -54,6 +55,12 @@ public class HotelSearchRequest extends SearchQuery {
 
     private Boolean petFriendly;
 
+    private Integer people;
+
+    private LocalDate searchStartAt;
+
+    private LocalDate searchEndAt;
+
     @Builder
     public HotelSearchRequest(String keyword, LocalDateTime createdAfter, LocalDateTime createdBefore,
                               LocalDateTime updatedAfter, LocalDateTime updatedBefore, String name,
@@ -62,7 +69,8 @@ public class HotelSearchRequest extends SearchQuery {
                               Boolean barbecue, Boolean sauna, Boolean swimmingPool,
                               Boolean restaurant, Boolean roofTop, Boolean fitness, Boolean dryer, Boolean breakfast,
                               Boolean smokingArea,
-                              Boolean allTimeDesk, Boolean luggageStorage, Boolean snackBar, Boolean petFriendly) {
+                              Boolean allTimeDesk, Boolean luggageStorage, Boolean snackBar, Boolean petFriendly,
+                              Integer people, LocalDate searchStartAt, LocalDate searchEndAt) {
         super(keyword, createdAfter, createdBefore, updatedAfter, updatedBefore);
         this.name = name;
         this.category = category;
@@ -85,5 +93,8 @@ public class HotelSearchRequest extends SearchQuery {
         this.luggageStorage = luggageStorage;
         this.snackBar = snackBar;
         this.petFriendly = petFriendly;
+        this.people = people;
+        this.searchStartAt = searchStartAt;
+        this.searchEndAt = searchEndAt;
     }
 }
