@@ -50,7 +50,7 @@ public class Hotel extends BaseEntity {
     @Column(nullable = false)
     private double latitude;
     @Column(nullable = false)
-    private double longtitude;
+    private double longitude;
     @Column(nullable = false)
     private String mainImage;
     @Column(nullable = false)
