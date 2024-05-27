@@ -191,7 +191,7 @@ public class HotelSearchTest {
                 .district(district)
                 .detailedAddress("가산디지털로1로 189")
                 .latitude(100.123)
-                .longtitude(123.100)
+                .longitude(123.100)
                 .mainImage("mainImg.url")
                 .businessNumber("123456-123456")
                 .certUrl("cert.url")

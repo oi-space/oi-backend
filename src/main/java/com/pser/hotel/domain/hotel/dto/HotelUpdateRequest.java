@@ -29,7 +29,7 @@ public class HotelUpdateRequest {
 
     private Double latitude;
 
-    private Double longtitude;
+    private Double longitude;
 
     @URL(message = "URL 형식이 유효하지 않습니다.")
     private String mainImage;

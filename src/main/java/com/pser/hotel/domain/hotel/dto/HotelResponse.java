@@ -34,7 +34,7 @@ public class HotelResponse {
 
     private Double latitude;
 
-    private Double longtitude;
+    private Double longitude;
 
     private String mainImage;
 
