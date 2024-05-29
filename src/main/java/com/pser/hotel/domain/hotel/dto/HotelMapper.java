@@ -16,13 +16,29 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = ComponentModel.SPRING)
 public interface HotelMapper {
-    default HotelResponse changeToHotelResponse(Hotel hotel) {
+    default HotelResponse changeToHotelResponse(Hotel hotel, double averageRating, int salePrice, int previousPrice) {
         HotelResponse hotelResponse = changeToHotelResponseExcludeImage(hotel);
         List<String> imageUrls = hotel.getImages().stream()
                 .map(HotelImage::getImageUrl)
-                .collect(Collectors.toList());
+                .toList();
         hotelResponse.setHotelImageUrls(imageUrls);
+        hotelResponse.setGradeAverage(averageRating);
+        hotelResponse.setSalePrice(salePrice);
+        hotelResponse.setPreviousPrice(previousPrice);
         return hotelResponse;
+    }
+
+    default HotelSummaryResponse changeToHotelSummaryResponse(Hotel hotel, double averageRating, int salePrice,
+                                                              int previousPrice) {
+        HotelSummaryResponse hotelSummaryResponse = changeToHotelSummaryResponseExcludeImage(hotel);
+        List<String> imageUrls = hotel.getImages().stream()
+                .map(HotelImage::getImageUrl)
+                .toList();
+        hotelSummaryResponse.setHotelImageUrls(imageUrls);
+        hotelSummaryResponse.setGradeAverage(averageRating);
+        hotelSummaryResponse.setSalePrice(salePrice);
+        hotelSummaryResponse.setPreviousPrice(previousPrice);
+        return hotelSummaryResponse;
     }
 
     Hotel changeToHotel(HotelCreateRequest hotelCreateRequest, User user);
@@ -52,4 +68,6 @@ public interface HotelMapper {
     @Mapping(target = "petFriendly", source = "hotel.facility.petFriendly")
     @Mapping(target = "userId", source = "user.id")
     HotelResponse changeToHotelResponseExcludeImage(Hotel hotel);
+
+    HotelSummaryResponse changeToHotelSummaryResponseExcludeImage(Hotel hotel);
 }

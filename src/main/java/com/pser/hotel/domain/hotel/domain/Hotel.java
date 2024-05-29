@@ -28,7 +28,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(of = {"name", "category", "description", "notice", "province", "city", "district", "detailedAddress", "latitude", "longtitude", "businessNumber"})
+@ToString(of = {"name", "category", "description", "notice", "province", "city", "district", "detailedAddress", "latitude", "longitude", "businessNumber"})
 public class Hotel extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String name;
@@ -50,7 +50,7 @@ public class Hotel extends BaseEntity {
     @Column(nullable = false)
     private double latitude;
     @Column(nullable = false)
-    private double longtitude;
+    private double longitude;
     @Column(nullable = false)
     private String mainImage;
     @Column(nullable = false)

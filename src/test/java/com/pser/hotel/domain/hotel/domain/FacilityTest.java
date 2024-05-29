@@ -1,5 +1,6 @@
 package com.pser.hotel.domain.hotel.domain;
 
+import com.pser.hotel.domain.hotel.config.MapperConfig;
 import com.pser.hotel.domain.member.domain.Profile;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.config.QueryDslConfig;
@@ -20,7 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import({QueryDslConfig.class})
+@Import({QueryDslConfig.class, MapperConfig.class})
 @DisplayName("Facility 엔티티 테스트")
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
 class FacilityTest {
@@ -93,7 +94,7 @@ class FacilityTest {
                 .district("가산동")
                 .detailedAddress("가산디지털로1로 189")
                 .latitude(100.123)
-                .longtitude(123.100)
+                .longitude(123.100)
                 .mainImage("mainImg.url")
                 .businessNumber("123456-123456")
                 .certUrl("cert.url")
