@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,12 @@ public class Reservation extends StatusHolderEntity<ReservationStatusEnum> {
     @ManyToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Room room;
+
+    @Column(unique = true, nullable = false)
+    private String merchantUid = UUID.randomUUID().toString();
+
+    @Column(unique = true)
+    private String impUid;
 
     @Column(nullable = false)
     private int price;
@@ -73,11 +80,14 @@ public class Reservation extends StatusHolderEntity<ReservationStatusEnum> {
         this.childCount = childCount;
     }
 
+    public void updateImpUid(String merchantUid) {
+        this.merchantUid = merchantUid;
+    }
+
     @PrePersist
     private void validate() {
         if (visitorCount != (adultCount + childCount)) {
             throw new IllegalArgumentException("총원이 맞지 않습니다");
         }
     }
-
 }

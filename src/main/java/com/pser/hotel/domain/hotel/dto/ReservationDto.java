@@ -1,35 +1,33 @@
-package com.pser.hotel.domain.hotel.dto.reservation.response;
+package com.pser.hotel.domain.hotel.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
-import jakarta.persistence.Column;
 import java.time.LocalDate;
-import java.util.UUID;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class ReservationResponse {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ReservationDto {
+    private Long id;
+
     private Long userId;
 
     private Long roomId;
 
-    private String merchantUid;
-
-    private String impUid;
-
     private Integer price;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate startAt;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate endAt;
+
+    private LocalTime checkIn;
+
+    private LocalTime checkOut;
 
     private Integer visitorCount;
 

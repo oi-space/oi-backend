@@ -23,4 +23,6 @@ public interface ReservationDao extends JpaRepository<Reservation, Long>, Reserv
 
     @Override
     int countOverlappingReservations(ReservationCreateRequest request);
+
+    Optional<Reservation> findByMerchantUid(String merchantUid);
 }
