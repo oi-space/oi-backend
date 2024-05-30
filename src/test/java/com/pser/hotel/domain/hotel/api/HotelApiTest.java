@@ -122,7 +122,7 @@ public class HotelApiTest {
                 .district(hotel.getDistrict())
                 .detailedAddress(hotel.getDetailedAddress())
                 .latitude(hotel.getLatitude())
-                .longtitude(hotel.getLongtitude())
+                .longitude(hotel.getLongitude())
                 .mainImage(hotel.getMainImage())
                 .businessNumber(hotel.getBusinessNumber())
                 .certUrl(hotel.getCertUrl())
@@ -156,7 +156,7 @@ public class HotelApiTest {
                 .district(hotel.getDistrict())
                 .detailedAddress(hotel.getDetailedAddress())
                 .latitude(hotel.getLatitude())
-                .longtitude(hotel.getLongtitude())
+                .longitude(hotel.getLongitude())
                 .mainImage(hotel.getMainImage())
                 .businessNumber(hotel.getBusinessNumber())
                 .certUrl(hotel.getCertUrl())
@@ -184,7 +184,7 @@ public class HotelApiTest {
         return String.format(
                 "{\"name\": \"%s\", \"category\": \"%s\", \"description\": \"%s\", \"notice\": \"%s\", \"province\": \"%s\", "
                         +
-                        "\"city\": \"%s\", \"district\": \"%s\", \"detailedAddress\": \"%s\", \"latitude\": \"%f\", \"longtitude\": \"%f\", "
+                        "\"city\": \"%s\", \"district\": \"%s\", \"detailedAddress\": \"%s\", \"latitude\": \"%f\", \"longitude\": \"%f\", "
                         +
                         "\"mainImage\": \"%s\", \"businessNumber\": \"%s\", \"certUrl\": \"%s\", \"visitGuidance\": \"%s\", "
                         +
@@ -196,7 +196,7 @@ public class HotelApiTest {
                         +
                         "\"petFriendly\": \"%b\"}"
                 , dto.getName(), dto.getCategory(), dto.getDescription(), dto.getNotice(), dto.getProvince()
-                , dto.getCity(), dto.getDistrict(), dto.getDetailedAddress(), dto.getLatitude(), dto.getLongtitude(),
+                , dto.getCity(), dto.getDistrict(), dto.getDetailedAddress(), dto.getLatitude(), dto.getLongitude(),
                 dto.getMainImage()
                 , dto.getBusinessNumber(), dto.getCertUrl(), dto.getVisitGuidance(), dto.getParkingLot(), dto.getWifi(),
                 dto.getBarbecue()
@@ -213,7 +213,7 @@ public class HotelApiTest {
         return String.format(
                 "{\"name\": \"%s\", \"category\": \"%s\", \"description\": \"%s\", \"notice\": \"%s\", \"province\": \"%s\", "
                         +
-                        "\"city\": \"%s\", \"district\": \"%s\", \"detailedAddress\": \"%s\", \"latitude\": \"%f\", \"longtitude\": \"%f\", "
+                        "\"city\": \"%s\", \"district\": \"%s\", \"detailedAddress\": \"%s\", \"latitude\": \"%f\", \"longitude\": \"%f\", "
                         +
                         "\"mainImage\": \"%s\", \"businessNumber\": \"%s\", \"certUrl\": \"%s\", \"visitGuidance\": \"%s\", "
                         +
@@ -225,7 +225,7 @@ public class HotelApiTest {
                         +
                         "\"petFriendly\": \"%b\"}"
                 , dto.getName(), dto.getCategory(), dto.getDescription(), dto.getNotice(), dto.getProvince()
-                , dto.getCity(), dto.getDistrict(), dto.getDetailedAddress(), dto.getLatitude(), dto.getLongtitude(),
+                , dto.getCity(), dto.getDistrict(), dto.getDetailedAddress(), dto.getLatitude(), dto.getLongitude(),
                 dto.getMainImage()
                 , dto.getBusinessNumber(), dto.getCertUrl(), dto.getVisitGuidance(), dto.getParkingLot(), dto.getWifi(),
                 dto.getBarbecue()

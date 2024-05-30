@@ -31,7 +31,7 @@ public class HotelCreateRequest {
     @NotBlank
     private Double latitude;
     @NotBlank
-    private Double longtitude;
+    private Double longitude;
     @NotBlank
     @URL(message = "URL 형식이 유효하지 않습니다.")
     private String mainImage;

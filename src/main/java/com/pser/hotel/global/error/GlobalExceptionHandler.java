@@ -3,6 +3,7 @@ package com.pser.hotel.global.error;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.pser.hotel.global.common.response.ApiResponse;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -48,7 +49,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(ApiResponse.error(message));
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class, StatusUpdateException.class})
     ResponseEntity<ApiResponse<Void>> handleBadRequestException(RuntimeException exception) {
         logger.error("message", exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -62,7 +63,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(ApiResponse.error(exception.getMessage()));
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
+    @ExceptionHandler({EntityNotFoundException.class, NoSuchElementException.class})
     ResponseEntity<ApiResponse<Void>> handleNotFoundException(EntityNotFoundException exception) {
         logger.error("message", exception);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)

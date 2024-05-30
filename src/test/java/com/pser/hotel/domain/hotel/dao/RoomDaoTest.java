@@ -8,6 +8,7 @@ import static com.pser.hotel.domain.hotel.util.Utils.createRoom;
 import static com.pser.hotel.domain.hotel.util.Utils.createRoomImages;
 import static com.pser.hotel.domain.hotel.util.Utils.createUser;
 
+import com.pser.hotel.domain.hotel.config.MapperConfig;
 import com.pser.hotel.domain.hotel.domain.Amenity;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
@@ -31,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import({QueryDslConfig.class})
+@Import({QueryDslConfig.class, MapperConfig.class})
 @DisplayName("RommDao 테스트")
 @Slf4j
 class RoomDaoTest {
