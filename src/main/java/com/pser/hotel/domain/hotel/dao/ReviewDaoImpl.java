@@ -2,7 +2,7 @@ package com.pser.hotel.domain.hotel.dao;
 
 import com.pser.hotel.domain.hotel.domain.QReview;
 import com.pser.hotel.domain.hotel.domain.Review;
-import com.pser.hotel.domain.hotel.dto.ReviewSearchRequest;
+import com.pser.hotel.domain.hotel.dto.request.ReviewSearchRequest;
 import com.pser.hotel.domain.model.GradeEnum;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -11,38 +11,37 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import org.springframework.stereotype.Repository;
-
 
 @RequiredArgsConstructor
+@Repository
 public class ReviewDaoImpl implements ReviewDaoCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
     public Page<Review> search(ReviewSearchRequest request, Pageable pageable) {
-//        QReview review = QReview.review;
-//
-//        BooleanBuilder searchCondition = buildSearchCondition(review, request);
-//
-//        List<Review> reviews = queryFactory
-//                .selectFrom(review)
-//                .where(searchCondition)
-//                .limit(pageable.getPageSize())
-//                .offset(pageable.getOffset())
-//                .fetch();
-//
-//        Long count = queryFactory
-//                .select(review.count())
-//                .from(review)
-//                .where(searchCondition)
-//                .fetchOne();
-//
-//        return new PageImpl<>(reviews, pageable, count != null ? count : 0L);
-        return null;
+        QReview review = QReview.review;
+
+        BooleanBuilder searchCondition = buildSearchCondition(review, request);
+
+        List<Review> reviews = queryFactory
+                .selectFrom(review)
+                .where(searchCondition)
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetch();
+
+        Long count = queryFactory
+                .select(review.count())
+                .from(review)
+                .where(searchCondition)
+                .fetchOne();
+
+        return new PageImpl<>(reviews, pageable, count != null ? count : 0L);
     }
 
     private BooleanBuilder buildSearchCondition(QReview review, ReviewSearchRequest request) {
@@ -52,7 +51,7 @@ public class ReviewDaoImpl implements ReviewDaoCustom {
                 .and(matchCreatedBefore(review, request.getCreatedBefore()))
                 .and(matchUpdatedAfter(review, request.getUpdatedAfter()))
                 .and(matchUpdatedBefore(review, request.getUpdatedBefore()))
-                .and(matchRating(review, request.getRating()))
+                .and(matchRating(review, request.getRating())) // Integer로 반환된 값을 사용
                 .and(matchContent(review, request.getContent()))
                 .and(matchCreatedAt(review, request.getCreatedAt()))
                 .and(matchUpdatedAt(review, request.getUpdatedAt()));
