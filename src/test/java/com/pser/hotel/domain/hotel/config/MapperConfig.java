@@ -1,9 +1,9 @@
 package com.pser.hotel.domain.hotel.config;
 
 import com.pser.hotel.domain.hotel.dto.mapper.HotelMapper;
-import com.pser.hotel.domain.hotel.dto.HotelMapperImpl;
+import com.pser.hotel.domain.hotel.dto.mapper.HotelMapperImpl;
 import com.pser.hotel.domain.hotel.dto.mapper.TimesaleMapper;
-import com.pser.hotel.domain.hotel.dto.TimesaleMapperImpl;
+import com.pser.hotel.domain.hotel.dto.mapper.TimesaleMapperImpl;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
