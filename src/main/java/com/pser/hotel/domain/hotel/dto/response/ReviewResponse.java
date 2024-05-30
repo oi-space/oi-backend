@@ -1,4 +1,4 @@
-package com.pser.hotel.domain.hotel.dto;
+package com.pser.hotel.domain.hotel.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pser.hotel.domain.model.GradeEnum;

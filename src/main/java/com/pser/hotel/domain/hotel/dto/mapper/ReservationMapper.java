@@ -1,8 +1,9 @@
-package com.pser.hotel.domain.hotel.dto;
+package com.pser.hotel.domain.hotel.dto.mapper;
 
 import com.pser.hotel.domain.hotel.domain.Reservation;
-import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationCreateRequest;
-import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationResponse;
+import com.pser.hotel.domain.hotel.dto.ReservationDto;
+import com.pser.hotel.domain.hotel.dto.request.ReservationCreateRequest;
+import com.pser.hotel.domain.hotel.dto.response.ReservationResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;

@@ -1,6 +1,7 @@
-package com.pser.hotel.domain.hotel.dto;
+package com.pser.hotel.domain.hotel.dto.mapper;
 
 import com.pser.hotel.domain.hotel.domain.Room;
+import com.pser.hotel.domain.hotel.dto.request.RoomRequest;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;

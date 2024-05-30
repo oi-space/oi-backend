@@ -1,4 +1,4 @@
-package com.pser.hotel.domain.hotel.dto;
+package com.pser.hotel.domain.hotel.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

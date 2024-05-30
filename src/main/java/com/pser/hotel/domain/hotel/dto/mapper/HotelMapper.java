@@ -1,11 +1,14 @@
-package com.pser.hotel.domain.hotel.dto;
+package com.pser.hotel.domain.hotel.dto.mapper;
 
 import com.pser.hotel.domain.hotel.domain.Facility;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelImage;
+import com.pser.hotel.domain.hotel.dto.request.HotelCreateRequest;
+import com.pser.hotel.domain.hotel.dto.request.HotelUpdateRequest;
+import com.pser.hotel.domain.hotel.dto.response.HotelResponse;
+import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
 import com.pser.hotel.domain.member.domain.User;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -2,8 +2,8 @@ package com.pser.hotel.domain.hotel.api;
 
 import com.pser.hotel.domain.hotel.application.ReservationService;
 import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
-import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationCreateRequest;
-import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationResponse;
+import com.pser.hotel.domain.hotel.dto.request.ReservationCreateRequest;
+import com.pser.hotel.domain.hotel.dto.response.ReservationResponse;
 import com.pser.hotel.global.common.response.ApiResponse;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;

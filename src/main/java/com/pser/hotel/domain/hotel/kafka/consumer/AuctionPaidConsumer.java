@@ -1,7 +1,7 @@
 package com.pser.hotel.domain.hotel.kafka.consumer;
 
 import com.pser.hotel.domain.hotel.application.ReservationService;
-import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationResponse;
+import com.pser.hotel.domain.hotel.dto.response.ReservationResponse;
 import com.pser.hotel.domain.hotel.kafka.producer.ReservationStatusProducer;
 import com.pser.hotel.global.common.AuctionDto;
 import com.pser.hotel.global.common.RefundDto;

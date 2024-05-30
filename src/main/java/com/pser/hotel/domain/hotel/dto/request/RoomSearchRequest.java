@@ -1,4 +1,4 @@
-package com.pser.hotel.domain.hotel.dto;
+package com.pser.hotel.domain.hotel.dto.request;
 
 import com.pser.hotel.global.common.request.SearchQuery;
 import java.time.LocalDateTime;
