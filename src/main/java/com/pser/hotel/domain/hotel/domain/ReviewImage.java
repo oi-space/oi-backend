@@ -1,5 +1,6 @@
 package com.pser.hotel.domain.hotel.domain;
 
+import com.pser.hotel.domain.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,11 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ReviewImage {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ReviewImage extends BaseEntity {
 
     private String fileName; // 파일명
 

@@ -38,12 +38,11 @@ public class Review extends BaseEntity {
         this.grade = grade;
         this.detail = detail;
         this.reservation = reservation;
-        this.reviewImages = reviewImages;
+        this.reviewImages = reviewImages != null ? reviewImages : new ArrayList<>();
     }
 
     public void addReviewImageFile(ReviewImage reviewImage) {
         this.reviewImages.add(reviewImage);
         reviewImage.setReview(this);
     }
-
 }
