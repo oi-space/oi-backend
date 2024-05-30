@@ -57,9 +57,9 @@ public class TimesaleApiTest {
     @DisplayName("타임특가 등록 테스트")
     public void saveTimesale() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/timesales")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getCreateTimesaleByJson())
-                .header("user-id", "1"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(getCreateTimesaleByJson())
+                        .header("user-id", "1"))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
     }
@@ -68,8 +68,8 @@ public class TimesaleApiTest {
     @DisplayName("타임특가 적용 숙소 전체 조회 테스트")
     public void getAllTimesaleHotel() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/timesales")
-                .param("page", String.valueOf(pageRequest.getOffset()))
-                .param("size", String.valueOf(pageRequest.getPageSize())))
+                        .param("page", String.valueOf(pageRequest.getOffset()))
+                        .param("size", String.valueOf(pageRequest.getPageSize())))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
     }
@@ -78,7 +78,7 @@ public class TimesaleApiTest {
     @DisplayName("타임특가 삭제 테스트")
     public void deleteTimesale() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete("/timesales/1")
-                .header("user-id", 1))
+                        .header("user-id", 1))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
