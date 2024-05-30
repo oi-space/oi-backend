@@ -1,6 +1,9 @@
 package com.pser.hotel.global.config.kafka;
 
 public interface KafkaTopics {
+    String HOTEL_CREATED = "hotel.created";
+    String HOTEL_UPDATED = "hotel.updated";
+    String HOTEL_DELETED = "hotel.deleted";
     String RESERVATION_CREATED = "reservation.created";
     String RESERVATION_PAYMENT_VALIDATION_REQUIRED = "reservation.payment-validation-required";
     String RESERVATION_PAYMENT_VALIDATION_REQUIRED_ROLLBACK = "reservation.payment-validation-required-rollback";

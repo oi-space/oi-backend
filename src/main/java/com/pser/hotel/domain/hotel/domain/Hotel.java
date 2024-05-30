@@ -28,7 +28,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(of = {"name", "category", "description", "notice", "province", "city", "district", "detailedAddress", "latitude", "longitude", "businessNumber"})
+@ToString(of = {"name", "category", "description", "notice", "province", "city", "district", "detailedAddress",
+        "latitude", "longitude", "businessNumber"})
 public class Hotel extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String name;
@@ -59,25 +60,30 @@ public class Hotel extends BaseEntity {
     private String certUrl;
     @Column(nullable = false)
     private String visitGuidance;
-    @ManyToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY,optional = false)
+    @ManyToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
     @OneToOne(mappedBy = "hotel", cascade = {CascadeType.PERSIST,
             CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Facility facility ;
+    private Facility facility;
 
     @OneToMany(mappedBy = "hotel", cascade = {CascadeType.PERSIST,
             CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<HotelImage> images = new ArrayList<>();
 
-    public void addImage(HotelImage image){
+    @OneToMany(mappedBy = "hotel", cascade = {CascadeType.PERSIST,
+            CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Room> rooms = new ArrayList<>();
+
+    public void addImage(HotelImage image) {
         this.images.add(image);
     }
 
-    public void removeImage(HotelImage image){
-        if(images.contains(image)){
+    public void removeImage(HotelImage image) {
+        if (images.contains(image)) {
             this.images.remove(image);
         }
     }
