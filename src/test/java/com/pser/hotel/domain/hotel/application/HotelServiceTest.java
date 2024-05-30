@@ -18,6 +18,7 @@ import com.pser.hotel.domain.hotel.dto.response.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.request.HotelSearchRequest;
 import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.dto.request.HotelUpdateRequest;
+import com.pser.hotel.domain.hotel.kafka.producer.HotelStatusProducer;
 import com.pser.hotel.domain.hotel.util.Utils;
 import com.pser.hotel.domain.member.domain.User;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -40,15 +42,26 @@ import org.springframework.test.web.servlet.MockMvc;
 @ExtendWith(MockitoExtension.class)
 public class HotelServiceTest {
     @Mock
+    HotelStatusProducer hotelStatusProducer;
+
+    @Mock
     HotelDao hotelDao;
+
     @Mock
     FacilityDao facilityDao;
+
     @Mock
     UserDao userDao;
+
     @Mock
     HotelMapper hotelMapper;
+
     @Mock
     HotelImageDao hotelImageDao;
+
+    @InjectMocks
+    HotelService hotelService;
+
     MockMvc mockMvc;
     User user;
     Hotel hotel;
@@ -66,7 +79,6 @@ public class HotelServiceTest {
         hotel = Utils.createHotel(user);
         facility = Utils.createFacility(hotel);
         hotelImages = Utils.createHotelImages();
-        MockitoAnnotations.openMocks(this);
         hotelSearchRequest = createSearchRequest();
         hotelCreateRequest = createCreateRequest(hotel);
         hotelUpdateRequest = createUpdateRequest(hotel);
@@ -85,7 +97,6 @@ public class HotelServiceTest {
         lenient().when(hotelDao.findAllWithGradeAndPrice(any(Pageable.class))).thenReturn(pageHotelData);
 
         //when
-        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
         Slice<HotelSummaryResponse> sliceData = hotelService.getAllHotelData(pageable);
 
         //then
@@ -105,7 +116,6 @@ public class HotelServiceTest {
         lenient().when(hotelDao.search(hotelSearchRequest, pageable)).thenReturn(pageHotelData);
 
         //when
-        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
         Slice<HotelSummaryResponse> sliceData = hotelService.searchHotelData(hotelSearchRequest, pageable);
 
         //then
@@ -123,7 +133,6 @@ public class HotelServiceTest {
         lenient().when(hotelDao.findHotel(any())).thenReturn(response);
 
         //when
-        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
         HotelResponse hotelResponse = hotelService.getHotelDataById(1L);
 
         //then
@@ -142,7 +151,6 @@ public class HotelServiceTest {
         lenient().when(hotelMapper.changeToHotel(hotelCreateRequest, user)).thenReturn(hotel);
         lenient().when(hotelMapper.changeToFacility(hotelCreateRequest, hotel)).thenReturn(facility);
         //when
-        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
         Long hotelId = hotelService.saveHotelData(hotelCreateRequest, 1L);
 
         //then
@@ -162,7 +170,6 @@ public class HotelServiceTest {
         lenient().when(facilityDao.save(any(Facility.class))).thenReturn(facility);
 
         //when
-        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
         hotelService.updateHotelData(hotelUpdateRequest, hotel.getId());
 
         //then
@@ -178,7 +185,6 @@ public class HotelServiceTest {
         lenient().when(hotelDao.findById(any())).thenReturn(optionalHotel);
 
         //when
-        HotelService hotelService = new HotelService(hotelDao, facilityDao, userDao, hotelImageDao, hotelMapper);
         hotelService.deleteHotelData(hotel.getId());
 
         //then

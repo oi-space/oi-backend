@@ -7,12 +7,14 @@ import com.pser.hotel.domain.hotel.dao.UserDao;
 import com.pser.hotel.domain.hotel.domain.Facility;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelImage;
-import com.pser.hotel.domain.hotel.dto.request.HotelCreateRequest;
+import com.pser.hotel.domain.hotel.dto.HotelDto;
 import com.pser.hotel.domain.hotel.dto.mapper.HotelMapper;
-import com.pser.hotel.domain.hotel.dto.response.HotelResponse;
+import com.pser.hotel.domain.hotel.dto.request.HotelCreateRequest;
 import com.pser.hotel.domain.hotel.dto.request.HotelSearchRequest;
-import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.dto.request.HotelUpdateRequest;
+import com.pser.hotel.domain.hotel.dto.response.HotelResponse;
+import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
+import com.pser.hotel.domain.hotel.kafka.producer.HotelStatusProducer;
 import com.pser.hotel.domain.member.domain.User;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +35,7 @@ public class HotelService {
     private final UserDao userDao;
     private final HotelImageDao hotelImageDao;
     private final HotelMapper hotelMapper;
+    private final HotelStatusProducer hotelStatusProducer;
 
     public Slice<HotelSummaryResponse> getAllHotelData(Pageable pageable) {
         return hotelDao.findAllWithGradeAndPrice(pageable);
@@ -57,7 +60,8 @@ public class HotelService {
         List<HotelImage> hotelImages = createHotelImages(hotel, hotelCreateRequest.getHotelImageUrls());
 
         hotelDao.save(hotel);
-
+        HotelDto hotelDto = hotelMapper.toDto(hotel);
+        hotelStatusProducer.onCreated(hotelDto);
         return hotel.getId();
     }
 
@@ -78,6 +82,9 @@ public class HotelService {
 
         hotelMapper.updateHotelFromDto(hotelUpdateRequest, hotel);
         hotelMapper.updateFacilityFromDto(hotelUpdateRequest, facility);
+
+        HotelDto hotelDto = hotelMapper.toDto(hotel);
+        hotelStatusProducer.onUpdated(hotelDto);
     }
 
     @Transactional
@@ -86,6 +93,9 @@ public class HotelService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "not found hotel"));
 
         hotelDao.delete(hotel);
+
+        HotelDto hotelDto = hotelMapper.toDto(hotel);
+        hotelStatusProducer.onDeleted(hotelDto);
     }
 
     private HotelImage createImage(Hotel hotel, String hotelImg) {
