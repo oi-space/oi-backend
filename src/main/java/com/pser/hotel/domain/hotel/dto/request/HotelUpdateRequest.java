@@ -1,21 +1,16 @@
-package com.pser.hotel.domain.hotel.dto;
+package com.pser.hotel.domain.hotel.dto.request;
 
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.URL;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class HotelResponse {
-    private Long id;
-
-    private Long userId;
-
+public class HotelUpdateRequest {
     private String name;
 
     private HotelCategoryEnum category;
@@ -36,10 +31,12 @@ public class HotelResponse {
 
     private Double longitude;
 
+    @URL(message = "URL 형식이 유효하지 않습니다.")
     private String mainImage;
 
     private String businessNumber;
 
+    @URL(message = "URL 형식이 유효하지 않습니다.")
     private String certUrl;
 
     private String visitGuidance;
@@ -75,10 +72,4 @@ public class HotelResponse {
     private Boolean petFriendly;
 
     private List<String> hotelImageUrls;
-
-    private Double gradeAverage;
-
-    private int salePrice;
-
-    private int previousPrice;
 }

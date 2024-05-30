@@ -1,8 +1,8 @@
 package com.pser.hotel.domain.hotel.api;
 
 import com.pser.hotel.domain.hotel.application.TimesaleService;
-import com.pser.hotel.domain.hotel.dto.HotelSummaryResponse;
-import com.pser.hotel.domain.hotel.dto.TimesaleCreateRequest;
+import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
+import com.pser.hotel.domain.hotel.dto.request.TimesaleCreateRequest;
 import com.pser.hotel.global.common.response.ApiResponse;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;

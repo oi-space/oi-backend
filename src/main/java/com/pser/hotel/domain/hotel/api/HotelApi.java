@@ -1,11 +1,11 @@
 package com.pser.hotel.domain.hotel.api;
 
 import com.pser.hotel.domain.hotel.application.HotelService;
-import com.pser.hotel.domain.hotel.dto.HotelCreateRequest;
-import com.pser.hotel.domain.hotel.dto.HotelResponse;
-import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
-import com.pser.hotel.domain.hotel.dto.HotelSummaryResponse;
-import com.pser.hotel.domain.hotel.dto.HotelUpdateRequest;
+import com.pser.hotel.domain.hotel.dto.request.HotelCreateRequest;
+import com.pser.hotel.domain.hotel.dto.response.HotelResponse;
+import com.pser.hotel.domain.hotel.dto.request.HotelSearchRequest;
+import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
+import com.pser.hotel.domain.hotel.dto.request.HotelUpdateRequest;
 import com.pser.hotel.global.common.response.ApiResponse;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;

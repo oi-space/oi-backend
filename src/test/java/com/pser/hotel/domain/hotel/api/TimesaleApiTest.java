@@ -4,7 +4,7 @@ import com.pser.hotel.domain.hotel.application.TimesaleService;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.domain.TimeSale;
-import com.pser.hotel.domain.hotel.dto.TimesaleCreateRequest;
+import com.pser.hotel.domain.hotel.dto.request.TimesaleCreateRequest;
 import com.pser.hotel.domain.hotel.util.Utils;
 import com.pser.hotel.domain.member.domain.User;
 import org.junit.jupiter.api.BeforeEach;

@@ -7,12 +7,9 @@ import com.pser.hotel.domain.hotel.domain.Reservation;
 import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.dto.ReservationDto;
-import com.pser.hotel.domain.hotel.dto.ReservationMapper;
-import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationCreateRequest;
-import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationDeleteResponseDto;
-import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationFindDetailResponseDto;
-import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationFindResponseDto;
-import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationResponse;
+import com.pser.hotel.domain.hotel.dto.mapper.ReservationMapper;
+import com.pser.hotel.domain.hotel.dto.request.ReservationCreateRequest;
+import com.pser.hotel.domain.hotel.dto.response.ReservationResponse;
 import com.pser.hotel.domain.hotel.kafka.producer.ReservationStatusProducer;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.common.PaymentDto;
@@ -22,15 +19,9 @@ import com.pser.hotel.global.error.SameStatusException;
 import com.pser.hotel.global.error.ValidationFailedException;
 import io.vavr.control.Try;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,9 +32,6 @@ public class ReservationService {
     private final ReservationDao reservationDao;
     private final RoomDao roomDao;
     private final UserDao userDao;
-    // 페이징을 위한 페이지 사이즈 - 수정 하시면 됩니다.
-    // 혹은 yml에 따로 지정한 뒤 나중에 @Value 이용하셔서 관리하셔도 됩니다.
-    private final Integer pageSize = 10;
     private final ReservationMapper reservationMapper;
     private final ReservationStatusProducer reservationStatusProducer;
 
@@ -57,27 +45,6 @@ public class ReservationService {
         Reservation reservation = reservationDao.findByMerchantUid(merchantUid)
                 .orElseThrow();
         return reservationMapper.toResponse(reservation);
-    }
-
-    public ReservationFindResponseDto findAllByUserEmail(Integer page, String userEmail) {
-        Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Reservation> result = reservationDao.findByUserEmail(pageable, userEmail);
-        List<ReservationFindDetailResponseDto> detail = new ArrayList<>();
-        Long totalElements = result.getTotalElements();
-        Integer totalPages = result.getTotalPages();
-
-        for (Reservation reservation : result) {
-            ReservationFindDetailResponseDto reservationFindDetailResponseDto = new ReservationFindDetailResponseDto(
-                    reservation, userEmail, reservation.getRoom().getName());
-            detail.add(reservationFindDetailResponseDto);
-        }
-
-        return ReservationFindResponseDto.builder()
-                .totalPages(totalPages)
-                .totalElements(totalElements)
-                .currentPage(page)
-                .reservationFindDetailResponseDto(detail)
-                .build();
     }
 
     @Transactional
@@ -193,18 +160,6 @@ public class ReservationService {
         }
 
         reservation.rollbackStatusTo(targetStatus);
-    }
-
-    public ReservationDeleteResponseDto delete(String roomName) {
-        Reservation reservation = reservationDao.findByRoomName(roomName)
-                .orElseThrow(() -> new IllegalArgumentException("reservation not found. room name : " + roomName));
-
-        reservationDao.delete(reservation);
-
-        return ReservationDeleteResponseDto.builder()
-                .roomName(roomName)
-                .deletedAt(LocalDateTime.now())
-                .build();
     }
 
     private void checkSchedule(ReservationCreateRequest request) {
