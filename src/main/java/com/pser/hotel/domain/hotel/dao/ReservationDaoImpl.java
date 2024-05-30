@@ -2,7 +2,7 @@ package com.pser.hotel.domain.hotel.dao;
 
 import com.pser.hotel.domain.hotel.domain.QReservation;
 import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
-import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationCreateRequest;
+import com.pser.hotel.domain.hotel.dto.request.ReservationCreateRequest;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;

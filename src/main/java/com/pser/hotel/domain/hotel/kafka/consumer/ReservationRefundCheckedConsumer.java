@@ -2,7 +2,7 @@ package com.pser.hotel.domain.hotel.kafka.consumer;
 
 import com.pser.hotel.domain.hotel.application.ReservationService;
 import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
-import com.pser.hotel.domain.hotel.dto.reservation.response.ReservationResponse;
+import com.pser.hotel.domain.hotel.dto.response.ReservationResponse;
 import com.pser.hotel.global.common.PaymentDto;
 import com.pser.hotel.global.common.StatusUpdateDto;
 import com.pser.hotel.global.config.kafka.KafkaTopics;

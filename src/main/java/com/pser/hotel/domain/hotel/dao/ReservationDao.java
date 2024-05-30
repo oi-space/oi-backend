@@ -1,7 +1,7 @@
 package com.pser.hotel.domain.hotel.dao;
 
 import com.pser.hotel.domain.hotel.domain.Reservation;
-import com.pser.hotel.domain.hotel.dto.reservation.request.ReservationCreateRequest;
+import com.pser.hotel.domain.hotel.dto.request.ReservationCreateRequest;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.springframework.data.domain.Page;

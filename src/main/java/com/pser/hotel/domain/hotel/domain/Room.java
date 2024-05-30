@@ -1,6 +1,6 @@
 package com.pser.hotel.domain.hotel.domain;
 
-import com.pser.hotel.domain.hotel.dto.RoomResponse;
+import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
 import com.pser.hotel.domain.model.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

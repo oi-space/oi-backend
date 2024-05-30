@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.pser.hotel.domain.hotel.application.RoomService;
-import com.pser.hotel.domain.hotel.dto.RoomRequest;
-import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
+import com.pser.hotel.domain.hotel.dto.request.RoomRequest;
+import com.pser.hotel.domain.hotel.dto.request.RoomSearchRequest;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalTime;
 import java.util.List;

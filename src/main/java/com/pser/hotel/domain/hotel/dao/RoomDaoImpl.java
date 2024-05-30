@@ -2,9 +2,9 @@ package com.pser.hotel.domain.hotel.dao;
 
 import static com.pser.hotel.domain.hotel.domain.QRoom.room;
 
-import com.pser.hotel.domain.hotel.dto.QRoomResponse;
-import com.pser.hotel.domain.hotel.dto.RoomResponse;
-import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
+import com.pser.hotel.domain.hotel.dto.request.RoomSearchRequest;
+import com.pser.hotel.domain.hotel.dto.response.QRoomResponse;
+import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;

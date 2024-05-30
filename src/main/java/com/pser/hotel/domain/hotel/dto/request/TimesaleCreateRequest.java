@@ -1,4 +1,4 @@
-package com.pser.hotel.domain.hotel.dto;
+package com.pser.hotel.domain.hotel.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDate;

@@ -1,7 +1,10 @@
-package com.pser.hotel.domain.hotel.dto;
+package com.pser.hotel.domain.hotel.dto.mapper;
 
 import com.pser.hotel.domain.hotel.domain.Review;
 import com.pser.hotel.domain.hotel.domain.ReviewImage;
+import com.pser.hotel.domain.hotel.dto.request.ReviewCreateRequest;
+import com.pser.hotel.domain.hotel.dto.request.ReviewUpdateRequest;
+import com.pser.hotel.domain.hotel.dto.response.ReviewResponse;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

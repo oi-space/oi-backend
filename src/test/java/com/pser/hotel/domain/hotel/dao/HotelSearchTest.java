@@ -8,7 +8,7 @@ import com.pser.hotel.domain.hotel.config.MapperConfig;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
-import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
+import com.pser.hotel.domain.hotel.dto.request.HotelSearchRequest;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.config.QueryDslConfig;
 import com.querydsl.core.types.dsl.BooleanExpression;
