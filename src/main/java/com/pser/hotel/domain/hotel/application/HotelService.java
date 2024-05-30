@@ -14,6 +14,7 @@ import com.pser.hotel.domain.hotel.dto.request.HotelSearchRequest;
 import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.dto.request.HotelUpdateRequest;
 import com.pser.hotel.domain.member.domain.User;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +69,12 @@ public class HotelService {
         Facility facility = facilityDao.findByHotelId(hotelId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "not found facility"));
 
-        List<HotelImage> hotelImages = hotelUpdateRequest.getHotelImageUrls().stream()
+        List<String> imageUrls = hotelUpdateRequest.getHotelImageUrls();
+        if (imageUrls == null) {
+            imageUrls = new ArrayList<>();
+        }
+
+        List<HotelImage> hotelImages = imageUrls.stream()
                 .map(url -> hotelImageDao.findByImageUrl(url)
                         .orElseGet(() -> hotelImageDao.save(createImage(hotel, url))))
                 .toList();
