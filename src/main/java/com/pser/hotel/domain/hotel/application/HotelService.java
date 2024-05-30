@@ -91,10 +91,9 @@ public class HotelService {
     public void deleteHotelData(Long hotelId) {
         Hotel hotel = hotelDao.findById(hotelId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "not found hotel"));
+        HotelDto hotelDto = hotelMapper.toDto(hotel);
 
         hotelDao.delete(hotel);
-
-        HotelDto hotelDto = hotelMapper.toDto(hotel);
         hotelStatusProducer.onDeleted(hotelDto);
     }
 
