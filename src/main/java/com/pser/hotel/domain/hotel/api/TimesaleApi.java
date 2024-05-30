@@ -27,7 +27,7 @@ public class TimesaleApi {
     public final TimesaleService timesaleService;
 
     @PostMapping // 타임특가 등록 api
-    @PreAuthorize("@methodAuthorizationManager.isTimesaleByIdAndRequest(#userId, #timesaleCreateRequest)")
+    @PreAuthorize("@methodAuthorizationManager.isTimesaleByIdAndRequest(#userId, #timesaleCreateRequest)")  // 타임특가 등록을 접근한 사람과 호텔 주인이 일치하는지 확인
     public ResponseEntity<ApiResponse<Void>> saveTimesale(@RequestBody TimesaleCreateRequest timesaleCreateRequest,
                                                           @RequestHeader("user-id") long userId) {
         Long timesaleId = timesaleService.saveTimesaleData(timesaleCreateRequest);
