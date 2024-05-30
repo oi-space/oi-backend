@@ -4,28 +4,27 @@ import com.pser.hotel.domain.hotel.domain.QReview;
 import com.pser.hotel.domain.hotel.domain.Review;
 import com.pser.hotel.domain.hotel.dto.ReviewSearchRequest;
 import com.pser.hotel.domain.model.GradeEnum;
-import com.pser.hotel.global.common.request.SearchQuery;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class ReviewDaoImpl implements ReviewDaoCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Review> search(ReviewSearchRequest request, SearchQuery searchQuery, Pageable pageable) {
+    public Page<Review> search(ReviewSearchRequest request, Pageable pageable) {
         QReview review = QReview.review;
 
-        BooleanBuilder searchCondition = buildSearchCondition(review, searchQuery)
-                .and(buildRequestCondition(review, request));
+        BooleanBuilder searchCondition = buildSearchCondition(review, request);
 
         List<Review> reviews = queryFactory
                 .selectFrom(review)
@@ -43,17 +42,13 @@ public class ReviewDaoImpl implements ReviewDaoCustom {
         return new PageImpl<>(reviews, pageable, count != null ? count : 0L);
     }
 
-    private BooleanBuilder buildSearchCondition(QReview review, SearchQuery searchQuery) {
+    private BooleanBuilder buildSearchCondition(QReview review, ReviewSearchRequest request) {
         return new BooleanBuilder()
-                .and(matchKeyword(review, searchQuery.getKeyword()))
-                .and(matchCreatedAfter(review, searchQuery.getCreatedAfter()))
-                .and(matchCreatedBefore(review, searchQuery.getCreatedBefore()))
-                .and(matchUpdatedAfter(review, searchQuery.getUpdatedAfter()))
-                .and(matchUpdatedBefore(review, searchQuery.getUpdatedBefore()));
-    }
-
-    private BooleanBuilder buildRequestCondition(QReview review, ReviewSearchRequest request) {
-        return new BooleanBuilder()
+                .and(matchKeyword(review, request.getKeyword()))
+                .and(matchCreatedAfter(review, request.getCreatedAfter()))
+                .and(matchCreatedBefore(review, request.getCreatedBefore()))
+                .and(matchUpdatedAfter(review, request.getUpdatedAfter()))
+                .and(matchUpdatedBefore(review, request.getUpdatedBefore()))
                 .and(matchRating(review, request.getRating()))
                 .and(matchContent(review, request.getContent()))
                 .and(matchCreatedAt(review, request.getCreatedAt()))
@@ -109,7 +104,6 @@ public class ReviewDaoImpl implements ReviewDaoCustom {
         }
         return review.grade.eq(gradeEnum);
     }
-
 
     private BooleanExpression matchContent(QReview review, String content) {
         if (content == null) {

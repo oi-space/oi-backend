@@ -7,5 +7,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ReviewDaoCustom {
-    Page<Review> search(ReviewSearchRequest request, SearchQuery searchQuery, Pageable pageable);
+    Page<Review> search(ReviewSearchRequest request, Pageable pageable);
 }
