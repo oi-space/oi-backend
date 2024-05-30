@@ -5,7 +5,7 @@ import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Reservation;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.domain.TimeSale;
-import com.pser.hotel.domain.hotel.dto.TimesaleMapper;
+import com.pser.hotel.domain.hotel.dto.mapper.TimesaleMapper;
 import com.pser.hotel.domain.hotel.util.Utils;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.config.QueryDslConfig;

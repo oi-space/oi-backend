@@ -1,4 +1,4 @@
-package com.pser.hotel.domain.hotel.dto.reservation.request;
+package com.pser.hotel.domain.hotel.dto.request;
 
 import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
 import com.pser.hotel.domain.hotel.domain.Room;

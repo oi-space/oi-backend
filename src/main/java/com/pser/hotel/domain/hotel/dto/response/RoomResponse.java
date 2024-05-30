@@ -1,4 +1,4 @@
-package com.pser.hotel.domain.hotel.dto;
+package com.pser.hotel.domain.hotel.dto.response;
 
 import com.pser.hotel.domain.hotel.domain.Amenity;
 import com.querydsl.core.annotations.QueryProjection;

@@ -1,9 +1,9 @@
 package com.pser.hotel.domain.hotel.api;
 
 import com.pser.hotel.domain.hotel.application.RoomService;
-import com.pser.hotel.domain.hotel.dto.RoomRequest;
-import com.pser.hotel.domain.hotel.dto.RoomResponse;
-import com.pser.hotel.domain.hotel.dto.RoomSearchRequest;
+import com.pser.hotel.domain.hotel.dto.request.RoomRequest;
+import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
+import com.pser.hotel.domain.hotel.dto.request.RoomSearchRequest;
 import com.pser.hotel.global.common.response.ApiResponse;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;

@@ -6,6 +6,8 @@ import static com.pser.hotel.domain.hotel.util.Utils.createUser;
 
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
+import com.pser.hotel.domain.hotel.dto.mapper.RoomMapper;
+import com.pser.hotel.domain.hotel.dto.request.RoomRequest;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalTime;
 import java.util.List;
