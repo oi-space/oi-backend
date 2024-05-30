@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import org.springframework.stereotype.Repository;
+
 
 @RequiredArgsConstructor
 public class ReviewDaoImpl implements ReviewDaoCustom {
@@ -22,24 +24,25 @@ public class ReviewDaoImpl implements ReviewDaoCustom {
 
     @Override
     public Page<Review> search(ReviewSearchRequest request, Pageable pageable) {
-        QReview review = QReview.review;
-
-        BooleanBuilder searchCondition = buildSearchCondition(review, request);
-
-        List<Review> reviews = queryFactory
-                .selectFrom(review)
-                .where(searchCondition)
-                .limit(pageable.getPageSize())
-                .offset(pageable.getOffset())
-                .fetch();
-
-        Long count = queryFactory
-                .select(review.count())
-                .from(review)
-                .where(searchCondition)
-                .fetchOne();
-
-        return new PageImpl<>(reviews, pageable, count != null ? count : 0L);
+//        QReview review = QReview.review;
+//
+//        BooleanBuilder searchCondition = buildSearchCondition(review, request);
+//
+//        List<Review> reviews = queryFactory
+//                .selectFrom(review)
+//                .where(searchCondition)
+//                .limit(pageable.getPageSize())
+//                .offset(pageable.getOffset())
+//                .fetch();
+//
+//        Long count = queryFactory
+//                .select(review.count())
+//                .from(review)
+//                .where(searchCondition)
+//                .fetchOne();
+//
+//        return new PageImpl<>(reviews, pageable, count != null ? count : 0L);
+        return null;
     }
 
     private BooleanBuilder buildSearchCondition(QReview review, ReviewSearchRequest request) {
