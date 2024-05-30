@@ -11,10 +11,10 @@ import com.pser.hotel.domain.hotel.dto.HotelCreateRequest;
 import com.pser.hotel.domain.hotel.dto.HotelMapper;
 import com.pser.hotel.domain.hotel.dto.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.HotelSearchRequest;
+import com.pser.hotel.domain.hotel.dto.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.dto.HotelUpdateRequest;
 import com.pser.hotel.domain.member.domain.User;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -34,16 +34,16 @@ public class HotelService {
     private final HotelImageDao hotelImageDao;
     private final HotelMapper hotelMapper;
 
-    public Slice<HotelResponse> getAllHotelData(Pageable pageable) {
-        return hotelDao.findAll(pageable).map(hotelMapper::changeToHotelResponse);
+    public Slice<HotelSummaryResponse> getAllHotelData(Pageable pageable) {
+        return hotelDao.findAllWithGradeAndPrice(pageable);
     }
 
-    public Optional<HotelResponse> getHotelDataById(Long id) {
-        return hotelDao.findById(id).map(hotelMapper::changeToHotelResponse);
+    public HotelResponse getHotelDataById(Long id) {
+        return hotelDao.findHotel(id);
     }
 
-    public Slice<HotelResponse> searchHotelData(HotelSearchRequest hotelSearchRequest,
-                                                Pageable pageable) {
+    public Slice<HotelSummaryResponse> searchHotelData(HotelSearchRequest hotelSearchRequest,
+                                                       Pageable pageable) {
         return hotelDao.search(hotelSearchRequest, pageable);
     }
 

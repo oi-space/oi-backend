@@ -5,13 +5,13 @@ import com.pser.hotel.domain.hotel.domain.Amenity;
 import com.pser.hotel.domain.hotel.domain.Facility;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
-import com.pser.hotel.domain.hotel.domain.HotelImage;
 import com.pser.hotel.domain.hotel.domain.Reservation;
-import com.pser.hotel.domain.hotel.domain.ReservationEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.domain.RoomImage;
+import com.pser.hotel.domain.hotel.domain.TimeSale;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class Utils {
                 .inAnnex(rnd.nextBoolean()).kitchen(rnd.nextBoolean())
                 .bathtub(rnd.nextBoolean()).heatingSystem(rnd.nextBoolean())
                 .coffeeMachine(rnd.nextBoolean()).refrigerator(rnd.nextBoolean()).terrace(rnd.nextBoolean())
-                .internet(rnd.nextBoolean())
+                .internet(rnd.nextBoolean()).washer(rnd.nextBoolean())
                 .room(room)
                 .build();
     }
@@ -91,7 +91,7 @@ public class Utils {
                 .district("가산동")
                 .detailedAddress("가산디지털로1로 189")
                 .latitude(100.123)
-                .longtitude(123.100)
+                .longitude(123.100)
                 .mainImage("mainImg.url")
                 .businessNumber("123456-123456")
                 .certUrl("cert.url")
@@ -103,7 +103,7 @@ public class Utils {
 
     public static List<Hotel> createHotels(User user, int count) {
         List<Hotel> list = new ArrayList<>();
-        for(int i=0; i < count; i++){
+        for (int i = 0; i < count; i++) {
             Hotel hotel = createHotel(user);
             Facility facility = createFacility(hotel);
             list.add(hotel);
@@ -111,34 +111,46 @@ public class Utils {
         return list;
     }
 
-    public static Facility createFacility(Hotel hotel){
+    public static Facility createFacility(Hotel hotel) {
         return Facility.builder()
-            .hotel(hotel)
-            .parkingLot(rnd.nextBoolean())
-            .wifi(rnd.nextBoolean())
-            .barbecue(rnd.nextBoolean())
-            .sauna(rnd.nextBoolean())
-            .swimmingPool(rnd.nextBoolean())
-            .restaurant(rnd.nextBoolean())
-            .roofTop(rnd.nextBoolean())
-            .fitness(rnd.nextBoolean())
-            .dryer(rnd.nextBoolean())
-            .breakfast(rnd.nextBoolean())
-            .smokingArea(rnd.nextBoolean())
-            .allTimeDesk(rnd.nextBoolean())
-            .luggageStorage(rnd.nextBoolean())
-            .snackBar(rnd.nextBoolean())
-            .petFriendly(rnd.nextBoolean())
-            .build();
+                .hotel(hotel)
+                .parkingLot(rnd.nextBoolean())
+                .wifi(rnd.nextBoolean())
+                .barbecue(rnd.nextBoolean())
+                .sauna(rnd.nextBoolean())
+                .swimmingPool(rnd.nextBoolean())
+                .restaurant(rnd.nextBoolean())
+                .roofTop(rnd.nextBoolean())
+                .fitness(rnd.nextBoolean())
+                .dryer(rnd.nextBoolean())
+                .breakfast(rnd.nextBoolean())
+                .smokingArea(rnd.nextBoolean())
+                .allTimeDesk(rnd.nextBoolean())
+                .luggageStorage(rnd.nextBoolean())
+                .snackBar(rnd.nextBoolean())
+                .petFriendly(rnd.nextBoolean())
+                .build();
     }
 
-    public static List<String> createHotelImages(){
+    public static List<String> createHotelImages() {
         ArrayList<String> arrayList = new ArrayList<>();
-        for(int i=1; i <= 3; i++) {
+        for (int i = 1; i <= 3; i++) {
             String uuid = UUID.randomUUID().toString().substring(1, 10);
             arrayList.add(String.format("image_%s", uuid));
         }
         return arrayList;
+    }
+
+    public static double createAverageRating() {
+        double min = 1.0;
+        double max = 5.0;
+        double randomValue = min + (max - min) * rnd.nextDouble();
+        return Math.round(randomValue * 100.0) / 100.0;
+    }
+
+    public static int createSalePrice() {
+        int max = 400000 / 1000;
+        return rnd.nextInt(max + 1) * 1000;
     }
 
     public static Reservation createReservation(User user, Room room) {
@@ -146,11 +158,9 @@ public class Utils {
                 .price(1000)
                 .startAt(LocalDate.of(2024, 4, 17))
                 .endAt(LocalDate.of(2024, 4, 17))
-                .reservationCapacity(5)
-                .adultCapacity(3)
-                .childCapacity(2)
-                .status(ReservationEnum.BEFORE_ENTER_DEFAULT)
-                .tid("test_tid")
+                .visitorCount(5)
+                .adultCount(3)
+                .childCount(2)
                 .user(user)
                 .room(room)
                 .build();
@@ -162,13 +172,24 @@ public class Utils {
                 .price(1000)
                 .startAt(LocalDate.of(2024, 4, 17))
                 .endAt(LocalDate.of(2024, 4, 17))
-                .reservationCapacity(reservationCapacity)
-                .adultCapacity(adultCapacity)
-                .childCapacity(childCapacity)
-                .status(ReservationEnum.BEFORE_ENTER_DEFAULT)
-                .tid("test_tid")
+                .visitorCount(reservationCapacity)
+                .adultCount(adultCapacity)
+                .childCount(childCapacity)
                 .user(user)
                 .room(room)
+                .build();
+    }
+
+    public static TimeSale createTimesale(Room room) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startAt = now.minusDays(1);
+        LocalDateTime endAt = now.plusDays(1);
+
+        return TimeSale.builder()
+                .room(room)
+                .price(99000)
+                .startAt(startAt)
+                .endAt(endAt)
                 .build();
     }
 }
