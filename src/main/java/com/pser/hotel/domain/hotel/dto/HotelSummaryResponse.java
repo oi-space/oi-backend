@@ -23,6 +23,12 @@ public class HotelSummaryResponse {
 
     private String mainImage;
 
+    private String province;
+
+    private String city;
+
+    private String district;
+
     private List<String> hotelImageUrls;
 
     private Double gradeAverage;
@@ -33,11 +39,14 @@ public class HotelSummaryResponse {
 
     @QueryProjection
     public HotelSummaryResponse(Long id, String name, HotelCategoryEnum category, String description,
-                                String mainImage) {
+                                String mainImage, String province, String city, String district) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.description = description;
         this.mainImage = mainImage;
+        this.province = province;
+        this.city = city;
+        this.district = district;
     }
 }

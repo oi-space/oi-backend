@@ -46,7 +46,10 @@ public class HotelDaoImpl implements HotelDaoCustom {
                         QHotel.hotel.name,
                         QHotel.hotel.category,
                         QHotel.hotel.description,
-                        QHotel.hotel.mainImage
+                        QHotel.hotel.mainImage,
+                        QHotel.hotel.province,
+                        QHotel.hotel.city,
+                        QHotel.hotel.district
                 ))
                 .from(QHotel.hotel)
                 .leftJoin(QRoom.room).on(QRoom.room.hotel.id.eq(QHotel.hotel.id))
