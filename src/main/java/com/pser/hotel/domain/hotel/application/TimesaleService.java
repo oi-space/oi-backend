@@ -61,7 +61,7 @@ public class TimesaleService {
             if (timeSale.getStartAt().isAfter(dto.getEndAt()) || timeSale.getEndAt().isBefore(dto.getStartAt())) {
                 continue;
             } else {
-                // 겹치는 시간이 존재하면 return false;
+                // 이미 존재하는 타임특가 중 겹치는 시간이 존재하면 return false;
                 return false;
             }
         }
