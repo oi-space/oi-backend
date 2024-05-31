@@ -8,8 +8,6 @@ import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.domain.TimeSale;
 import com.pser.hotel.domain.hotel.dto.mapper.HotelMapper;
 import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
-import com.pser.hotel.domain.hotel.dto.mapper.TimesaleMapper;
-import com.pser.hotel.domain.hotel.dto.response.TimesaleRoomResponse;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
@@ -29,7 +27,6 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class TimesaleDaoImpl implements TimesaleCustom {
     private final JPAQueryFactory queryFactory;
-    private final TimesaleMapper timesaleMapper;
     private final HotelDao hotelDao;
     private final HotelMapper hotelMapper;
 
@@ -84,15 +81,15 @@ public class TimesaleDaoImpl implements TimesaleCustom {
                     Room room = tuple.get(qRoom);
                     Hotel hotel = tuple.get(qHotel);
 
-                    TimesaleRoomResponse roomResponse = timesaleMapper.changeToTimesaleRoomResponse(room,
-                            Objects.requireNonNull(timeSale).getPrice());
-
+                    int salePrice = Objects.requireNonNull(timeSale).getPrice();
+                    int previousPrice = Objects.requireNonNull(room).getPrice();
                     double hotelGrade = hotelDao.getHotelGrade(Objects.requireNonNull(hotel).getId());
 
-                    HotelSummaryResponse summaryResponse = hotelMapper.changeToHotelSummaryResponse(hotel, hotelGrade, roomResponse.getSalePrice(),
-                            roomResponse.getPreviousPrice());
+                    HotelSummaryResponse summaryResponse = hotelMapper.changeToHotelSummaryResponse(hotel, hotelGrade,
+                            salePrice, previousPrice);
 
                     return summaryResponse;
+
                 })
                 .toList();
 

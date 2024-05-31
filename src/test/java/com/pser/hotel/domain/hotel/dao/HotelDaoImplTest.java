@@ -45,121 +45,116 @@ public class HotelDaoImplTest {
     Facility facility;
     Room room;
     Reservation reservation;
-    PageRequest pageRequest;
     HotelSearchRequest hotelSearchRequest;
+    Pageable pageable;
 
     @BeforeEach
     public void setUp() {
-        pageRequest = PageRequest.of(0, 10);
+        pageable = createPageable();
         user = Utils.createUser();
-        hotel = Utils.createHotel(user);
-        room = Utils.createRoom(hotel);
-        reservation = Utils.createReservation(user, room);
-        facility = Utils.createFacility(hotel);
-
         userDao.save(user);
-        hotelDao.save(hotel);
-        roomDao.save(room);
-        facilityDao.save(facility);
+        for (int i = 0; i < 10; i++) {
+            hotel = Utils.createHotel(user);
+            room = Utils.createRoom(hotel);
+            reservation = Utils.createReservation(user, room);
+            facility = Utils.createFacility(hotel);
+
+            hotelDao.save(hotel);
+            roomDao.save(room);
+            facilityDao.save(facility);
+        }
     }
 
     @Test
     @DisplayName("name 검색 테스트")
     public void nameSearchTest() {
-        Pageable pageable = createPageable();
-        hotelSearchRequest = createSearchRequestByName(hotel.getName());
+        hotelSearchRequest = createSearchRequestByName();
         Slice<HotelSummaryResponse> nameResponse = hotelDao.search(hotelSearchRequest, pageable);
-        Assertions.assertThat(nameResponse.getContent()).isNotEmpty();
+        Assertions.assertThat(nameResponse.getContent().size()).isGreaterThanOrEqualTo(10);
     }
 
-    private HotelSearchRequest createSearchRequestByName(String name) {
+    private HotelSearchRequest createSearchRequestByName() {
         return HotelSearchRequest.builder()
-                .name(name)
+                .name("업체명")
                 .build();
     }
 
     @Test
     @DisplayName("category 검색 테스트")
     public void categorySearchTest() {
-        Pageable pageable = createPageable();
-        hotelSearchRequest = createSearchRequestByCategory(hotel.getCategory());
+        hotelSearchRequest = createSearchRequestByCategory();
         Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
-        Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
+        Assertions.assertThat(hotelResponse.getContent().size()).isGreaterThanOrEqualTo(10);
     }
 
-    private HotelSearchRequest createSearchRequestByCategory(HotelCategoryEnum hotelCategoryEnum) {
+    private HotelSearchRequest createSearchRequestByCategory() {
         return HotelSearchRequest.builder()
-                .category(hotelCategoryEnum)
+                .category(HotelCategoryEnum.HOTEL)
                 .build();
     }
 
     @Test
     @DisplayName("province 검색 테스트")
     public void provinceSearchTest() {
-        Pageable pageable = createPageable();
-        hotelSearchRequest = creatSearchRequestByProvince(hotel.getProvince());
+        hotelSearchRequest = creatSearchRequestByProvince();
         Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
-        Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
+        Assertions.assertThat(hotelResponse.getContent().size()).isGreaterThanOrEqualTo(10);
     }
 
-    private HotelSearchRequest creatSearchRequestByProvince(String province) {
+    private HotelSearchRequest creatSearchRequestByProvince() {
         return HotelSearchRequest.builder()
-                .province(province)
+                .province("서울특별시")
                 .build();
     }
 
     @Test
     @DisplayName("district 검색 테스트")
     public void districtSearchTest() {
-        Pageable pageable = createPageable();
-        hotelSearchRequest = createSearchRequestByDistrict(hotel.getDistrict());
+        hotelSearchRequest = createSearchRequestByDistrict();
         Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
-        Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
+        Assertions.assertThat(hotelResponse.getContent().size()).isGreaterThanOrEqualTo(10);
     }
 
-    private HotelSearchRequest createSearchRequestByDistrict(String district) {
+    private HotelSearchRequest createSearchRequestByDistrict() {
         return HotelSearchRequest.builder()
-                .district(district)
+                .district("가산동")
                 .build();
     }
 
     @Test
     @DisplayName("detailedAddress 검색 테스트")
     public void detailedAddressTest() {
-        Pageable pageable = createPageable();
-        hotelSearchRequest = createSearchRequestByDetailedAddress(hotel.getDetailedAddress());
+        hotelSearchRequest = createSearchRequestByDetailedAddress();
         Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
-        Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
+        Assertions.assertThat(hotelResponse.getContent().size()).isGreaterThanOrEqualTo(10);
     }
 
-    private HotelSearchRequest createSearchRequestByDetailedAddress(String detailedAddress) {
+    private HotelSearchRequest createSearchRequestByDetailedAddress() {
         return HotelSearchRequest.builder()
-                .detailedAddress(detailedAddress)
+                .detailedAddress("가산디지털로")
                 .build();
     }
 
     @Test
     @DisplayName("people 검색 테스트")
     public void peopleTest() {
-        Pageable pageable = createPageable();
-        hotelSearchRequest = createSearchRequestByPeople(room.getMaxCapacity());
+        hotelSearchRequest = createSearchRequestByPeople();
         Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
-        Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
+        Assertions.assertThat(hotelResponse.getContent().size()).isGreaterThanOrEqualTo(10);
     }
 
-    private HotelSearchRequest createSearchRequestByPeople(int maxCapacity) {
+    private HotelSearchRequest createSearchRequestByPeople() {
         return HotelSearchRequest.builder()
-                .people(maxCapacity - 1)
+                .people(11)
                 .build();
     }
 
     @Test
     @DisplayName("startAt, endAt 검색 테스트")
     public void dateTest() {
-        Pageable pageable = createPageable();
         hotelSearchRequest = createSearchRequestByDate();
         Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
-        Assertions.assertThat(hotelResponse.getContent()).isNotEmpty();
+        Assertions.assertThat(hotelResponse.getContent().size()).isGreaterThanOrEqualTo(10);
     }
 
     private HotelSearchRequest createSearchRequestByDate() {
@@ -173,25 +168,24 @@ public class HotelDaoImplTest {
     @DisplayName("숙소 평점 테스트")
     public void gradeTest() {
         double grade = hotelDao.getHotelGrade(hotel.getId());
-        Assertions.assertThat(grade).isGreaterThan(-1);
+        Assertions.assertThat(grade).isGreaterThanOrEqualTo(0);
     }
 
     @Test
     @DisplayName("숙소 전체 조회 테스트")
     public void fndAllTest() {
-        Pageable pageable = createPageable();
         Slice<HotelSummaryResponse> hotelResponse = hotelDao.findAllWithGradeAndPrice(pageable);
-        Assertions.assertThat(hotelResponse).isNotEmpty();
+        Assertions.assertThat(hotelResponse.getContent().size()).isGreaterThanOrEqualTo(10);
     }
 
     @Test
     @DisplayName("특정 숙소 조회 테스트")
     public void findOneHotel() {
         HotelResponse hotelResponse = hotelDao.findHotel(hotel.getId());
-        Assertions.assertThat(hotelResponse).isNotNull();
+        Assertions.assertThat(hotelResponse.getProvince()).isEqualTo("서울특별시");
     }
 
     private Pageable createPageable() {
-        return PageRequest.of(0, 10);
+        return PageRequest.of(0, 20);
     }
 }
