@@ -5,25 +5,26 @@ import com.pser.hotel.domain.model.GradeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@AllArgsConstructor
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class ReviewResponse {
-    Long id;
+    private Long id;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
-    GradeEnum grade;
+    private GradeEnum grade;
 
-    String detail;
+    private String detail;
 
-    List<String> imageUrls; // 리뷰와 관련된 이미지 URL 목록
+    private List<String> imageUrls;
 }
