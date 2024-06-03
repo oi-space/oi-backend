@@ -4,7 +4,6 @@ import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryConverter;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
 import com.pser.hotel.domain.hotel.domain.QHotel;
-import com.pser.hotel.domain.hotel.domain.QHotelImage;
 import com.pser.hotel.domain.hotel.domain.QReservation;
 import com.pser.hotel.domain.hotel.domain.QReview;
 import com.pser.hotel.domain.hotel.domain.QRoom;
@@ -17,6 +16,7 @@ import com.pser.hotel.domain.hotel.dto.response.QHotelSummaryResponse;
 import com.pser.hotel.domain.model.GradeEnum;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
@@ -24,12 +24,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 @Repository
@@ -40,7 +40,7 @@ public class HotelDaoImpl implements HotelDaoCustom {
 
     @Override
     public Slice<HotelSummaryResponse> search(HotelSearchRequest hotelSearchRequest, Pageable pageable) {
-        List<HotelSummaryResponse> content = queryFactory
+        List<HotelSummaryResponse> fetch = queryFactory
                 .select(new QHotelSummaryResponse(
                         QHotel.hotel.id,
                         QHotel.hotel.name,
@@ -54,11 +54,8 @@ public class HotelDaoImpl implements HotelDaoCustom {
                 .from(QHotel.hotel)
                 .leftJoin(QRoom.room).on(QRoom.room.hotel.id.eq(QHotel.hotel.id))
                 .where(
-                        getNamePredicate(hotelSearchRequest.getName()),
-                        getProvincePredicate(hotelSearchRequest.getProvince()),
-                        getCityPredicate(hotelSearchRequest.getCity()),
-                        getDistrictPredicate(hotelSearchRequest.getDistrict()),
-                        getDetailedAddressPredicate(hotelSearchRequest.getDetailedAddress()),
+                        cursorCreateDateAndCursorId(hotelSearchRequest.getNextCursorCreatedAt(), hotelSearchRequest.getNextCursorId()),
+                        provinceEq(hotelSearchRequest.getKeyword()),
                         getBarbecuePredicate(hotelSearchRequest.getBarbecue()),
                         getWifiPredicate(hotelSearchRequest.getWifi()),
                         getParkingLotPredicate(hotelSearchRequest.getParkingLot()),
@@ -75,37 +72,15 @@ public class HotelDaoImpl implements HotelDaoCustom {
                         getLuggageStoragePredicate(hotelSearchRequest.getLuggageStorage()),
                         getSnackBarPredicate(hotelSearchRequest.getSnackBar()),
                         getPetFriendlyPredicate(hotelSearchRequest.getPetFriendly()),
-                        getReservationBetweenPredicate(hotelSearchRequest.getSearchStartAt(),
-                                // 숙박 시작일 ~ 숙박 종료일 동안 예약이 가능한 객실을 보유한 호텔만 리스트에 담는다
-                                hotelSearchRequest.getSearchEndAt()),
-                        containsKeywordPredicate(hotelSearchRequest.getKeyword()),
-                        getPeoplePredicate(hotelSearchRequest.getPeople()) // 인원보다 많은 인원을 수용할 수 있는 객실을 보유한 호텔만 리스트에 담는다
-                ).groupBy(QHotel.hotel.id)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
+                        hotelIdIn(hotelSearchRequest)
+                )
+                .orderBy(QHotel.hotel.createdAt.desc())
+                .limit(pageable.getPageSize())
                 .fetch();
 
-        content = content.stream().map(hotelSummaryResponse -> {
-            List<String> images = queryFactory
-                    .select(QHotelImage.hotelImage.imageUrl)
-                    .from(QHotelImage.hotelImage)
-                    .where(QHotelImage.hotelImage.hotel.id.eq(hotelSummaryResponse.getId()))
-                    .fetch();
-            hotelSummaryResponse.setHotelImageUrls(images);
-            hotelSummaryResponse.setGradeAverage(getHotelGrade(hotelSummaryResponse.getId()));
-            int previousPrice = getPreviousPrice(hotelSummaryResponse.getId());
-            hotelSummaryResponse.setPreviousPrice(previousPrice);
-            hotelSummaryResponse.setSalePrice(getSalePrice(hotelSummaryResponse.getId(), previousPrice));
-            return hotelSummaryResponse;
-        }).collect(Collectors.toList());
+        long count = searchForCount(hotelSearchRequest);
 
-        boolean hasNext = false;
-        if (content.size() > pageable.getPageSize()) {
-            content.remove(pageable.getPageSize());
-            hasNext = true;
-        }
-
-        return new SliceImpl<>(content, pageable, hasNext);
+        return new PageImpl<>(fetch, pageable, count);
     }
 
     @Override
@@ -208,26 +183,6 @@ public class HotelDaoImpl implements HotelDaoCustom {
                 .orElse(0.0);
     }
 
-    private Predicate getNamePredicate(String name) {
-        return StringUtils.hasText(name) ? QHotel.hotel.name.contains(name) : null;
-    }
-
-    private Predicate getProvincePredicate(String province) {
-        return StringUtils.hasText(province) ? QHotel.hotel.province.contains(province) : null;
-    }
-
-    private Predicate getCityPredicate(String city) {
-        return StringUtils.hasText(city) ? QHotel.hotel.city.contains(city) : null;
-    }
-
-    private Predicate getDistrictPredicate(String district) {
-        return StringUtils.hasText(district) ? QHotel.hotel.district.contains(district) : null;
-    }
-
-    private Predicate getDetailedAddressPredicate(String detailedAddress) {
-        return StringUtils.hasText(detailedAddress) ? QHotel.hotel.detailedAddress.contains(detailedAddress) : null;
-    }
-
     private Predicate getBarbecuePredicate(Boolean barbecue) {
         return barbecue != null ? QHotel.hotel.facility.barbecue.eq(barbecue) : null;
     }
@@ -294,38 +249,99 @@ public class HotelDaoImpl implements HotelDaoCustom {
                 .eq(hotelCategoryConverter.convertToDatabaseColumn(categoryEnum).toString()) : null;
     }
 
-    private Predicate getPeoplePredicate(Integer people) {
-        return people != null ? QRoom.room.maxCapacity.goe(people) : null;
-    }
-
-    private Predicate getReservationBetweenPredicate(LocalDate searchStartAt, LocalDate searchEndAt) {
-        if (searchStartAt == null || searchEndAt == null) {
+    private Predicate hotelIdIn(HotelSearchRequest request) {
+        if (request.getPeople() == null && (request.getSearchStartAt() == null || request.getSearchEndAt() == null)) {
             return null;
+        } else if (request.getSearchStartAt() == null || request.getSearchEndAt() == null) {
+            return QHotel.hotel.id.in(
+                    JPAExpressions.select(QRoom.room.hotel.id)
+                            .from(QRoom.room)
+                            .where(
+                                    maxCapacityGt(request.getPeople())
+                            )
+                            .distinct()
+            );
         }
-
-        QRoom qRoom = QRoom.room;
-        QReservation qReservation = QReservation.reservation;
-
-        return qRoom.id.notIn(
-                JPAExpressions.select(qReservation.room.id)
-                        .from(qReservation)
-                        .where(qReservation.startAt.loe(searchEndAt)
-                                .and(qReservation.endAt.goe(searchStartAt)))
+        return QHotel.hotel.id.in(
+                JPAExpressions.select(QRoom.room.hotel.id)
+                        .from(QRoom.room)
+                        .innerJoin(QReservation.reservation)
+                        .on(QRoom.room.id.eq(QReservation.reservation.room.id))
+                        .where(
+                                searchCondition(request)
+                        ).distinct()
         );
     }
 
-    private Predicate containsKeywordPredicate(String keyword) {
-        BooleanBuilder builder = new BooleanBuilder();
 
-        if (StringUtils.hasText(keyword)) {
-            QHotel hotel = QHotel.hotel;
-            builder.or(hotel.name.contains(keyword));
-            builder.or(hotel.province.contains(keyword));
-            builder.or(hotel.city.contains(keyword));
-            builder.or(hotel.district.contains(keyword));
-            builder.or(hotel.detailedAddress.contains(keyword));
+    private BooleanBuilder cursorCreateDateAndCursorId(LocalDateTime createdAt, Long cursorId) {
+        return new BooleanBuilder()
+                .and(createdAtEqAndIdLt(createdAt, cursorId))
+                .or(createDateLt(createdAt));
+    }
+
+    private BooleanExpression createdAtEqAndIdLt(LocalDateTime createDate, Long cursorId) {
+        if (createDate == null | cursorId == null) {
+            return null;
         }
-        return builder.getValue();
+        return QHotel.hotel.createdAt.eq(createDate)
+                .and(QHotel.hotel.id.lt(cursorId));
+    }
 
+    private BooleanExpression createDateLt(LocalDateTime createDate) {
+        return createDate != null ? QHotel.hotel.createdAt.lt(createDate) : null;
+
+    }
+
+    private long searchForCount(HotelSearchRequest request) {
+        Long count = queryFactory
+                .select(QHotel.hotel.count())
+                .from(QHotel.hotel)
+                .where(
+                        provinceEq(request.getKeyword()),
+                        getBarbecuePredicate(request.getBarbecue()),
+                        getWifiPredicate(request.getWifi()),
+                        getParkingLotPredicate(request.getParkingLot()),
+                        getCategoryPredicate(request.getCategory()),
+                        getSaunaPredicate(request.getSauna()),
+                        getSwimmingPoolPredicate(request.getSwimmingPool()),
+                        getRestaurantPredicate(request.getRestaurant()),
+                        getRoofTopPredicate(request.getRoofTop()),
+                        getFitnessPredicate(request.getFitness()),
+                        getDryerPredicate(request.getDryer()),
+                        getBreakfistPredicate(request.getBreakfast()),
+                        getSmokingAreaPredicate(request.getSmokingArea()),
+                        getAllTimeDeskPredicate(request.getAllTimeDesk()),
+                        getLuggageStoragePredicate(request.getLuggageStorage()),
+                        getSnackBarPredicate(request.getSnackBar()),
+                        getPetFriendlyPredicate(request.getPetFriendly()),
+                        hotelIdIn(request)
+                ).fetchOne();
+
+        if (count == null) {
+            count = 0L;
+        }
+        return count;
+    }
+
+    private BooleanBuilder searchCondition(HotelSearchRequest request) {
+        return new BooleanBuilder()
+                .and(maxCapacityGt(request.getPeople()))
+                .and(searchDateBetween(request.getSearchStartAt(), request.getSearchEndAt()));
+    }
+
+    private BooleanExpression searchDateBetween(LocalDate startAt, LocalDate endAt) {
+        return startAt != null && endAt != null ?
+                QReservation.reservation.endAt.loe(startAt)
+                        .or(QReservation.reservation.startAt.gt(endAt))
+                : null;
+    }
+
+    private BooleanExpression maxCapacityGt(Integer requestMaxCapacity) {
+        return requestMaxCapacity != null ? QRoom.room.maxCapacity.gt(requestMaxCapacity) : null;
+    }
+
+    private BooleanExpression provinceEq(String province) {
+        return province != null ? QHotel.hotel.province.eq(province) : null;
     }
 }
