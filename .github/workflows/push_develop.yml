@@ -16,12 +16,10 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
-      - name: Add test config yaml
+      - name: Add config yaml
         run: |
-          mkdir ./src/test/resources; touch ./src/test/resources/application.yaml
-          echo "${{secrets.TEST_CONFIG}}" > ./src/test/resources/application.yaml
           mkdir ./src/main/resources; touch ./src/main/resources/application.yaml
-          echo "${{secrets.DEV_CONFIG}}" > ./src/main/resources/application.yaml
+          echo "${{secrets.TEST_CONFIG}}" > ./src/main/resources/application.yaml
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
@@ -31,7 +29,7 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_USER }}/p-ser-hotel .
           docker push ${{ secrets.DOCKER_USER }}/p-ser-hotel
-      - name: Execute remote ssh
+      - name: Execute remote ssh (pull origin)
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -40,6 +38,21 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd C:\workspace\p-ser-backend && git pull origin develop
-            echo "${{secrets.DEV_CONFIG}}" > ./k8s/config/application.yaml
-            kubectl apply -k ./k8s
-            kubectl rollout restart deployment -n hotel-ns hotel-deployment
+      - name: Execute remote ssh (switch branch)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd C:\workspace\p-ser-backend && git switch develop
+      - name: Execute remote ssh (redeploy)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd C:\workspace\p-ser-backend && kubectl rollout restart deployment -n hotel-ns hotel-deployment
