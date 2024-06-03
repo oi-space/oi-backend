@@ -51,7 +51,7 @@ public class ReservationCreatedConsumer {
 
     private Date getClosingDate(ReservationDto reservationDto) {
         LocalDate localDate = reservationDto.getEndAt();
-        LocalTime localTime = reservationDto.getCheckIn();
+        LocalTime localTime = reservationDto.getRoom().getCheckIn();
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
