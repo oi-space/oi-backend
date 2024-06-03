@@ -54,7 +54,8 @@ public class HotelDaoImpl implements HotelDaoCustom {
                 .from(QHotel.hotel)
                 .leftJoin(QRoom.room).on(QRoom.room.hotel.id.eq(QHotel.hotel.id))
                 .where(
-                        cursorCreateDateAndCursorId(hotelSearchRequest.getNextCursorCreatedAt(), hotelSearchRequest.getNextCursorId()),
+                        cursorCreateDateAndCursorId(hotelSearchRequest.getNextCursorCreatedAt(),
+                                hotelSearchRequest.getNextCursorId()),
                         provinceEq(hotelSearchRequest.getKeyword()),
                         getBarbecuePredicate(hotelSearchRequest.getBarbecue()),
                         getWifiPredicate(hotelSearchRequest.getWifi()),
@@ -78,9 +79,21 @@ public class HotelDaoImpl implements HotelDaoCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
+        List<HotelSummaryResponse> content = fetch.stream()
+                .map(hotelSummaryResponse -> {
+                    double hotelGrade = getHotelGrade(hotelSummaryResponse.getId());
+                    int previousPrice = getPreviousPrice(hotelSummaryResponse.getId());
+                    int salePrice = getSalePrice(hotelSummaryResponse.getId(), previousPrice);
+                    hotelSummaryResponse.setGradeAverage(hotelGrade);
+                    hotelSummaryResponse.setPreviousPrice(previousPrice);
+                    hotelSummaryResponse.setSalePrice(salePrice);
+                    return hotelSummaryResponse;
+                })
+                .toList();
+
         long count = searchForCount(hotelSearchRequest);
 
-        return new PageImpl<>(fetch, pageable, count);
+        return new PageImpl<>(content, pageable, count);
     }
 
     @Override
