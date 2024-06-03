@@ -141,6 +141,7 @@ public class ReservationService {
         }
 
         reservation.updateStatus(targetStatus);
+        reservationStatusProducer.produceUpdated(reservationMapper.toDto(reservation));
     }
 
     @Transactional
