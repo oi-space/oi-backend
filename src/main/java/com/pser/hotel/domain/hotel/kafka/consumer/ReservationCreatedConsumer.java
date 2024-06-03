@@ -2,7 +2,9 @@ package com.pser.hotel.domain.hotel.kafka.consumer;
 
 import com.pser.hotel.domain.hotel.dto.ReservationDto;
 import com.pser.hotel.domain.hotel.quartz.ReservationClosingJob;
+import com.pser.hotel.domain.hotel.quartz.ReservationRefundJob;
 import com.pser.hotel.global.config.kafka.KafkaTopics;
+import com.pser.hotel.global.util.Util;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -31,6 +33,22 @@ public class ReservationCreatedConsumer {
     @KafkaListener(topics = KafkaTopics.RESERVATION_CREATED, groupId = "${kafka.consumer-group-id}", containerFactory = "reservationDtoValueListenerContainerFactory")
     public void onCreated(ReservationDto reservationDto) throws SchedulerException {
         scheduleClosingJob(reservationDto);
+        scheduleRefundJob(reservationDto);
+    }
+
+    private void scheduleRefundJob(ReservationDto reservationDto) throws SchedulerException {
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put("reservationId", reservationDto.getId());
+
+        JobDetail job = JobBuilder.newJob(ReservationRefundJob.class)
+                .withIdentity("reservation.refund.%s".formatted(reservationDto.getId()))
+                .setJobData(jobDataMap)
+                .build();
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .startAt(Util.afterMinutes(5))
+                .build();
+
+        scheduler.scheduleJob(job, trigger);
     }
 
     private void scheduleClosingJob(ReservationDto reservationDto) throws SchedulerException {

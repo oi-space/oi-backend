@@ -14,7 +14,7 @@ public enum ReservationStatusEnum implements StatusEnum {
     CREATED(0) {
         @Override
         public List<StatusEnum> getNext() {
-            return List.of(PAYMENT_VALIDATION_REQUIRED);
+            return List.of(PAYMENT_VALIDATION_REQUIRED, REFUND_REQUIRED);
         }
     }, // 결제 대기
     PAYMENT_VALIDATION_REQUIRED(1) {
