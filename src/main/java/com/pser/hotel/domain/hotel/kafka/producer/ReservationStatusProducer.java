@@ -19,6 +19,10 @@ public class ReservationStatusProducer {
         reservationDtoValueKafkaTemplate.send(KafkaTopics.RESERVATION_CREATED, reservationDto);
     }
 
+    public void produceUpdated(ReservationDto reservationDto) {
+        reservationDtoValueKafkaTemplate.send(KafkaTopics.RESERVATION_UPDATED, reservationDto);
+    }
+
     public void producePaymentValidationRequired(PaymentDto paymentDto) {
         paymentDtoValueKafkaTemplate.send(KafkaTopics.RESERVATION_PAYMENT_VALIDATION_REQUIRED, paymentDto);
     }
