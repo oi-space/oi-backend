@@ -13,18 +13,15 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ReservationClosingJob extends QuartzJobBean {
+public class ReservationRefundJob extends QuartzJobBean {
     private final ReservationService reservationService;
 
     @Override
     protected void executeInternal(JobExecutionContext context) {
         JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
         long reservationId = jobDataMap.getLong("reservationId");
-        Try.run(() -> reservationService.closeReservation(reservationId))
-                .recover(StatusUpdateException.class, e -> {
-                    reservationService.refund(reservationId);
-                    return null;
-                })
+        Try.run(() -> reservationService.refund(reservationId))
+                .recover(StatusUpdateException.class, (Void) null)
                 .get();
     }
 }
