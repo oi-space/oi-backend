@@ -61,26 +61,38 @@ public class PerformanceTest {
     @DisplayName("검색 성능 테스트")
     public void queryPerformanceAboutSearchIndex() {
         Pageable pageable = createPageable();
-        long startTime = System.currentTimeMillis();
         hotelSearchRequest = createSearchRequest();
-        Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
-        System.out.println("검색 결과 : " + hotelResponse.getContent());
-        long endTime = System.currentTimeMillis();
-        long duration = endTime - startTime;
-        System.out.println("검색 기능 실행시간 : " + duration + "ms");
-        Assertions.assertThat(duration).isLessThan(10000); // 10초 이내에 쿼리가 실행되어야 함
+        double sum = 0;
+        for(int i=0; i < 10; i++){
+            long startTime = System.currentTimeMillis();
+            Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
+            System.out.println("검색 결과 : " + hotelResponse.getContent());
+            long endTime = System.currentTimeMillis();
+            long duration = endTime - startTime;
+            sum+=duration;
+        }
+
+        System.out.println("실행 시간 평균 : " + sum/10 + "ms");
+
+        Assertions.assertThat(sum).isLessThan(10000); // 10초 이내에 쿼리가 실행되어야 함
     }
 
     @Test
     @DisplayName("타임특가 적용 숙소 전체 조회 성능 테스트")
     public void queryPerformanceAboutFindNowTimesaleHotelIndex() {
         Pageable pageable = createPageable();
-        long startTime = System.currentTimeMillis();
-        Slice<HotelSummaryResponse> timesaleResponse = timesaleDao.findNowTimesaleHotel(pageable);
-        long endTime = System.currentTimeMillis();
-        long duration = endTime - startTime;
-        System.out.println("검색 기능 실행시간 : " + duration + "ms");
-        Assertions.assertThat(duration).isLessThan(100000); // 100초 이내에 쿼리가 실행되어야 함
+        double sum = 0;
+        for(int i=0; i < 1; i++) {
+            long startTime = System.currentTimeMillis();
+            Slice<HotelSummaryResponse> timesaleResponse = timesaleDao.findNowTimesaleHotel(pageable);
+            long endTime = System.currentTimeMillis();
+            long duration = endTime - startTime;
+            sum+=duration;
+        }
+
+        System.out.println("실행 시간 평균 : " + sum/10 + "ms");
+
+        Assertions.assertThat(sum).isLessThan(100000); // 100초 이내에 쿼리가 실행되어야 함
     }
 
     private HotelSearchRequest createSearchRequest() {
