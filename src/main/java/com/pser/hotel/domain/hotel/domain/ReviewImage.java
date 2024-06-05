@@ -37,7 +37,7 @@ public class ReviewImage extends BaseEntity {
     }
 
     public String getUrl() {
-        // 일단 웹서버에 저장된다고 가정 한 코드
+
         return "http://yourserver.com/files/" + this.filePath;
     }
 }

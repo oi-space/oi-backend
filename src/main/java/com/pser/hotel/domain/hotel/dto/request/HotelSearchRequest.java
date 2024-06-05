@@ -13,6 +13,10 @@ import lombok.Setter;
 @Setter
 public class HotelSearchRequest extends SearchQuery {
 
+    private Long nextCursorId;
+
+    private LocalDateTime nextCursorCreatedAt;
+
     private String name;
 
     private HotelCategoryEnum category;
