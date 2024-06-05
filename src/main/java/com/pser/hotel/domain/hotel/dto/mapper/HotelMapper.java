@@ -49,16 +49,16 @@ public interface HotelMapper {
                 .collect(Collectors.toList());
     }
 
-    @Mapping(target = "facility", ignore = true)
     @Mapping(target = "rooms", ignore = true)
+    @Mapping(target = "facility", ignore = true)
+    @Mapping(target = "images", ignore = true)
     Hotel changeToHotel(HotelCreateRequest hotelCreateRequest, User user);
 
     Facility changeToFacility(HotelCreateRequest hotelCreateRequest, Hotel hotel);
 
-
-    @Mapping(target = "hotel.images", source = "hotelUpdateRequest.hotelImageUrls", qualifiedByName = "mapToHotelImage")
     @Mapping(target = "hotel.user", ignore = true)
     @Mapping(target = "hotel.rooms", ignore = true)
+    @Mapping(target = "hotel.images", ignore = true)
     @Mapping(target = "hotel.facility", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
     void updateHotelFromDto(HotelUpdateRequest hotelUpdateRequest, @MappingTarget Hotel hotel);
