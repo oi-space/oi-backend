@@ -16,6 +16,7 @@ import com.pser.hotel.domain.hotel.dto.response.HotelResponse;
 import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
 import com.pser.hotel.domain.member.domain.User;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -37,38 +38,32 @@ public interface HotelMapper {
         return roomImages.stream().map(RoomImage::getImageUrl).toList();
     }
 
-    default HotelResponse changeToHotelResponse(Hotel hotel, double averageRating, int salePrice, int previousPrice) {
-        HotelResponse hotelResponse = changeToHotelResponseExcludeImage(hotel);
-        List<String> imageUrls = hotel.getImages().stream()
-                .map(HotelImage::getImageUrl)
-                .toList();
-        hotelResponse.setHotelImageUrls(imageUrls);
-        hotelResponse.setGradeAverage(averageRating);
-        hotelResponse.setSalePrice(salePrice);
-        hotelResponse.setPreviousPrice(previousPrice);
-        return hotelResponse;
+    @Named("mapToHotelImage")
+    default List<HotelImage> mapToHotelImage(List<String> hotelImageUrls) {
+        return hotelImageUrls.stream()
+                .map(imageUrl -> {
+                    HotelImage hotelImage = new HotelImage();
+                    hotelImage.setImageUrl(imageUrl);
+                    return hotelImage;
+                })
+                .collect(Collectors.toList());
     }
 
-    default HotelSummaryResponse changeToHotelSummaryResponse(Hotel hotel, double averageRating, int salePrice,
-                                                              int previousPrice) {
-        HotelSummaryResponse hotelSummaryResponse = changeToHotelSummaryResponseExcludeImage(hotel);
-        List<String> imageUrls = hotel.getImages().stream()
-                .map(HotelImage::getImageUrl)
-                .toList();
-        hotelSummaryResponse.setHotelImageUrls(imageUrls);
-        hotelSummaryResponse.setGradeAverage(averageRating);
-        hotelSummaryResponse.setSalePrice(salePrice);
-        hotelSummaryResponse.setPreviousPrice(previousPrice);
-        return hotelSummaryResponse;
-    }
-
+    @Mapping(target = "facility", ignore = true)
+    @Mapping(target = "rooms", ignore = true)
     Hotel changeToHotel(HotelCreateRequest hotelCreateRequest, User user);
 
     Facility changeToFacility(HotelCreateRequest hotelCreateRequest, Hotel hotel);
 
+
+    @Mapping(target = "hotel.images", source = "hotelUpdateRequest.hotelImageUrls", qualifiedByName = "mapToHotelImage")
+    @Mapping(target = "hotel.user", ignore = true)
+    @Mapping(target = "hotel.rooms", ignore = true)
+    @Mapping(target = "hotel.facility", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
     void updateHotelFromDto(HotelUpdateRequest hotelUpdateRequest, @MappingTarget Hotel hotel);
 
+    @Mapping(target = "hotel", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
     void updateFacilityFromDto(HotelUpdateRequest hotelUpdateRequest, @MappingTarget Facility facility);
 
@@ -87,10 +82,12 @@ public interface HotelMapper {
     @Mapping(target = "luggageStorage", source = "hotel.facility.luggageStorage")
     @Mapping(target = "snackBar", source = "hotel.facility.snackBar")
     @Mapping(target = "petFriendly", source = "hotel.facility.petFriendly")
-    @Mapping(target = "userId", source = "user.id")
-    HotelResponse changeToHotelResponseExcludeImage(Hotel hotel);
+    @Mapping(target = "userId", source = "hotel.user.id")
+    @Mapping(target = "hotelImageUrls", source = "hotel.images", qualifiedByName = "getImageUrls")
+    HotelResponse changeToHotelResponse(Hotel hotel, double gradeAverage, int salePrice, int previousPrice);
 
-    HotelSummaryResponse changeToHotelSummaryResponseExcludeImage(Hotel hotel);
+    @Mapping(target = "hotelImageUrls", source = "hotel.images", qualifiedByName = "getImageUrls")
+    HotelSummaryResponse changeToHotelSummaryResponse(Hotel hotel, double gradeAverage, int salePrice, int previousPrice);
 
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "images", source = "images", qualifiedByName = "getImageUrls")
