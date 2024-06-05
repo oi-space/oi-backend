@@ -1,10 +1,14 @@
-package com.pser.hotel.domain.hotel.domain;
+package com.pser.hotel.domain.hotel.dao;
 
 import com.pser.hotel.domain.hotel.config.MapperConfig;
 import com.pser.hotel.domain.hotel.dao.FacilityDao;
 import com.pser.hotel.domain.hotel.dao.HotelDao;
 import com.pser.hotel.domain.hotel.dao.RoomDao;
 import com.pser.hotel.domain.hotel.dao.TimesaleDao;
+import com.pser.hotel.domain.hotel.domain.Facility;
+import com.pser.hotel.domain.hotel.domain.Hotel;
+import com.pser.hotel.domain.hotel.domain.Room;
+import com.pser.hotel.domain.hotel.domain.TimeSale;
 import com.pser.hotel.domain.hotel.dto.request.HotelSearchRequest;
 import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.util.Utils;
