@@ -1,16 +1,12 @@
 package com.pser.hotel.domain.hotel.dao;
 
 import com.pser.hotel.domain.hotel.config.MapperConfig;
-import com.pser.hotel.domain.hotel.dao.FacilityDao;
-import com.pser.hotel.domain.hotel.dao.HotelDao;
-import com.pser.hotel.domain.hotel.dao.RoomDao;
-import com.pser.hotel.domain.hotel.dao.TimesaleDao;
 import com.pser.hotel.domain.hotel.domain.Facility;
 import com.pser.hotel.domain.hotel.domain.Hotel;
-import com.pser.hotel.domain.hotel.domain.Room;
-import com.pser.hotel.domain.hotel.domain.TimeSale;
 import com.pser.hotel.domain.hotel.dto.request.HotelSearchRequest;
+import com.pser.hotel.domain.hotel.dto.request.RoomSearchRequest;
 import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
+import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
 import com.pser.hotel.domain.hotel.util.Utils;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.config.QueryDslConfig;
@@ -45,8 +41,6 @@ public class PerformanceTest {
     User user;
     Hotel hotel;
     Facility facility;
-    Room room;
-    TimeSale timeSale;
     int performanceSize = 100000;
     HotelSearchRequest hotelSearchRequest;
     @BeforeEach
@@ -105,11 +99,46 @@ public class PerformanceTest {
         Assertions.assertThat(duration).isLessThan(100000); // 100초 이내에 쿼리가 실행되어야 함
     }
 
+    @Test
+    @DisplayName("객실 검색 조회 성능 테스트")
+    public void queryPerformanceAboutRoomSearchIndex() {
+        Pageable pageable = createPageable();
+        RoomSearchRequest roomSearchRequest = createRoomSearchRequest();
+        long startTime = System.currentTimeMillis();
+        Slice<RoomResponse> roomResponses = roomDao.search(roomSearchRequest, pageable);
+        long endTime = System.currentTimeMillis();
+        long duration = endTime - startTime;
+
+        System.out.println("실행 시간 평균 : " + duration + "ms");
+
+        Assertions.assertThat(duration).isLessThan(100000); // 100초 이내에 쿼리가 실행되어야 함
+    }
+
+    @Test
+    @DisplayName("숙소 전체 조회 성능 테스트")
+    public void queryPerformanceAboutFindAllHotelIndex() {
+        Pageable pageable = createPageable();
+        long startTime = System.currentTimeMillis();
+        Slice<HotelSummaryResponse> hotelSummaryResponses = hotelDao.findAllWithGradeAndPrice(pageable);
+        long endTime = System.currentTimeMillis();
+        long duration = endTime - startTime;
+
+        System.out.println("실행 시간 평균 : " + duration + "ms");
+
+        Assertions.assertThat(duration).isLessThan(100000); // 100초 이내에 쿼리가 실행되어야 함
+    }
+
     private HotelSearchRequest createSearchRequest() {
         return  HotelSearchRequest.builder()
                 .name("업체명" + (performanceSize - performanceSize / 10))
                 .city("금천구" + (performanceSize - performanceSize / 10))
                 .province("서울특별시" + (performanceSize - performanceSize / 10))
+                .build();
+    }
+
+    private RoomSearchRequest createRoomSearchRequest() {
+        return RoomSearchRequest.builder()
+                .price(109000)
                 .build();
     }
 
