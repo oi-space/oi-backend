@@ -19,6 +19,8 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -202,10 +204,14 @@ public class HotelDaoImpl implements HotelDaoCustom {
         if (gradeEnumList.isEmpty()) {
             return 0.0;
         }
-        return gradeEnumList.stream()
+        double average = gradeEnumList.stream()
                 .mapToInt(GradeEnum::getValue)
                 .average()
                 .orElse(0.0);
+
+        BigDecimal bd = new BigDecimal(Double.toString(average));
+        bd = bd.setScale(1, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     private Predicate getNamePredicate(String name) {
