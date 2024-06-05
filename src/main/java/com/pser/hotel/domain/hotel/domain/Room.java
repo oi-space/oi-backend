@@ -8,11 +8,13 @@ import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalTime;
@@ -27,6 +29,15 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
+@Table(indexes = {
+        @Index(name = "idx_room_hotel_id", columnList = "hotel_id"),
+        @Index(name = "idx_room_price", columnList = "price"),
+        @Index(name = "idx_room_name", columnList = "name"),
+        @Index(name = "idx_room_description", columnList = "description"),
+        @Index(name = "idx_room_precaution", columnList = "precaution"),
+        @Index(name = "idx_room_standard_capacity", columnList = "standard_capacity"),
+        @Index(name = "idx_room_max_capacity", columnList = "max_capacity"),
+})
 public class Room extends BaseEntity {
     @ManyToOne(cascade = {CascadeType.PERSIST}, optional = false)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))

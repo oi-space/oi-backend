@@ -17,6 +17,7 @@ import java.util.List;
 @Setter
 @Entity
 @NoArgsConstructor
+@Table(indexes = {@Index(name = "idx_review_reservation_id", columnList = "reservation_id")})
 public class Review extends BaseEntity {
 
     @Column(nullable = false)
