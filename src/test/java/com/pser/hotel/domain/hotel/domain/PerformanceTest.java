@@ -11,9 +11,6 @@ import com.pser.hotel.domain.hotel.util.Utils;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.config.QueryDslConfig;
 import jakarta.persistence.EntityManager;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Random;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -106,63 +103,9 @@ public class PerformanceTest {
 
     private HotelSearchRequest createSearchRequest() {
         return  HotelSearchRequest.builder()
-                .name("업체명" + (performanceSize - (int) performanceSize / 10))
-                .city("금천구" + (performanceSize - (int) performanceSize / 10))
-                .province("서울특별시" + (performanceSize - (int) performanceSize / 10))
-                .build();
-    }
-
-    private Hotel createHotel(User user, int number) {
-        HotelCategoryEnum hotelCategoryEnum = HotelCategoryEnum.HOTEL;
-        if(number == performanceSize - (int) performanceSize / 10) {
-            hotelCategoryEnum = HotelCategoryEnum.PENSION;
-        }
-        Hotel hotel1 = Hotel.builder()
-                .name("업체명" + number)
-                .category(hotelCategoryEnum)
-                .description("업체설명")
-                .notice("업체공자")
-                .province("서울특별시" + number)
-                .city("금천구" + number)
-                .district("가산동")
-                .detailedAddress("가산디지털로1로 189")
-                .latitude(100.123)
-                .longitude(123.100)
-                .mainImage("mainImg.url")
-                .businessNumber("123456-123456")
-                .certUrl("cert.url")
-                .visitGuidance("가산디지털단지역 도보 5분")
-                .user(user)
-                .build();
-        return hotel1;
-    }
-
-    private Room createRoom(Hotel hotel, int number) {
-        return Room.builder()
-                .hotel(hotel)
-                .name("객실 이름" + number)
-                .description("객실 설명" + number)
-                .precaution("객실 설명" + number)
-                .totalRooms(new Random().nextInt(1, 100))
-                .maxCapacity(new Random().nextInt(11, 20))
-                .standardCapacity(new Random().nextInt(1, 10))
-                .price(100000 + number)
-                .checkIn(LocalTime.of(15, 00, 0))
-                .checkOut(LocalTime.of(11, 00, 00))
-                .build();
-
-    }
-
-    public static TimeSale createTimesale(Room room, int number) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime startAt = now.minusDays(1);
-        LocalDateTime endAt = now.plusDays(1);
-
-        return TimeSale.builder()
-                .room(room)
-                .price(70000 + number)
-                .startAt(startAt)
-                .endAt(endAt)
+                .name("업체명" + (performanceSize - performanceSize / 10))
+                .city("금천구" + (performanceSize - performanceSize / 10))
+                .province("서울특별시" + (performanceSize - performanceSize / 10))
                 .build();
     }
 
