@@ -161,6 +161,7 @@ public class ReservationService {
         }
 
         reservation.rollbackStatusTo(targetStatus);
+        reservationStatusProducer.produceUpdated(reservationMapper.toDto(reservation));
     }
 
     private void checkSchedule(ReservationCreateRequest request) {
