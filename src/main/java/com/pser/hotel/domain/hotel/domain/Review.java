@@ -19,6 +19,10 @@ import java.util.List;
 @NoArgsConstructor
 public class Review extends BaseEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // id 필드 추가
+
     @Column(nullable = false)
     @Convert(converter = GradeEnumConverter.class)
     private GradeEnum grade;
@@ -34,7 +38,8 @@ public class Review extends BaseEntity {
     private List<ReviewImage> reviewImages = new ArrayList<>();
 
     @Builder
-    public Review(GradeEnum grade, String detail, Reservation reservation, List<ReviewImage> reviewImages) {
+    public Review(Long id, GradeEnum grade, String detail, Reservation reservation, List<ReviewImage> reviewImages) {
+        this.id = id; // id 필드 추가
         this.grade = grade;
         this.detail = detail;
         this.reservation = reservation;

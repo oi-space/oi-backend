@@ -17,11 +17,14 @@ public class ReviewSearchRequest extends SearchQuery {
     private LocalDateTime endDate;
     private double rating;
     private String content;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @Builder
     public ReviewSearchRequest(String keyword, LocalDateTime createdAfter, LocalDateTime createdBefore,
                                LocalDateTime updatedAfter, LocalDateTime updatedBefore, GradeEnum grade, String detail,
-                               LocalDateTime startDate, LocalDateTime endDate, double rating, String content) {
+                               LocalDateTime startDate, LocalDateTime endDate, double rating, String content,
+                               LocalDateTime createdAt, LocalDateTime updatedAt) {
         super(keyword, createdAfter, createdBefore, updatedAfter, updatedBefore);
         this.grade = grade;
         this.detail = detail;
@@ -29,5 +32,15 @@ public class ReviewSearchRequest extends SearchQuery {
         this.endDate = endDate;
         this.rating = rating;
         this.content = content;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }
