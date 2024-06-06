@@ -74,6 +74,9 @@ dependencies {
 
     // Redisson
     implementation 'org.redisson:redisson-spring-boot-starter:3.30.0'
+
+    // Testcontainers
+    testImplementation 'org.testcontainers:testcontainers:1.19.7'
 }
 
 tasks.named('test') {
