@@ -2,6 +2,10 @@ package com.pser.hotel.global.config;
 
 import com.pser.hotel.global.util.Util;
 import lombok.RequiredArgsConstructor;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
+import org.redisson.config.SingleServerConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -34,5 +38,16 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
+    }
+
+    @Bean
+    public RedissonClient redissonClient() {
+        String address = "redis://%s:%s".formatted(env.getProperty("redis.host"), env.getProperty("redis.port"));
+        Config config = new Config();
+        SingleServerConfig singleServerConfig = config.useSingleServer();
+        singleServerConfig.setAddress(address);
+        singleServerConfig.setDatabase(Util.getIntProperty(env, "redis.database"));
+        singleServerConfig.setPassword(env.getProperty("redis.password"));
+        return Redisson.create(config);
     }
 }
