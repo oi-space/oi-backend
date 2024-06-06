@@ -15,6 +15,7 @@ import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.common.PaymentDto;
 import com.pser.hotel.global.common.RefundDto;
 import com.pser.hotel.global.common.StatusUpdateDto;
+import com.pser.hotel.global.config.aop.redisson.DistributeLock;
 import com.pser.hotel.global.error.SameStatusException;
 import com.pser.hotel.global.error.ValidationFailedException;
 import io.vavr.control.Try;
@@ -47,7 +48,7 @@ public class ReservationService {
         return reservationMapper.toResponse(reservation);
     }
 
-    @Transactional
+    @DistributeLock(key = "'room' + #request.getRoomId()")
     public long save(ReservationCreateRequest request) {
         checkSchedule(request);
 
@@ -134,7 +135,7 @@ public class ReservationService {
     public void updateStatus(StatusUpdateDto<ReservationStatusEnum> statusUpdateDto, Consumer<Reservation> validator) {
         Reservation reservation = reservationDao.findById(statusUpdateDto.getId())
                 .orElseThrow();
-        ReservationStatusEnum targetStatus = (ReservationStatusEnum) statusUpdateDto.getTargetStatus();
+        ReservationStatusEnum targetStatus = statusUpdateDto.getTargetStatus();
 
         if (validator != null) {
             validator.accept(reservation);
@@ -154,7 +155,7 @@ public class ReservationService {
                                Consumer<Reservation> validator) {
         Reservation reservation = reservationDao.findById(statusUpdateDto.getId())
                 .orElseThrow();
-        ReservationStatusEnum targetStatus = (ReservationStatusEnum) statusUpdateDto.getTargetStatus();
+        ReservationStatusEnum targetStatus = statusUpdateDto.getTargetStatus();
 
         if (validator != null) {
             validator.accept(reservation);
