@@ -71,6 +71,9 @@ dependencies {
 
     // Vavr
     implementation 'io.vavr:vavr:0.10.4'
+
+    // Redisson
+    implementation 'org.redisson:redisson-spring-boot-starter:3.30.0'
 }
 
 tasks.named('test') {
