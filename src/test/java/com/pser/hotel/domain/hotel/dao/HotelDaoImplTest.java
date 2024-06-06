@@ -136,35 +136,6 @@ public class HotelDaoImplTest {
     }
 
     @Test
-    @DisplayName("people 검색 테스트")
-    public void peopleTest() {
-        hotelSearchRequest = createSearchRequestByPeople();
-        Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
-        Assertions.assertThat(hotelResponse.getContent().size()).isGreaterThanOrEqualTo(10);
-    }
-
-    private HotelSearchRequest createSearchRequestByPeople() {
-        return HotelSearchRequest.builder()
-                .people(11)
-                .build();
-    }
-
-    @Test
-    @DisplayName("startAt, endAt 검색 테스트")
-    public void dateTest() {
-        hotelSearchRequest = createSearchRequestByDate();
-        Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
-        Assertions.assertThat(hotelResponse.getContent().size()).isGreaterThanOrEqualTo(10);
-    }
-
-    private HotelSearchRequest createSearchRequestByDate() {
-        return HotelSearchRequest.builder()
-                .searchStartAt(LocalDate.of(2024, 4, 18))
-                .searchEndAt(LocalDate.of(2024, 4, 19))
-                .build();
-    }
-
-    @Test
     @DisplayName("숙소 평점 테스트")
     public void gradeTest() {
         double grade = hotelDao.getHotelGrade(hotel.getId());

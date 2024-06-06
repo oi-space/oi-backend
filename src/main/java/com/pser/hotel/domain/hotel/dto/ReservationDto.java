@@ -4,12 +4,12 @@ import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservationDto {
@@ -17,17 +17,15 @@ public class ReservationDto {
 
     private Long userId;
 
-    private Long roomId;
+    private RoomDto room;
+
+    private HotelDto hotel;
 
     private Integer price;
 
     private LocalDate startAt;
 
     private LocalDate endAt;
-
-    private LocalTime checkIn;
-
-    private LocalTime checkOut;
 
     private Integer visitorCount;
 

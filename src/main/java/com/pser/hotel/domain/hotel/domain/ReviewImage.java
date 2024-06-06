@@ -35,7 +35,9 @@ public class ReviewImage extends BaseEntity {
         this.review = review;
     }
 
+
     public ReviewImage(String fileUrl) {
         this.fileUrl = fileUrl;
+    
     }
 }

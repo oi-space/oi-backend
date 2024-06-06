@@ -5,6 +5,7 @@ public interface KafkaTopics {
     String HOTEL_UPDATED = "hotel.updated";
     String HOTEL_DELETED = "hotel.deleted";
     String RESERVATION_CREATED = "reservation.created";
+    String RESERVATION_UPDATED = "reservation.updated";
     String RESERVATION_PAYMENT_VALIDATION_REQUIRED = "reservation.payment-validation-required";
     String RESERVATION_PAYMENT_VALIDATION_REQUIRED_ROLLBACK = "reservation.payment-validation-required-rollback";
     String RESERVATION_PAYMENT_VALIDATION_CHECKED = "reservation.payment-validation-checked";

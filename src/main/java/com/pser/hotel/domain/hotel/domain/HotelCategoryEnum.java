@@ -9,9 +9,15 @@ import lombok.Getter;
 
 @Getter
 public enum HotelCategoryEnum {
-    // TODO : 추후 추가 예정
     HOTEL(0),
-    PENSION(1);
+    PENSION(1),
+    MOTEL(2),
+    RESORT(3),
+    CAMPING(4),
+    GUESTHOUSE(5),
+    KOREANHOUSE(6),
+    POOLVILLA(7),
+    DETACHEDHOUSE(8);
 
     private static final Map<Integer, HotelCategoryEnum> valueToName =
             Collections.unmodifiableMap(Stream.of(values())
