@@ -9,9 +9,11 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -26,6 +28,7 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor
 @ToString(of = {"price", "startAt", "endAt", "visitorCount", "adultCount", "childCount", "status"})
+@Table(indexes = {@Index(name = "idx_reservation_room_id", columnList = "room_id")})
 public class Reservation extends StatusHolderEntity<ReservationStatusEnum> {
     @ManyToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
