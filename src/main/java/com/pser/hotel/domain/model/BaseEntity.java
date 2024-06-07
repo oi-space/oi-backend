@@ -26,6 +26,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BaseEntity {
+    protected String fileUrl;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

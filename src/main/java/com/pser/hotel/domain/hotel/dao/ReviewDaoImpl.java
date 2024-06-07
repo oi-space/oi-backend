@@ -51,7 +51,7 @@ public class ReviewDaoImpl implements ReviewDaoCustom {
                 .and(matchCreatedBefore(review, request.getCreatedBefore()))
                 .and(matchUpdatedAfter(review, request.getUpdatedAfter()))
                 .and(matchUpdatedBefore(review, request.getUpdatedBefore()))
-                .and(matchRating(review, request.getRating())) // Integer로 반환된 값을 사용
+                .and(matchRating(review, request.getRating()))
                 .and(matchContent(review, request.getContent()))
                 .and(matchCreatedAt(review, request.getCreatedAt()))
                 .and(matchUpdatedAt(review, request.getUpdatedAt()));
@@ -96,11 +96,8 @@ public class ReviewDaoImpl implements ReviewDaoCustom {
                 .or(review.updatedAt.eq(updatedBefore));
     }
 
-    private BooleanExpression matchRating(QReview review, Integer rating) {
-        if (rating == null) {
-            return null;
-        }
-        GradeEnum gradeEnum = GradeEnum.getByValue(rating);
+    private BooleanExpression matchRating(QReview review, double rating) {
+        GradeEnum gradeEnum = GradeEnum.getByValue((int) rating);
         if (gradeEnum == null) {
             return null;
         }

@@ -16,5 +16,4 @@ public class ReviewUpdateRequest {
 
     private List<String> imageUrls;
 
-    // 위에 grade, detail, imageUrls는 수정시 필수가 아닐 수 있음을 고려함.
 }
