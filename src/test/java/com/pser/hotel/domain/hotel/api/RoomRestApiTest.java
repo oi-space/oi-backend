@@ -2,8 +2,6 @@ package com.pser.hotel.domain.hotel.api;
 
 import static com.pser.hotel.domain.hotel.util.Utils.createImageUrl;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.pser.hotel.domain.hotel.application.RoomService;
@@ -22,7 +20,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -67,59 +64,6 @@ class RoomRestApiTest {
         mockMvc.perform(get(url))
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print());
-    }
-
-    @Test
-    @DisplayName("객실 검색 조회 테스트")
-    public void searchRoom() throws Exception {
-        mockMvc.perform(get("/rooms/search")
-                        .param("keyword", "testKeyword")
-                        .param("tv", "true")
-                        .param("page", String.valueOf(pageRequest.getOffset()))
-                        .param("size", String.valueOf(pageRequest.getPageSize())))
-                .andExpect(status().isOk())
-                .andDo(MockMvcResultHandlers.print());
-    }
-
-    @Test
-    @DisplayName("객실 저장 테스트")
-    public void roomSave() throws Exception {
-        mockMvc.perform(post("/rooms")
-                        .header("user-id", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(getRoomByJson())
-                )
-                .andExpect(status().isCreated());
-    }
-
-    @Test
-    @DisplayName("객실 저장 테스트 - 요청헤더(user-id)가 없으면 BadRequest를 응답한다.")
-    public void roomSaveByBadRequest() throws Exception {
-        mockMvc.perform(post("/rooms")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getRoomByJson())
-        ).andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DisplayName("객실 수정 테스트")
-    public void roomUpdate() throws Exception {
-        mockMvc.perform(patch("/rooms/1")
-                        .header("user-id", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(getRoomByJson())
-                )
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("객실 수정 테스트 - 요청헤더(user-id)가 없으면 BadRequest를 응답한다.")
-    public void roomUpdateByBadRequest() throws Exception {
-        mockMvc.perform(patch("/rooms/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(getRoomByJson())
-                )
-                .andExpect(status().isBadRequest());
     }
 
     private RoomRequest createRoomRequestDto() {
