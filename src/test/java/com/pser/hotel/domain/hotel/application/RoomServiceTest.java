@@ -15,8 +15,8 @@ import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.dto.mapper.RoomMapper;
 import com.pser.hotel.domain.hotel.dto.request.RoomRequest;
-import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
 import com.pser.hotel.domain.hotel.dto.request.RoomSearchRequest;
+import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalTime;
 import java.util.List;
@@ -67,11 +67,13 @@ class RoomServiceTest {
     public void saveTest() {
         // Given
         long userId = 1;
+        long hotelId = 1;
+        long roomId = 1;
         requestDto = createRoomRequest();
-        given(hotelDao.findById(requestDto.getHotelId())).willReturn(Optional.of(hotel));
+        given(hotelDao.findByIdAndUserId(hotelId, userId)).willReturn(Optional.of(hotel));
 
         // When
-        Long save = roomService.save(userId, requestDto);
+        Long save = roomService.save(userId, hotelId, requestDto);
 
         // Then
         then(roomDao).should().save(any());
@@ -91,7 +93,7 @@ class RoomServiceTest {
         Page<RoomResponse> result = roomService.findRoomList(pageable);
 
         // Then
-        Assertions.assertThat(result).isEqualTo(roomPage.map(e -> e.toDto()));
+        Assertions.assertThat(result).isEqualTo(roomPage.map(room -> roomMapper.roomToRoomResponse(room)));
     }
 
     @Test
@@ -104,25 +106,7 @@ class RoomServiceTest {
         RoomResponse result = roomService.findRoom(1L);
 
         //Then
-        Assertions.assertThat(result).isEqualTo(room.toDto());
-    }
-
-    @Test
-    @DisplayName("search 테스트")
-    public void searchTest() {
-        // Given
-        RoomSearchRequest searchRequest = createSearchReqeust();
-        List<Room> roomList = createRooms(hotel, 10);
-        Pageable pageable = createPageable(0, 10);
-        Page<RoomResponse> expect = new PageImpl<>(roomList, pageable, 10).map(e -> e.toDto());
-
-        given(roomDao.search(searchRequest, pageable)).willReturn(expect);
-
-        // When
-        Page<RoomResponse> actual = roomService.search(searchRequest, pageable);
-
-        // Then
-        Assertions.assertThat(actual).isEqualTo(expect);
+        Assertions.assertThat(result).isEqualTo(roomMapper.roomToRoomResponse(room));
     }
 
     @Test
@@ -131,13 +115,14 @@ class RoomServiceTest {
         // Given
         Long roomId = 1L;
         Long userId = 1L;
+        Long hotelId = 1L;
         requestDto = createRoomRequest();
         given(hotel.getId()).willReturn(1L);
-        given(hotelDao.findById(requestDto.getHotelId())).willReturn(Optional.of(hotel));
+        given(hotelDao.findByIdAndUserId(hotelId, userId)).willReturn(Optional.of(hotel));
         given(roomDao.findByIdAndHotelId(roomId, requestDto.getHotelId())).willReturn(Optional.of(room));
 
         // When
-        roomService.update(userId, roomId, requestDto);
+        roomService.update(userId, hotelId, roomId, requestDto);
 
         // Then
         then(roomMapper).should().updateRoomFromDto(requestDto, room);
@@ -154,7 +139,7 @@ class RoomServiceTest {
         requestDto = createRoomRequest();
         given(hotel.getId()).willReturn(hotelId);
         given(room.getId()).willReturn(roomId);
-        given(hotelDao.findById(requestDto.getHotelId())).willReturn(Optional.of(hotel));
+        given(hotelDao.findByIdAndUserId(hotelId, userId)).willReturn(Optional.of(hotel));
         given(roomDao.findByIdAndHotelId(roomId, hotelId)).willReturn(Optional.of(room));
 
         // When
