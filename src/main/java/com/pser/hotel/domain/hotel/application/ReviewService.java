@@ -61,4 +61,14 @@ public class ReviewService {
         }
         return review.get();
     }
+
+    public Page<ReviewResponse> getAllByReservationId(Long reservationId, Pageable pageable) {
+        return reviewDao.findByReservationId(reservationId, pageable).map(reviewMapper::toResponse);
+    }
+
+    public ReviewResponse getByIdAndReservationId(Long id, Long reservationId) {
+        Review review = reviewDao.findByIdAndReservationId(id, reservationId)
+                .orElseThrow(() -> new EntityNotFoundException("Review not found with the given reservation ID and review ID."));
+        return reviewMapper.toResponse(review);
+    }
 }
