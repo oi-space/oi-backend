@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
@@ -41,6 +43,47 @@ public class ReviewDaoImpl implements ReviewDaoCustom {
                 .fetchOne();
 
         return new PageImpl<>(reviews, pageable, count != null ? count : 0L);
+    }
+
+    @Override
+    public Slice<Review> findAllByReservationId(long reservationId, Long idAfter, Pageable pageable) {
+        QReview review = QReview.review;
+
+        BooleanBuilder booleanBuilder = new BooleanBuilder()
+                .and(review.reservation.id.eq(reservationId))
+                .and(matchIdAfter(idAfter, review));
+
+        List<Review> result = queryFactory.selectFrom(review)
+                .where(booleanBuilder)
+                .limit(pageable.getPageSize() + 1)
+                .orderBy(review.id.desc())
+                .fetch();
+        boolean hasNext = result.size() > pageable.getPageSize();
+        return new SliceImpl<>(result, pageable, hasNext);
+    }
+
+    @Override
+    public Slice<Review> findAllByUserId(long userId, Long idAfter, Pageable pageable) {
+        QReview review = QReview.review;
+
+        BooleanBuilder booleanBuilder = new BooleanBuilder()
+                .and(review.reservation.id.eq(userId))
+                .and(matchIdAfter(idAfter, review));
+
+        List<Review> result = queryFactory.selectFrom(review)
+                .where(booleanBuilder)
+                .limit(pageable.getPageSize() + 1)
+                .orderBy(review.id.desc())
+                .fetch();
+        boolean hasNext = result.size() > pageable.getPageSize();
+        return new SliceImpl<>(result, pageable, hasNext);
+    }
+
+    private BooleanExpression matchIdAfter(Long idAfter, QReview review) {
+        if (idAfter == null) {
+            return null;
+        }
+        return review.id.lt(idAfter);
     }
 
     private BooleanBuilder buildSearchCondition(QReview review, ReviewSearchRequest request) {

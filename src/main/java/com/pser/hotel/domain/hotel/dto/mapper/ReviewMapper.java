@@ -1,6 +1,5 @@
 package com.pser.hotel.domain.hotel.dto.mapper;
 
-import com.pser.hotel.domain.hotel.domain.Reservation;
 import com.pser.hotel.domain.hotel.domain.Review;
 import com.pser.hotel.domain.hotel.domain.ReviewImage;
 import com.pser.hotel.domain.hotel.dto.request.ReviewCreateRequest;
@@ -23,10 +22,6 @@ public interface ReviewMapper {
 
     ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "grade", source = "grade")
-    @Mapping(target = "detail", source = "detail")
-    @Mapping(target = "reservation", source = "reservationId", qualifiedByName = "mapReservationIdToReservation")
     @Mapping(target = "reviewImages", source = "imageUrls", qualifiedByName = "mapUrlsToReviewImages")
     Review toEntity(ReviewCreateRequest request);
 
@@ -54,15 +49,5 @@ public interface ReviewMapper {
         return urls.stream()
                 .map(ReviewImage::new)
                 .collect(Collectors.toList());
-    }
-
-    @Named("mapReservationIdToReservation")
-    default Reservation mapReservationIdToReservation(Long reservationId) {
-        if (reservationId == null) {
-            return null;
-        }
-        Reservation reservation = new Reservation();
-        reservation.setId(reservationId);
-        return reservation;
     }
 }

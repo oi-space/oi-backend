@@ -10,9 +10,6 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -25,6 +22,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.URL;
 
 @Getter
 @Setter
@@ -32,11 +30,6 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor
 @Table(indexes = {@Index(name = "idx_review_reservation_id", columnList = "reservation_id")})
 public class Review extends BaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // id 필드 추가
-
     @Column(nullable = false)
     @Convert(converter = GradeEnumConverter.class)
     private GradeEnum grade;
@@ -45,16 +38,25 @@ public class Review extends BaseEntity {
     private String detail;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, optional = false)
-    @JoinColumn(name = "reservation_id", nullable = false, unique = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(nullable = false, unique = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Reservation reservation;
+
+    @Column(nullable = false)
+    private Long hotelId;
+
+    @Column(nullable = false)
+    private String reviewerName;
+
+    @URL
+    private String profileImageUrl;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImage> reviewImages = new ArrayList<>();
 
 
     @Builder
-    public Review(Long id, GradeEnum grade, String detail, Reservation reservation, List<ReviewImage> reviewImages) {
-        this.id = id; // id 필드 추가
+    public Review(GradeEnum grade, String detail, Reservation reservation, Long hotelId, String reviewerName,
+                  String profileImageUrl, List<ReviewImage> reviewImages) {
         this.grade = grade;
         this.detail = detail;
         this.reservation = reservation;
