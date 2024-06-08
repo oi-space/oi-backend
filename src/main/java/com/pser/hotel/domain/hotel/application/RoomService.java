@@ -10,7 +10,6 @@ import com.pser.hotel.domain.hotel.dto.mapper.RoomMapper;
 import com.pser.hotel.domain.hotel.dto.request.RoomRequest;
 import com.pser.hotel.domain.hotel.dto.response.RoomDetailResponse;
 import com.pser.hotel.domain.hotel.dto.response.RoomListResponse;
-import com.pser.hotel.global.error.UserNotAllowedException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -43,8 +42,7 @@ public class RoomService {
 
     @Transactional
     public Long save(long userId, long hotelId, RoomRequest request) {
-        System.out.println(request.getMainImageUrl());
-        Hotel hotel = findHotelByIdAndUserId(hotelId, userId);
+        Hotel hotel = findHotelById(hotelId);
         Room room = createRoom(hotel, request);
         Amenity amenity = createAmenity(room, request);
         List<RoomImage> roomImages = createRoomImages(room, request.getImgUrls());
@@ -52,13 +50,9 @@ public class RoomService {
         return room.getId();
     }
 
-    private Hotel findHotelByIdAndUserId(long hotelId, long userId) {
-        return hotelDao.findByIdAndUserId(hotelId, userId).orElseThrow(() -> new UserNotAllowedException());
-    }
-
     @Transactional
     public void update(long userId, long hotelId, long roomId, RoomRequest request) {
-        Hotel hotel = findHotelByIdAndUserId(hotelId, userId);
+        Hotel hotel = findHotelById(hotelId);
         Room room = findRoomByIdAndHoteId(roomId, hotel.getId());
         roomMapper.updateRoomFromDto(request, room);
         roomDao.save(room);
@@ -66,9 +60,13 @@ public class RoomService {
 
     @Transactional
     public void remove(long userId, Long hotelId, Long roomId) {
-        Hotel hotel = findHotelByIdAndUserId(hotelId, userId);
+        Hotel hotel = findHotelById(hotelId);
         Room room = findRoomByIdAndHoteId(roomId, hotel.getId());
         roomDao.deleteById(room.getId());
+    }
+
+    private Hotel findHotelById(Long hotelId) {
+        return hotelDao.findById(hotelId).orElseThrow(() -> new EntityNotFoundException());
     }
 
     private Room findRoomByIdAndHoteId(Long roomId, Long hotelId) {

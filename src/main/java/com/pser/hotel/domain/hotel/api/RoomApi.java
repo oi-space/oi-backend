@@ -6,6 +6,7 @@ import com.pser.hotel.global.common.response.ApiResponse;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ public class RoomApi {
     private final RoomService roomService;
 
     @PostMapping("/hotels/{hotelId}/rooms")
+    @PreAuthorize("@methodAuthorizationManager.isHotelByIdAndUserId(#userId, #hotelId)")
     public ResponseEntity<ApiResponse<Void>> roomSave(@RequestBody RoomRequest request,
                                                       @PathVariable(name = "hotelId") long hotelId,
                                                       @RequestHeader("user-id") long userId) {
@@ -28,6 +30,7 @@ public class RoomApi {
     }
 
     @PatchMapping("/hotels/{hotelId}/rooms/{roomId}")
+    @PreAuthorize("@methodAuthorizationManager.isHotelByIdAndUserId(#userId, #hotelId)")
     public ResponseEntity<ApiResponse<Void>> roomUpdate(@RequestBody RoomRequest request,
                                                         @PathVariable(name = "hotelId") Long hotelId,
                                                         @PathVariable(name = "roomId") Long roomId,
@@ -37,6 +40,7 @@ public class RoomApi {
     }
 
     @DeleteMapping("/hotels/{hotelId}/rooms/{roomId}")
+    @PreAuthorize("@methodAuthorizationManager.isHotelByIdAndUserId(#userId, #hotelId)")
     public ResponseEntity<ApiResponse<Void>> roomDelete(@PathVariable(name = "hotelId") long hotelId,
                                                         @PathVariable(name = "roomId") long roomId,
                                                         @RequestHeader("user-id") long userId) {
