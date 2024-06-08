@@ -25,7 +25,7 @@ import lombok.ToString;
 @ToString(of = {"username", "description", "phone"})
 public class Profile extends BaseEntity {
     @OneToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(unique = true, nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
     @Column(nullable = false)
