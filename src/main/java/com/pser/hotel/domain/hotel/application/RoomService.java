@@ -28,15 +28,15 @@ public class RoomService {
     private final RoomStatusProducer roomStatusProducer;
 
     @Transactional(readOnly = true)
-    public Page<RoomListResponse> findRoomList(Pageable pageable) {
-        Page<RoomListResponse> result = roomDao.findAll(pageable)
+    public Page<RoomListResponse> findRoomList(long hotelId, Pageable pageable) {
+        Page<RoomListResponse> result = roomDao.findByHotelId(hotelId, pageable)
                 .map(room -> roomMapper.roomToRoomListResponse(room));
         return result;
     }
 
     @Transactional(readOnly = true)
-    public RoomDetailResponse findRoom(Long roomId) {
-        Room room = roomDao.findById(roomId).orElseThrow(() -> new IllegalArgumentException());
+    public RoomDetailResponse findRoom(long hotelId, long roomId) {
+        Room room = roomDao.findByIdAndHotelId(roomId, hotelId).orElseThrow(() -> new IllegalArgumentException());
         return roomMapper.roomToRoomDetailResponse(room);
     }
 

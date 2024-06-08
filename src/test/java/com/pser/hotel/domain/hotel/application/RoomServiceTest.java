@@ -83,14 +83,15 @@ class RoomServiceTest {
     @DisplayName("findRoomList 테스트")
     public void findRoomList() {
         // Given
+        long hotelId = 1L;
         List<Room> roomList = createRooms(hotel, 10);
         Pageable pageable = createPageable(0, 10);
         Page<Room> roomPage = new PageImpl<>(roomList, pageable, 10);
 
-        given(roomDao.findAll(pageable)).willReturn(roomPage);
+        given(roomDao.findByHotelId(hotelId, pageable)).willReturn(roomPage);
 
         // When
-        Page<RoomListResponse> result = roomService.findRoomList(pageable);
+        Page<RoomListResponse> result = roomService.findRoomList(hotelId, pageable);
 
         // Then
         Assertions.assertThat(result).isEqualTo(roomPage.map(room -> roomMapper.roomToRoomListResponse(room)));
@@ -99,11 +100,13 @@ class RoomServiceTest {
     @Test
     @DisplayName("findRoom 테스트")
     public void findRoomTest() {
+        long hotelId = 1L;
+        long roomId = 1L;
         // Given
-        given(roomDao.findById(1L)).willReturn(Optional.of(room));
+        given(roomDao.findByIdAndHotelId(roomId, hotelId)).willReturn(Optional.of(room));
 
         // When
-        RoomDetailResponse result = roomService.findRoom(1L);
+        RoomDetailResponse result = roomService.findRoom(hotelId, roomId);
 
         //Then
         Assertions.assertThat(result).isEqualTo(roomMapper.roomToRoomDetailResponse(room));

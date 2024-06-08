@@ -51,6 +51,7 @@ public interface RoomMapper {
     @Mapping(target = "pet", source = "room.amenity.pet")
     @Mapping(target = "inAnnex", source = "room.amenity.inAnnex")
     @Mapping(target = "roomImages", source = "roomImages")
+    @Mapping(target = "hotelId", source = "room.hotel.id")
     RoomDetailResponse roomToRoomDetailResponse(Room room);
 
     default List<String> mapRoomImages(List<RoomImage> roomImages) {
