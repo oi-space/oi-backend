@@ -2,6 +2,8 @@ package com.pser.hotel.domain.hotel.config;
 
 import com.pser.hotel.domain.hotel.dto.mapper.HotelMapper;
 import com.pser.hotel.domain.hotel.dto.mapper.HotelMapperImpl;
+import com.pser.hotel.domain.hotel.dto.mapper.RoomMapper;
+import com.pser.hotel.domain.hotel.dto.mapper.RoomMapperImpl;
 import com.pser.hotel.domain.hotel.dto.mapper.TimesaleMapper;
 import com.pser.hotel.domain.hotel.dto.mapper.TimesaleMapperImpl;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -17,5 +19,10 @@ public class MapperConfig {
     @Bean
     public TimesaleMapper timesaleMapper() {
         return new TimesaleMapperImpl();
+    }
+
+    @Bean
+    public RoomMapper roomMapper() {
+        return new RoomMapperImpl();
     }
 }

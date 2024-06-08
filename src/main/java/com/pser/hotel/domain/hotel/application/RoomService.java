@@ -5,11 +5,11 @@ import com.pser.hotel.domain.hotel.dao.RoomDao;
 import com.pser.hotel.domain.hotel.domain.Amenity;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
-import com.pser.hotel.domain.hotel.dto.mapper.RoomMapper;
 import com.pser.hotel.domain.hotel.domain.RoomImage;
+import com.pser.hotel.domain.hotel.dto.mapper.RoomMapper;
 import com.pser.hotel.domain.hotel.dto.request.RoomRequest;
-import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
-import com.pser.hotel.domain.hotel.dto.request.RoomSearchRequest;
+import com.pser.hotel.domain.hotel.dto.response.RoomDetailResponse;
+import com.pser.hotel.domain.hotel.dto.response.RoomListResponse;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,29 +21,28 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class RoomService {
+
     private final HotelDao hotelDao;
+
     private final RoomDao roomDao;
     private final RoomMapper roomMapper;
 
     @Transactional(readOnly = true)
-    public Page<RoomResponse> findRoomList(Pageable pageable) {
-        Page<RoomResponse> result = roomDao.findAll(pageable).map(e -> e.toDto());
+    public Page<RoomListResponse> findRoomList(Pageable pageable) {
+        Page<RoomListResponse> result = roomDao.findAll(pageable)
+                .map(room -> roomMapper.roomToRoomListResponse(room));
         return result;
     }
 
     @Transactional(readOnly = true)
-    public RoomResponse findRoom(Long roomId) {
-        return roomDao.findById(roomId).orElseThrow(() -> new IllegalArgumentException()).toDto();
-    }
-
-    @Transactional(readOnly = true)
-    public Page<RoomResponse> search(RoomSearchRequest request, Pageable pageable) {
-        return roomDao.search(request, pageable);
+    public RoomDetailResponse findRoom(Long roomId) {
+        Room room = roomDao.findById(roomId).orElseThrow(() -> new IllegalArgumentException());
+        return roomMapper.roomToRoomDetailResponse(room);
     }
 
     @Transactional
-    public Long save(long userId, RoomRequest request) {
-        Hotel hotel = findHotelById(request.getHotelId());
+    public Long save(long userId, long hotelId, RoomRequest request) {
+        Hotel hotel = findHotelById(hotelId);
         Room room = createRoom(hotel, request);
         Amenity amenity = createAmenity(room, request);
         List<RoomImage> roomImages = createRoomImages(room, request.getImgUrls());
@@ -52,8 +51,8 @@ public class RoomService {
     }
 
     @Transactional
-    public void update(long userId, Long roomId, RoomRequest request) {
-        Hotel hotel = findHotelById(request.getHotelId());
+    public void update(long userId, long hotelId, long roomId, RoomRequest request) {
+        Hotel hotel = findHotelById(hotelId);
         Room room = findRoomByIdAndHoteId(roomId, hotel.getId());
         roomMapper.updateRoomFromDto(request, room);
         roomDao.save(room);
@@ -99,6 +98,7 @@ public class RoomService {
                 .hotel(hotel)
                 .name(requestDto.getName())
                 .description(requestDto.getDescription())
+                .mainImageUrl(requestDto.getMainImageUrl())
                 .precaution(requestDto.getPrecaution())
                 .price(requestDto.getPrice())
                 .checkIn(requestDto.getCheckIn())

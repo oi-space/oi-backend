@@ -4,7 +4,6 @@ import com.pser.hotel.domain.hotel.dao.HotelDao;
 import com.pser.hotel.domain.hotel.dao.RoomDao;
 import com.pser.hotel.domain.hotel.dao.TimesaleDao;
 import com.pser.hotel.domain.hotel.domain.Hotel;
-import com.pser.hotel.domain.hotel.dto.request.RoomRequest;
 import com.pser.hotel.domain.hotel.dto.request.TimesaleCreateRequest;
 import com.pser.hotel.global.error.UserNotAllowedException;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +17,6 @@ public class MethodAuthorizationManager {
     private final HotelDao hotelDao;
     private final TimesaleDao timesaleDao;
     private final RoomDao roomDao;
-
-    public boolean isHotelByIdAndRequest(Long userId, RoomRequest request) {
-        hotelDao.findByIdAndUserId(request.getHotelId(), userId)
-                .orElseThrow(() -> new UserNotAllowedException());
-        return true;
-    }
 
     public boolean isHotelByIdAndUserId(Long userId, Long hotelId) {
         hotelDao.findByIdAndUserId(hotelId, userId)
