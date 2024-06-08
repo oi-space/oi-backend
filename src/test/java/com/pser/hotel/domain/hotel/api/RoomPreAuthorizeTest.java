@@ -14,6 +14,7 @@ import com.pser.hotel.domain.hotel.dao.RoomDao;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.dto.request.RoomRequest;
+import com.pser.hotel.domain.hotel.kafka.producer.RoomStatusProducer;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalTime;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -45,6 +47,8 @@ public class RoomPreAuthorizeTest {
     HotelDao hotelDao;
     @SpyBean
     RoomDao roomDao;
+    @MockBean
+    RoomStatusProducer roomStatusProducer;
     User user;
     Hotel hotel;
     Room room;
