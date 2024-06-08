@@ -16,4 +16,6 @@ public interface RoomDao extends JpaRepository<Room, Long>, RoomDaoCustom {
     Optional<Room> findByName(@Param("name") String name);
 
     Optional<Room> findByIdAndHotelId(Long roomId, Long hotelId);
+
+    Page<Room> findByHotelId(long hotelId, Pageable pageable);
 }
