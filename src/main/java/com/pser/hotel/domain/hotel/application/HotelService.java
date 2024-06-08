@@ -59,7 +59,7 @@ public class HotelService {
         Facility facility = hotelMapper.changeToFacility(hotelCreateRequest, hotel);
         List<HotelImage> hotelImages = createHotelImages(hotel, hotelCreateRequest.getHotelImageUrls());
 
-        hotel.updateOnCreatedEventHandler(h -> hotelStatusProducer.onCreated(hotelMapper.toDto((Hotel) h)));
+        hotel.addOnCreatedEventHandler(h -> hotelStatusProducer.onCreated(hotelMapper.toDto((Hotel) h)));
         hotelDao.save(hotel);
         return hotel.getId();
     }
@@ -87,7 +87,7 @@ public class HotelService {
         hotelMapper.updateHotelFromDto(hotelUpdateRequest, hotel);
         hotelMapper.updateFacilityFromDto(hotelUpdateRequest, facility);
 
-        hotel.updateOnUpdatedEventHandler(h -> hotelStatusProducer.onUpdated(hotelMapper.toDto((Hotel) h)));
+        hotel.addOnUpdatedEventHandler(h -> hotelStatusProducer.onUpdated(hotelMapper.toDto((Hotel) h)));
     }
 
     @Transactional
@@ -96,7 +96,7 @@ public class HotelService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "not found hotel"));
 
         hotelDao.delete(hotel);
-        hotel.updateOnDeletedEventHandler(h -> hotelStatusProducer.onDeleted(hotelMapper.toDto((Hotel) h)));
+        hotel.addOnDeletedEventHandler(h -> hotelStatusProducer.onDeleted(hotelMapper.toDto((Hotel) h)));
     }
 
     private HotelImage createImage(Hotel hotel, String hotelImg) {

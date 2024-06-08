@@ -47,7 +47,7 @@ public class RoomService {
     public Long save(long userId, RoomRequest request) {
         Hotel hotel = findHotelById(request.getHotelId());
         Room room = createRoom(hotel, request);
-        room.updateOnCreatedEventHandler(r -> roomStatusProducer.onCreated(roomMapper.toDto((Room) r)));
+        room.addOnCreatedEventHandler(r -> roomStatusProducer.onCreated(roomMapper.toDto((Room) r)));
         Amenity amenity = createAmenity(room, request);
         List<RoomImage> roomImages = createRoomImages(room, request.getImgUrls());
         roomDao.save(room);
@@ -58,7 +58,7 @@ public class RoomService {
     public void update(long userId, Long roomId, RoomRequest request) {
         Hotel hotel = findHotelById(request.getHotelId());
         Room room = findRoomByIdAndHoteId(roomId, hotel.getId());
-        room.updateOnUpdatedEventHandler(r -> roomStatusProducer.onUpdated(roomMapper.toDto((Room) r)));
+        room.addOnUpdatedEventHandler(r -> roomStatusProducer.onUpdated(roomMapper.toDto((Room) r)));
         roomMapper.updateRoomFromDto(request, room);
         roomDao.save(room);
     }
@@ -67,7 +67,7 @@ public class RoomService {
     public void remove(long userId, Long hotelId, Long roomId) {
         Hotel hotel = findHotelById(hotelId);
         Room room = findRoomByIdAndHoteId(roomId, hotel.getId());
-        room.updateOnDeletedEventHandler(r -> roomStatusProducer.onDeleted(roomMapper.toDto((Room) r)));
+        room.addOnDeletedEventHandler(r -> roomStatusProducer.onDeleted(roomMapper.toDto((Room) r)));
         roomDao.deleteById(room.getId());
     }
 
