@@ -7,7 +7,6 @@ import com.pser.hotel.domain.hotel.dao.UserDao;
 import com.pser.hotel.domain.hotel.domain.Facility;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelImage;
-import com.pser.hotel.domain.hotel.dto.HotelDto;
 import com.pser.hotel.domain.hotel.dto.mapper.HotelMapper;
 import com.pser.hotel.domain.hotel.dto.request.HotelCreateRequest;
 import com.pser.hotel.domain.hotel.dto.request.HotelSearchRequest;
@@ -60,9 +59,8 @@ public class HotelService {
         Facility facility = hotelMapper.changeToFacility(hotelCreateRequest, hotel);
         List<HotelImage> hotelImages = createHotelImages(hotel, hotelCreateRequest.getHotelImageUrls());
 
+        hotel.updateOnCreatedEventHandler(h -> hotelStatusProducer.onCreated(hotelMapper.toDto((Hotel) h)));
         hotelDao.save(hotel);
-        HotelDto hotelDto = hotelMapper.toDto(hotel);
-        hotelStatusProducer.onCreated(hotelDto);
         return hotel.getId();
     }
 
@@ -89,18 +87,16 @@ public class HotelService {
         hotelMapper.updateHotelFromDto(hotelUpdateRequest, hotel);
         hotelMapper.updateFacilityFromDto(hotelUpdateRequest, facility);
 
-        HotelDto hotelDto = hotelMapper.toDto(hotel);
-        hotelStatusProducer.onUpdated(hotelDto);
+        hotel.updateOnUpdatedEventHandler(h -> hotelStatusProducer.onUpdated(hotelMapper.toDto((Hotel) h)));
     }
 
     @Transactional
     public void deleteHotelData(Long hotelId) {
         Hotel hotel = hotelDao.findById(hotelId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "not found hotel"));
-        HotelDto hotelDto = hotelMapper.toDto(hotel);
 
         hotelDao.delete(hotel);
-        hotelStatusProducer.onDeleted(hotelDto);
+        hotel.updateOnDeletedEventHandler(h -> hotelStatusProducer.onDeleted(hotelMapper.toDto((Hotel) h)));
     }
 
     private HotelImage createImage(Hotel hotel, String hotelImg) {
