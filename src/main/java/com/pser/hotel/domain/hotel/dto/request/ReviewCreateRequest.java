@@ -1,8 +1,8 @@
 package com.pser.hotel.domain.hotel.dto.request;
 
 import com.pser.hotel.domain.model.GradeEnum;
-import lombok.Data;
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class ReviewCreateRequest {

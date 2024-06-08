@@ -2,9 +2,7 @@ package com.pser.hotel.domain.hotel.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
-import jakarta.persistence.Column;
 import java.time.LocalDate;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

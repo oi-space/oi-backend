@@ -2,10 +2,10 @@ package com.pser.hotel.domain.hotel.dto.request;
 
 import com.pser.hotel.domain.model.GradeEnum;
 import com.pser.hotel.global.common.request.SearchQuery;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter

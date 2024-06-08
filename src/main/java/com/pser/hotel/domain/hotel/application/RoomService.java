@@ -10,8 +10,6 @@ import com.pser.hotel.domain.hotel.dto.mapper.RoomMapper;
 import com.pser.hotel.domain.hotel.dto.request.RoomRequest;
 import com.pser.hotel.domain.hotel.dto.response.RoomDetailResponse;
 import com.pser.hotel.domain.hotel.dto.response.RoomListResponse;
-import com.pser.hotel.domain.hotel.dto.request.RoomSearchRequest;
-import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
 import com.pser.hotel.domain.hotel.kafka.producer.RoomStatusProducer;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;

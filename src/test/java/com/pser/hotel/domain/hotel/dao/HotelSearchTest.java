@@ -116,7 +116,7 @@ public class HotelSearchTest {
                 .from(room)
                 .where(maxCapacityGt(requestMaxCapacity))
                 .distinct().fetch();
-        
+
         List<Hotel> fetch = queryFactory.selectFrom(hotel)
                 .where(hotel.id.in(ids))
                 .fetch();

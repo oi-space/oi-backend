@@ -38,6 +38,6 @@ public class ReviewImage extends BaseEntity {
 
     public ReviewImage(String fileUrl) {
         this.fileUrl = fileUrl;
-    
+
     }
 }

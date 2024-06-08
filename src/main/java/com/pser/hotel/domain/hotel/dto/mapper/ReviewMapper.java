@@ -1,11 +1,13 @@
 package com.pser.hotel.domain.hotel.dto.mapper;
 
+import com.pser.hotel.domain.hotel.domain.Reservation;
 import com.pser.hotel.domain.hotel.domain.Review;
 import com.pser.hotel.domain.hotel.domain.ReviewImage;
 import com.pser.hotel.domain.hotel.dto.request.ReviewCreateRequest;
 import com.pser.hotel.domain.hotel.dto.request.ReviewUpdateRequest;
 import com.pser.hotel.domain.hotel.dto.response.ReviewResponse;
-import com.pser.hotel.domain.hotel.domain.Reservation;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,9 +17,6 @@ import org.mapstruct.Named;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ReviewMapper {

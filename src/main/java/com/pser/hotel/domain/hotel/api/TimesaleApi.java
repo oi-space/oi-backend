@@ -1,8 +1,8 @@
 package com.pser.hotel.domain.hotel.api;
 
 import com.pser.hotel.domain.hotel.application.TimesaleService;
-import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.dto.request.TimesaleCreateRequest;
+import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
 import com.pser.hotel.global.common.response.ApiResponse;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,8 @@ public class TimesaleApi {
     public final TimesaleService timesaleService;
 
     @PostMapping // 타임특가 등록 api
-    @PreAuthorize("@methodAuthorizationManager.isTimesaleByIdAndRequest(#userId, #timesaleCreateRequest)")  // 타임특가 등록을 접근한 사람과 호텔 주인이 일치하는지 확인
+    @PreAuthorize("@methodAuthorizationManager.isTimesaleByIdAndRequest(#userId, #timesaleCreateRequest)")
+    // 타임특가 등록을 접근한 사람과 호텔 주인이 일치하는지 확인
     public ResponseEntity<ApiResponse<Void>> saveTimesale(@RequestBody TimesaleCreateRequest timesaleCreateRequest,
                                                           @RequestHeader("user-id") long userId) {
         Long timesaleId = timesaleService.saveTimesaleData(timesaleCreateRequest);

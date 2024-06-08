@@ -12,12 +12,12 @@ import com.pser.hotel.domain.hotel.dao.UserDao;
 import com.pser.hotel.domain.hotel.domain.Facility;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.HotelCategoryEnum;
-import com.pser.hotel.domain.hotel.dto.request.HotelCreateRequest;
 import com.pser.hotel.domain.hotel.dto.mapper.HotelMapper;
-import com.pser.hotel.domain.hotel.dto.response.HotelResponse;
+import com.pser.hotel.domain.hotel.dto.request.HotelCreateRequest;
 import com.pser.hotel.domain.hotel.dto.request.HotelSearchRequest;
-import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.dto.request.HotelUpdateRequest;
+import com.pser.hotel.domain.hotel.dto.response.HotelResponse;
+import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
 import com.pser.hotel.domain.hotel.kafka.producer.HotelStatusProducer;
 import com.pser.hotel.domain.hotel.util.Utils;
 import com.pser.hotel.domain.member.domain.User;
@@ -31,7 +31,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -129,7 +128,7 @@ public class HotelServiceTest {
         double average = Utils.createAverageRating();
         int salePrice = Utils.createSalePrice();
         int previousPirce = salePrice + 5000;
-        HotelResponse response =  createHotelResponse(hotel, average, salePrice, previousPirce);
+        HotelResponse response = createHotelResponse(hotel, average, salePrice, previousPirce);
         lenient().when(hotelDao.findHotel(any())).thenReturn(response);
 
         //when
@@ -279,7 +278,7 @@ public class HotelServiceTest {
                 .build();
     }
 
-    private HotelResponse createHotelResponse(Hotel hotel, double average, int salePrice, int previousPrice){
+    private HotelResponse createHotelResponse(Hotel hotel, double average, int salePrice, int previousPrice) {
         return HotelResponse.builder()
                 .id(hotel.getId())
                 .userId(hotel.getUser().getId())
@@ -320,16 +319,19 @@ public class HotelServiceTest {
 
     private List<HotelSummaryResponse> createHotelSummaryResponseList(List<Hotel> hotels) {
         List<HotelSummaryResponse> list = new ArrayList<>();
-        for(Hotel ele : hotels) {
+        for (Hotel ele : hotels) {
             double average = Utils.createAverageRating();
             int salePrice = Utils.createSalePrice();
             int previousPirce = salePrice + 5000;
-            HotelSummaryResponse hotelSummaryResponse = createHotelSummaryResponse(ele, average, salePrice, previousPirce);
+            HotelSummaryResponse hotelSummaryResponse = createHotelSummaryResponse(ele, average, salePrice,
+                    previousPirce);
             list.add(hotelSummaryResponse);
         }
         return list;
     }
-    private HotelSummaryResponse createHotelSummaryResponse(Hotel ele, double average, int salePrice, int previousPrice) {
+
+    private HotelSummaryResponse createHotelSummaryResponse(Hotel ele, double average, int salePrice,
+                                                            int previousPrice) {
         return HotelSummaryResponse.builder()
                 .id(ele.getId())
                 .name(ele.getName())

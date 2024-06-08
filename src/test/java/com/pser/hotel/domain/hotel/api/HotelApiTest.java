@@ -31,12 +31,12 @@ public class HotelApiTest {
     @Mock
     HotelService hotelService;
     MockMvc mockMvc;
-    private HotelCreateRequest hotelCreateRequest;
-    private HotelUpdateRequest hotelUpdateRequest;
     User user;
     Hotel hotel;
     Facility facility;
     PageRequest pageRequest;
+    private HotelCreateRequest hotelCreateRequest;
+    private HotelUpdateRequest hotelUpdateRequest;
 
     @BeforeEach
     public void setUp() {

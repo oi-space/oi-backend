@@ -26,28 +26,29 @@ class HotelImageTest {
     TestEntityManager testEntityManager;
     EntityManager em;
     HotelImage hotelImage;
+
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         em = testEntityManager.getEntityManager();
     }
 
     @AfterEach
-    public void clear(){
+    public void clear() {
     }
 
     @Test
-    public void save(){
+    public void save() {
         hotelImage = createHotelImage();
         em.persist(hotelImage);
 
         Assertions.assertThat(em.contains(hotelImage)).isTrue();
     }
 
-    private User createUser(){
+    private User createUser() {
         return User.builder().email("test_email").password("123").build();
     }
 
-    private HotelImage createHotelImage(){
+    private HotelImage createHotelImage() {
         Hotel hotel = createHotel();
         return HotelImage.builder()
                 .imageUrl(getRandomUUID())
@@ -55,12 +56,12 @@ class HotelImageTest {
                 .build();
     }
 
-    private String getRandomUUID(){
-        return UUID.randomUUID().toString().substring(1,10);
+    private String getRandomUUID() {
+        return UUID.randomUUID().toString().substring(1, 10);
     }
 
-    private Hotel createHotel(){
-        Hotel hotel =Hotel.builder()
+    private Hotel createHotel() {
+        Hotel hotel = Hotel.builder()
                 .name("업체명")
                 .category(HotelCategoryEnum.HOTEL)
                 .description("설명")
