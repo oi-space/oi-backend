@@ -5,11 +5,12 @@ import com.pser.hotel.domain.hotel.dao.RoomDao;
 import com.pser.hotel.domain.hotel.domain.Amenity;
 import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.domain.Room;
-import com.pser.hotel.domain.hotel.dto.mapper.RoomMapper;
 import com.pser.hotel.domain.hotel.domain.RoomImage;
+import com.pser.hotel.domain.hotel.dto.mapper.RoomMapper;
 import com.pser.hotel.domain.hotel.dto.request.RoomRequest;
-import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
 import com.pser.hotel.domain.hotel.dto.request.RoomSearchRequest;
+import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
+import com.pser.hotel.domain.hotel.kafka.producer.RoomStatusProducer;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class RoomService {
     private final HotelDao hotelDao;
     private final RoomDao roomDao;
     private final RoomMapper roomMapper;
+    private final RoomStatusProducer roomStatusProducer;
 
     @Transactional(readOnly = true)
     public Page<RoomResponse> findRoomList(Pageable pageable) {
@@ -45,6 +47,7 @@ public class RoomService {
     public Long save(long userId, RoomRequest request) {
         Hotel hotel = findHotelById(request.getHotelId());
         Room room = createRoom(hotel, request);
+        room.updateOnCreatedEventHandler(r -> roomStatusProducer.onCreated(roomMapper.toDto((Room) r)));
         Amenity amenity = createAmenity(room, request);
         List<RoomImage> roomImages = createRoomImages(room, request.getImgUrls());
         roomDao.save(room);
@@ -55,6 +58,7 @@ public class RoomService {
     public void update(long userId, Long roomId, RoomRequest request) {
         Hotel hotel = findHotelById(request.getHotelId());
         Room room = findRoomByIdAndHoteId(roomId, hotel.getId());
+        room.updateOnUpdatedEventHandler(r -> roomStatusProducer.onUpdated(roomMapper.toDto((Room) r)));
         roomMapper.updateRoomFromDto(request, room);
         roomDao.save(room);
     }
@@ -63,6 +67,7 @@ public class RoomService {
     public void remove(long userId, Long hotelId, Long roomId) {
         Hotel hotel = findHotelById(hotelId);
         Room room = findRoomByIdAndHoteId(roomId, hotel.getId());
+        room.updateOnDeletedEventHandler(r -> roomStatusProducer.onDeleted(roomMapper.toDto((Room) r)));
         roomDao.deleteById(room.getId());
     }
 

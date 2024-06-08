@@ -1,7 +1,7 @@
 package com.pser.hotel.domain.hotel.domain;
 
 import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
-import com.pser.hotel.domain.model.BaseEntity;
+import com.pser.hotel.domain.model.WriteEventEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
@@ -38,7 +38,7 @@ import lombok.Setter;
         @Index(name = "idx_room_standard_capacity", columnList = "standard_capacity"),
         @Index(name = "idx_room_max_capacity", columnList = "max_capacity"),
 })
-public class Room extends BaseEntity {
+public class Room extends WriteEventEntity {
     @ManyToOne(cascade = {CascadeType.PERSIST}, optional = false)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Hotel hotel;
@@ -98,13 +98,6 @@ public class Room extends BaseEntity {
         this.roomImages = new ArrayList<>();
     }
 
-    @PrePersist
-    private void validate() {
-        if (standardCapacity > maxCapacity) {
-            throw new IllegalArgumentException("기준 인원이 최대 인원보다 클 수 없습니다");
-        }
-    }
-
     public RoomResponse toDto() {
         return RoomResponse.builder()
                 .name(this.name)
@@ -117,5 +110,12 @@ public class Room extends BaseEntity {
 
     public void removeImage(RoomImage roomImage) {
         this.roomImages.remove(roomImage);
+    }
+
+    @PrePersist
+    private void validate() {
+        if (standardCapacity > maxCapacity) {
+            throw new IllegalArgumentException("기준 인원이 최대 인원보다 클 수 없습니다");
+        }
     }
 }
