@@ -68,8 +68,7 @@ class RoomRestApiTest {
 
     private RoomRequest createRoomRequestDto() {
         return new RoomRequest(
-                1L,
-                "객실이름", "설명", "주의사항", 1000, LocalTime.of(15, 00), LocalTime.of(11, 00),
+                "객실이름", "설명", "mainImage.url", "주의사항", 1000, LocalTime.of(15, 00), LocalTime.of(11, 00),
                 1, 1, 1,
                 true, true, true, true,
                 true, true, true, true,
@@ -85,7 +84,7 @@ class RoomRestApiTest {
     public String getRoomByJson() {
         RoomRequest dto = createRoomRequestDto();
         return String.format(
-                "{\"hotelId\" : \"%d\", \"name\" : \"%s\", \"description\" : \"%s\","
+                "{\"name\" : \"%s\", \"description\" : \"%s\","
                         + " \"precaution\" : \"%s\", \"price\" : \"%d\", \"standardCapacity\" : \"%d\","
                         + " \"maxCapacity\" : \"%d\", \"totalRooms\" : \"%d\", \"heatingSystem\" : \"%s\","
                         + " \"tv\" : \"%s\", \"refrigerator\" : \"%s\", \"airConditioner\" : \"%s\","
@@ -93,7 +92,7 @@ class RoomRestApiTest {
                         + " \"internet\" : \"%s\", \"kitchen\" : \"%s\", \"bathtub\" : \"%s\","
                         + " \"iron\" : \"%s\", \"pool\" : \"%s\", \"pet\" : \"%s\","
                         + " \"inAnnex\" : \"%s\"}"
-                , dto.getHotelId(), dto.getName(), dto.getDescription(), dto.getPrecaution(),
+                , dto.getName(), dto.getDescription(), dto.getPrecaution(),
                 dto.getPrice(), dto.getStandardCapacity(), dto.getMaxCapacity(), dto.getTotalRooms(),
                 dto.getHeatingSystem(), dto.getTv(), dto.getRefrigerator(), dto.getAirConditioner(),
                 dto.getWasher(), dto.getTerrace(),

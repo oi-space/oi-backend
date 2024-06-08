@@ -16,7 +16,8 @@ import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.dto.mapper.RoomMapper;
 import com.pser.hotel.domain.hotel.dto.request.RoomRequest;
 import com.pser.hotel.domain.hotel.dto.request.RoomSearchRequest;
-import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
+import com.pser.hotel.domain.hotel.dto.response.RoomDetailResponse;
+import com.pser.hotel.domain.hotel.dto.response.RoomListResponse;
 import com.pser.hotel.domain.member.domain.User;
 import java.time.LocalTime;
 import java.util.List;
@@ -90,10 +91,10 @@ class RoomServiceTest {
         given(roomDao.findAll(pageable)).willReturn(roomPage);
 
         // When
-        Page<RoomResponse> result = roomService.findRoomList(pageable);
+        Page<RoomListResponse> result = roomService.findRoomList(pageable);
 
         // Then
-        Assertions.assertThat(result).isEqualTo(roomPage.map(room -> roomMapper.roomToRoomResponse(room)));
+        Assertions.assertThat(result).isEqualTo(roomPage.map(room -> roomMapper.roomToRoomListResponse(room)));
     }
 
     @Test
@@ -103,10 +104,10 @@ class RoomServiceTest {
         given(roomDao.findById(1L)).willReturn(Optional.of(room));
 
         // When
-        RoomResponse result = roomService.findRoom(1L);
+        RoomDetailResponse result = roomService.findRoom(1L);
 
         //Then
-        Assertions.assertThat(result).isEqualTo(roomMapper.roomToRoomResponse(room));
+        Assertions.assertThat(result).isEqualTo(roomMapper.roomToRoomDetailResponse(room));
     }
 
     @Test
@@ -119,7 +120,7 @@ class RoomServiceTest {
         requestDto = createRoomRequest();
         given(hotel.getId()).willReturn(1L);
         given(hotelDao.findByIdAndUserId(hotelId, userId)).willReturn(Optional.of(hotel));
-        given(roomDao.findByIdAndHotelId(roomId, requestDto.getHotelId())).willReturn(Optional.of(room));
+        given(roomDao.findByIdAndHotelId(roomId, hotelId)).willReturn(Optional.of(room));
 
         // When
         roomService.update(userId, hotelId, roomId, requestDto);
@@ -157,8 +158,7 @@ class RoomServiceTest {
 
     private RoomRequest createRoomRequest() {
         return new RoomRequest(
-                1L,
-                "객실이름", "설명", "주의사항", 1000, LocalTime.of(15, 00), LocalTime.of(11, 00),
+                "객실이름", "설명", "mainImageUrl.jpg", "주의사항", 1000, LocalTime.of(15, 00), LocalTime.of(11, 00),
                 1, 1, 1,
                 rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(),
                 rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(),

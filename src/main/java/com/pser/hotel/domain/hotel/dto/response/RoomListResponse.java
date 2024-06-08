@@ -12,13 +12,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RoomResponse {
+public class RoomListResponse {
 
     private Long id;
 
     private String name;
 
     private String description;
+
+    private String mainImageUrl;
 
     private String precaution;
 
@@ -63,8 +65,9 @@ public class RoomResponse {
     private Boolean inAnnex = false;
 
     @QueryProjection
-    public RoomResponse(String name, String description, String precaution, int price, LocalTime checkIn,
-                        LocalTime checkOut, int standardCapacity, int maxCapacity, int totalRooms, Amenity amenity) {
+    public RoomListResponse(String name, String description, String precaution, int price, LocalTime checkIn,
+                            LocalTime checkOut, int standardCapacity, int maxCapacity, int totalRooms,
+                            Amenity amenity) {
         this.name = name;
         this.description = description;
         this.precaution = precaution;

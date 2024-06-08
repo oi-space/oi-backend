@@ -1,7 +1,8 @@
 package com.pser.hotel.domain.hotel.api;
 
 import com.pser.hotel.domain.hotel.application.RoomService;
-import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
+import com.pser.hotel.domain.hotel.dto.response.RoomDetailResponse;
+import com.pser.hotel.domain.hotel.dto.response.RoomListResponse;
 import com.pser.hotel.global.common.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,15 +22,15 @@ public class RoomRestApi {
     private final RoomService roomService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<RoomResponse>>> roomList(@PageableDefault Pageable pageable) {
-        Page<RoomResponse> result = roomService.findRoomList(pageable);
+    public ResponseEntity<ApiResponse<Page<RoomListResponse>>> roomList(@PageableDefault Pageable pageable) {
+        Page<RoomListResponse> result = roomService.findRoomList(pageable);
 
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 
     @GetMapping("/{roomId}")
-    public ResponseEntity<ApiResponse<RoomResponse>> roomDetails(@PathVariable(name = "roomId") long roomId) {
-        RoomResponse result = roomService.findRoom(roomId);
+    public ResponseEntity<ApiResponse<RoomDetailResponse>> roomDetails(@PathVariable(name = "roomId") long roomId) {
+        RoomDetailResponse result = roomService.findRoom(roomId);
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 }

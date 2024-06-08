@@ -10,7 +10,7 @@ import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.dto.mapper.RoomMapper;
 import com.pser.hotel.domain.hotel.dto.mapper.RoomMapperImpl;
 import com.pser.hotel.domain.hotel.dto.request.RoomRequest;
-import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
+import com.pser.hotel.domain.hotel.dto.response.RoomDetailResponse;
 import com.pser.hotel.domain.hotel.util.Utils;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.config.QueryDslConfig;
@@ -42,14 +42,14 @@ class RoomMapperTest {
     }
 
     @Test
-    @DisplayName("Room -> RoomResponse 테스트")
+    @DisplayName("Room -> RoomDetailResponse 테스트")
     void test() {
         // Given
         Room room = createRoom(hotel);
         Utils.createAmenity(room);
 
         // When
-        RoomResponse response = roomMapper.roomToRoomResponse(room);
+        RoomDetailResponse response = roomMapper.roomToRoomDetailResponse(room);
 
         // then
         Assertions.assertThat(room.getAmenity().getHeatingSystem()).isEqualTo(response.getHeatingSystem());
@@ -94,8 +94,7 @@ class RoomMapperTest {
 
     private RoomRequest createRoomRequestDto() {
         return new RoomRequest(
-                1L,
-                "객실이름", "설명", "주의사항", 1000, LocalTime.of(15, 00), LocalTime.of(11, 00),
+                "객실이름", "설명", "mainImage.url", "주의사항", 1000, LocalTime.of(15, 00), LocalTime.of(11, 00),
                 1, 1, 1,
                 rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(),
                 rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(), rnd.nextBoolean(),

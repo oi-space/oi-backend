@@ -8,7 +8,8 @@ import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.domain.RoomImage;
 import com.pser.hotel.domain.hotel.dto.mapper.RoomMapper;
 import com.pser.hotel.domain.hotel.dto.request.RoomRequest;
-import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
+import com.pser.hotel.domain.hotel.dto.response.RoomDetailResponse;
+import com.pser.hotel.domain.hotel.dto.response.RoomListResponse;
 import com.pser.hotel.global.error.UserNotAllowedException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
@@ -28,20 +29,21 @@ public class RoomService {
     private final RoomMapper roomMapper;
 
     @Transactional(readOnly = true)
-    public Page<RoomResponse> findRoomList(Pageable pageable) {
-        Page<RoomResponse> result = roomDao.findAll(pageable).map(room -> roomMapper.roomToRoomResponse(room));
+    public Page<RoomListResponse> findRoomList(Pageable pageable) {
+        Page<RoomListResponse> result = roomDao.findAll(pageable)
+                .map(room -> roomMapper.roomToRoomListResponse(room));
         return result;
     }
 
     @Transactional(readOnly = true)
-    public RoomResponse findRoom(Long roomId) {
+    public RoomDetailResponse findRoom(Long roomId) {
         Room room = roomDao.findById(roomId).orElseThrow(() -> new IllegalArgumentException());
-
-        return roomMapper.roomToRoomResponse(room);
+        return roomMapper.roomToRoomDetailResponse(room);
     }
 
     @Transactional
     public Long save(long userId, long hotelId, RoomRequest request) {
+        System.out.println(request.getMainImageUrl());
         Hotel hotel = findHotelByIdAndUserId(hotelId, userId);
         Room room = createRoom(hotel, request);
         Amenity amenity = createAmenity(room, request);
@@ -98,6 +100,7 @@ public class RoomService {
                 .hotel(hotel)
                 .name(requestDto.getName())
                 .description(requestDto.getDescription())
+                .mainImageUrl(requestDto.getMainImageUrl())
                 .precaution(requestDto.getPrecaution())
                 .price(requestDto.getPrice())
                 .checkIn(requestDto.getCheckIn())

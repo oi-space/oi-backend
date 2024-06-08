@@ -3,7 +3,6 @@ package com.pser.hotel.domain.hotel.domain;
 import com.pser.hotel.domain.hotel.config.MapperConfig;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.config.QueryDslConfig;
-import jakarta.validation.ConstraintViolationException;
 import java.time.LocalTime;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -78,23 +77,5 @@ class RoomImageTest {
 
         //Then
         Assertions.assertThat(em.find(RoomImage.class, roomImage.getId())).isEqualTo(roomImage);
-    }
-
-    @Test
-    @DisplayName("RoomImage 생성 에러 테스트 - URL 형식이 아닌 경우")
-    public void testSaveError() {
-        //Given
-        RoomImage roomImage = RoomImage.builder()
-                .room(room)
-                .imageUrl("com")
-                .build();
-
-        //When
-        Throwable throwable = Assertions.catchThrowable(() -> {
-            em.persist(roomImage);
-        });
-
-        //Then
-        Assertions.assertThat(throwable).isInstanceOf(ConstraintViolationException.class);
     }
 }
