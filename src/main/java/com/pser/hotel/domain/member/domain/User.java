@@ -23,6 +23,8 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
+    private String username;
+
     @Column(nullable = false)
     @Convert(converter = RoleEnumConverter.class)
     private RoleEnum role = RoleEnum.ROLE_USER;

@@ -10,6 +10,7 @@ import com.pser.hotel.domain.hotel.dto.request.ReviewUpdateRequest;
 import com.pser.hotel.domain.hotel.dto.response.ReviewResponse;
 import com.pser.hotel.domain.member.dao.ProfileDao;
 import com.pser.hotel.domain.member.domain.Profile;
+import com.pser.hotel.domain.member.domain.User;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -30,11 +31,12 @@ public class ReviewService {
     public Long save(ReviewCreateRequest request) {
         Reservation reservation = reservationDao.findById(request.getReservationId())
                 .orElseThrow();
-        Profile profile = profileDao.findById(reservation.getUser().getId())
+        User reviewer = reservation.getUser();
+        Profile profile = profileDao.findById(reviewer.getId())
                 .orElseThrow();
         request.setReservation(reservation);
         request.setProfileImageUrl(profile.getImageUrl());
-        request.setReviewerName(profile.getUsername());
+        request.setReviewerName(reviewer.getUsername());
         request.setHotelId(reservation.getRoom().getHotel().getId());
 
         Review review = reviewMapper.toEntity(request);
