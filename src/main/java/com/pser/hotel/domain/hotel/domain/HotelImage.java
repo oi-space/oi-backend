@@ -22,18 +22,18 @@ import lombok.ToString;
 public class HotelImage extends BaseEntity {
     private String imageUrl;
     @ManyToOne(cascade = {
-        CascadeType.PERSIST}, fetch = FetchType.LAZY)
+            CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Hotel hotel;
 
     @Builder
-    public HotelImage(String imageUrl, Hotel hotel){
+    public HotelImage(String imageUrl, Hotel hotel) {
         this.imageUrl = imageUrl;
         setHotel(hotel);
     }
 
-    public void setHotel(Hotel hotel){
-        if(this.hotel!=null){
+    public void setHotel(Hotel hotel) {
+        if (this.hotel != null) {
             this.hotel.removeImage(this);
         }
         this.hotel = hotel;

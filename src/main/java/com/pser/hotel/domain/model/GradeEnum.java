@@ -16,20 +16,20 @@ public enum GradeEnum {
 
 
     private static final Map<Integer, GradeEnum> valueToGrade =
-                Collections.unmodifiableMap(Stream.of(values())
-                        .collect(Collectors.toMap(GradeEnum::getValue, Function.identity())));
+            Collections.unmodifiableMap(Stream.of(values())
+                    .collect(Collectors.toMap(GradeEnum::getValue, Function.identity())));
 
-        private final int value;
+    private final int value;
 
-        GradeEnum(int value) {
-            this.value = value;
-        }
+    GradeEnum(int value) {
+        this.value = value;
+    }
 
-        public int getValue() {
-            return this.value;
-        }
+    public static GradeEnum getByValue(int value) {
+        return valueToGrade.get(value);
+    }
 
-        public static GradeEnum getByValue(int value) {
-            return valueToGrade.get(value);
-        }
+    public int getValue() {
+        return this.value;
+    }
 }

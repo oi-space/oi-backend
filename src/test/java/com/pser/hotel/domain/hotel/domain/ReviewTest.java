@@ -17,5 +17,6 @@ import org.springframework.context.annotation.Import;
 public class ReviewTest {
 
     @Test
-    public void test(){}
+    public void test() {
+    }
 }

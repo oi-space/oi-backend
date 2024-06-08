@@ -10,6 +10,7 @@ import com.pser.hotel.domain.hotel.dto.mapper.RoomMapper;
 import com.pser.hotel.domain.hotel.dto.request.RoomRequest;
 import com.pser.hotel.domain.hotel.dto.response.RoomDetailResponse;
 import com.pser.hotel.domain.hotel.dto.response.RoomListResponse;
+import com.pser.hotel.domain.hotel.kafka.producer.RoomStatusProducer;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class RoomService {
-
     private final HotelDao hotelDao;
-
     private final RoomDao roomDao;
     private final RoomMapper roomMapper;
+    private final RoomStatusProducer roomStatusProducer;
 
     @Transactional(readOnly = true)
     public Page<RoomListResponse> findRoomList(Pageable pageable) {
@@ -44,6 +44,7 @@ public class RoomService {
     public Long save(long userId, long hotelId, RoomRequest request) {
         Hotel hotel = findHotelById(hotelId);
         Room room = createRoom(hotel, request);
+        room.addOnCreatedEventHandler(r -> roomStatusProducer.onCreated(roomMapper.toDto((Room) r)));
         Amenity amenity = createAmenity(room, request);
         List<RoomImage> roomImages = createRoomImages(room, request.getImgUrls());
         roomDao.save(room);
@@ -54,6 +55,7 @@ public class RoomService {
     public void update(long userId, long hotelId, long roomId, RoomRequest request) {
         Hotel hotel = findHotelById(hotelId);
         Room room = findRoomByIdAndHoteId(roomId, hotel.getId());
+        room.addOnUpdatedEventHandler(r -> roomStatusProducer.onUpdated(roomMapper.toDto((Room) r)));
         roomMapper.updateRoomFromDto(request, room);
         roomDao.save(room);
     }
@@ -62,6 +64,7 @@ public class RoomService {
     public void remove(long userId, Long hotelId, Long roomId) {
         Hotel hotel = findHotelById(hotelId);
         Room room = findRoomByIdAndHoteId(roomId, hotel.getId());
+        room.addOnDeletedEventHandler(r -> roomStatusProducer.onDeleted(roomMapper.toDto((Room) r)));
         roomDao.deleteById(room.getId());
     }
 

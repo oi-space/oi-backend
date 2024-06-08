@@ -1,14 +1,13 @@
-package com.pser.hotel.global.config.kafka.consumer;
+package com.pser.hotel.global.config.kafka.producer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.pser.hotel.global.common.RefundDto;
-import java.nio.charset.StandardCharsets;
+import com.pser.hotel.domain.hotel.dto.RoomDto;
 import java.util.Map;
 import org.apache.kafka.common.errors.SerializationException;
-import org.apache.kafka.common.serialization.Deserializer;
+import org.apache.kafka.common.serialization.Serializer;
 
-public class RefundDtoDeserializer implements Deserializer<RefundDto> {
+public class RoomDtoSerializer implements Serializer<RoomDto> {
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Override
@@ -16,14 +15,14 @@ public class RefundDtoDeserializer implements Deserializer<RefundDto> {
     }
 
     @Override
-    public RefundDto deserialize(String topic, byte[] data) {
+    public byte[] serialize(String topic, RoomDto data) {
         try {
             if (data == null) {
                 return null;
             }
-            return objectMapper.readValue(new String(data, StandardCharsets.UTF_8), RefundDto.class);
+            return objectMapper.writeValueAsBytes(data);
         } catch (Exception e) {
-            throw new SerializationException("Error when deserializing byte[] to MessageDto");
+            throw new SerializationException("직렬화 오류");
         }
     }
 

@@ -13,6 +13,10 @@ import lombok.NoArgsConstructor;
 public class AuctionDto {
     private long id;
 
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
     private long reservationId;
 
     private int price;

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @MappedSuperclass
-public class StatusHolderEntity<T extends StatusEnum> extends BaseEntity implements StatusHolder<T> {
+public class StatusHolderEntity<T extends StatusEnum> extends WriteEventEntity implements StatusHolder<T> {
     private T status;
 
     @Override

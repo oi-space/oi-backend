@@ -22,14 +22,14 @@ import org.springframework.context.annotation.Import;
 @Import({QueryDslConfig.class, MapperConfig.class})
 public class FacilityDaoTest {
     @Autowired
-    private FacilityDao facilityDao;
-    @Autowired
-    private HotelDao hotelDao;
-    @Autowired
     EntityManager entityManager;
     User user;
     Hotel hotel;
     Facility facility;
+    @Autowired
+    private FacilityDao facilityDao;
+    @Autowired
+    private HotelDao hotelDao;
 
     @BeforeEach
     public void setUp() {

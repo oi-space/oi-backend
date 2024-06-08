@@ -6,7 +6,6 @@ import com.pser.hotel.domain.hotel.dao.UserDao;
 import com.pser.hotel.domain.hotel.domain.Reservation;
 import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
-import com.pser.hotel.domain.hotel.dto.ReservationDto;
 import com.pser.hotel.domain.hotel.dto.mapper.ReservationMapper;
 import com.pser.hotel.domain.hotel.dto.request.ReservationCreateRequest;
 import com.pser.hotel.domain.hotel.dto.response.ReservationResponse;
@@ -60,9 +59,9 @@ public class ReservationService {
         request.setRoom(room);
 
         Reservation reservation = reservationMapper.toEntity(request);
+        reservation.addOnCreatedEventHandler(
+                r -> reservationStatusProducer.produceCreated(reservationMapper.toDto((Reservation) r)));
         reservationDao.save(reservation);
-        ReservationDto reservationDto = reservationMapper.toDto(reservation);
-        reservationStatusProducer.produceCreated(reservationDto);
         return reservation.getId();
     }
 
@@ -79,13 +78,13 @@ public class ReservationService {
                 .amount(refundPrice)
                 .build();
 
+        reservation.addOnUpdatedEventHandler(unused -> reservationStatusProducer.produceRefundRequired(refundDto));
+
         StatusUpdateDto<ReservationStatusEnum> statusUpdateDto = StatusUpdateDto.<ReservationStatusEnum>builder()
                 .id(reservationId)
                 .targetStatus(ReservationStatusEnum.REFUND_REQUIRED)
                 .build();
         updateStatus(statusUpdateDto);
-
-        reservationStatusProducer.produceRefundRequired(refundDto);
     }
 
     @Transactional
@@ -100,6 +99,9 @@ public class ReservationService {
                     .amount(reservation.getPrice())
                     .merchantUid(reservation.getMerchantUid())
                     .build();
+
+            reservation.addOnUpdatedEventHandler(
+                    unused -> reservationStatusProducer.producePaymentValidationRequired(paymentDto));
             updateToPaymentValidationRequired(paymentDto);
         }
         return status;
@@ -121,7 +123,6 @@ public class ReservationService {
                         reservation.updateImpUid(paymentDto.getImpUid());
                     });
                 })
-                .onSuccess(unused -> reservationStatusProducer.producePaymentValidationRequired(paymentDto))
                 .recover(SameStatusException.class, e -> null)
                 .get();
     }
@@ -141,8 +142,9 @@ public class ReservationService {
             validator.accept(reservation);
         }
 
+        reservation.addOnUpdatedEventHandler(
+                r -> reservationStatusProducer.produceUpdated(reservationMapper.toDto((Reservation) r)));
         reservation.updateStatus(targetStatus);
-        reservationStatusProducer.produceUpdated(reservationMapper.toDto(reservation));
     }
 
     @Transactional
@@ -161,8 +163,17 @@ public class ReservationService {
             validator.accept(reservation);
         }
 
+        reservation.addOnUpdatedEventHandler(
+                r -> reservationStatusProducer.produceUpdated(reservationMapper.toDto((Reservation) r)));
         reservation.rollbackStatusTo(targetStatus);
-        reservationStatusProducer.produceUpdated(reservationMapper.toDto(reservation));
+    }
+
+    @Transactional
+    public void closeReservation(long reservationId) {
+        Reservation reservation = reservationDao.findById(reservationId)
+                .orElseThrow();
+        ReservationStatusEnum targetStatus = ReservationStatusEnum.PAST;
+        reservation.updateStatus(targetStatus);
     }
 
     private void checkSchedule(ReservationCreateRequest request) {
@@ -178,14 +189,6 @@ public class ReservationService {
         if (overlappingCount >= room.getMaxCapacity()) {
             throw new IllegalArgumentException("해당 객실은 요청 일자에 비어 있지 않습니다");
         }
-    }
-
-    @Transactional
-    public void closeReservation(long reservationId) {
-        Reservation reservation = reservationDao.findById(reservationId)
-                .orElseThrow();
-        ReservationStatusEnum targetStatus = ReservationStatusEnum.PAST;
-        reservation.updateStatus(targetStatus);
     }
 
     private int calculateRefundPrice(int price, LocalDate reservationStartDate) {

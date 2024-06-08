@@ -1,13 +1,14 @@
 package com.pser.hotel.global.config.kafka.producer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pser.hotel.domain.hotel.dto.HotelDto;
 import java.util.Map;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Serializer;
 
 public class HotelDtoSerializer implements Serializer<HotelDto> {
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {

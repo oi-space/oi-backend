@@ -25,11 +25,11 @@ public enum HotelCategoryEnum {
 
     private final Integer value;
 
-    HotelCategoryEnum(Integer value){
+    HotelCategoryEnum(Integer value) {
         this.value = value;
     }
 
-    public static HotelCategoryEnum getByValue(Integer value){
+    public static HotelCategoryEnum getByValue(Integer value) {
         return valueToName.get(value);
     }
 }

@@ -25,6 +25,8 @@ public class RoomDto {
 
     private String description;
 
+    private String mainImageUrl;
+
     private String precaution;
 
     private Integer price;

@@ -1,7 +1,7 @@
 package com.pser.hotel.domain.hotel.domain;
 
 import com.pser.hotel.domain.member.domain.User;
-import com.pser.hotel.domain.model.BaseEntity;
+import com.pser.hotel.domain.model.WriteEventEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
@@ -30,7 +30,7 @@ import lombok.ToString;
 @Builder
 @ToString(of = {"name", "category", "description", "notice", "province", "city", "district", "detailedAddress",
         "latitude", "longitude", "businessNumber"})
-public class Hotel extends BaseEntity {
+public class Hotel extends WriteEventEntity {
     @Column(unique = true, nullable = false)
     private String name;
     @Column(nullable = false)

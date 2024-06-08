@@ -87,7 +87,8 @@ public interface HotelMapper {
     HotelResponse changeToHotelResponse(Hotel hotel, double gradeAverage, int salePrice, int previousPrice);
 
     @Mapping(target = "hotelImageUrls", source = "hotel.images", qualifiedByName = "getImageUrls")
-    HotelSummaryResponse changeToHotelSummaryResponse(Hotel hotel, double gradeAverage, int salePrice, int previousPrice);
+    HotelSummaryResponse changeToHotelSummaryResponse(Hotel hotel, double gradeAverage, int salePrice,
+                                                      int previousPrice);
 
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "images", source = "images", qualifiedByName = "getImageUrls")
