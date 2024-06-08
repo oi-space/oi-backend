@@ -55,7 +55,6 @@ class FacilityTest {
     private Profile createProfile(User user) {
         return Profile.builder()
                 .user(user)
-                .username("test_username")
                 .phone("010-111-222")
                 .imageUrl("testImageUrl")
                 .description("test_description")

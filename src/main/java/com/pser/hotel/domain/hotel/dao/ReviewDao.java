@@ -19,8 +19,5 @@ public interface ReviewDao extends JpaRepository<Review, Long>, ReviewDaoCustom 
     @NonNull
     Optional<Review> findById(@NonNull Long id);
 
-    @NonNull
-    Page<Review> findByReservationId(Long reservationId, Pageable pageable);
-
     Optional<Review> findByIdAndReservationId(Long id, Long reservationId); // 반환 타입을 Optional<Review>로 변경
 }

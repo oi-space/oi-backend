@@ -26,5 +26,11 @@ public class ReviewResponse {
 
     private String detail;
 
+    private Long hotelId;
+
+    private String reviewerName;
+
+    private String profileImageUrl;
+
     private List<String> imageUrls;
 }
