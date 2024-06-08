@@ -46,9 +46,15 @@ class RoomApiTest {
     @Test
     @DisplayName("객실 삭제 테스트")
     public void roomDelete() throws Exception {
-        mockMvc.perform(delete("/hotels/1/rooms/1")
-                        .header("user-id", 1))
-                .andExpect(status().isNoContent());
+        // Given
+        Long hotelId = 1L;
+        Long userId = 1L;
+        String url = String.format("/hotels/%d/rooms/%d", hotelId, userId);
+        System.out.println(url);
+        // When
+        mockMvc.perform(delete(url)
+                .header("user-id", 1)).andExpect(status().isNoContent());
+
     }
 
     @Test

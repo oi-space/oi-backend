@@ -38,6 +38,8 @@ public class Review extends BaseEntity {
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImage> reviewImages = new ArrayList<>();
 
+
+
     @Builder
     public Review(Long id, GradeEnum grade, String detail, Reservation reservation, List<ReviewImage> reviewImages) {
         this.id = id; // id 필드 추가

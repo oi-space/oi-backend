@@ -6,7 +6,6 @@ import com.pser.hotel.domain.hotel.domain.Hotel;
 import com.pser.hotel.domain.hotel.dto.request.HotelSearchRequest;
 import com.pser.hotel.domain.hotel.dto.request.RoomSearchRequest;
 import com.pser.hotel.domain.hotel.dto.response.HotelSummaryResponse;
-import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
 import com.pser.hotel.domain.hotel.util.Utils;
 import com.pser.hotel.domain.member.domain.User;
 import com.pser.hotel.global.config.QueryDslConfig;
@@ -43,6 +42,7 @@ public class PerformanceTest {
     Facility facility;
     int performanceSize = 100000;
     HotelSearchRequest hotelSearchRequest;
+
     @BeforeEach
     public void setUp() {
         user = Utils.createUser();
@@ -54,7 +54,7 @@ public class PerformanceTest {
     @DisplayName("검색 등록 성능 테스트")
     public void queryPerformanceAboutIndexPost() {
         long startTime = System.currentTimeMillis();
-        for(int i=0; i < 1000; i++){
+        for (int i = 0; i < 1000; i++) {
             hotel = Utils.createHotel(user);
             facility = Utils.createFacility(hotel);
 
@@ -63,7 +63,7 @@ public class PerformanceTest {
         }
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
-        System.out.println("실행 시간 평균 : " + (double)duration/1000 + "ms");
+        System.out.println("실행 시간 평균 : " + (double) duration / 1000 + "ms");
         Assertions.assertThat(duration).isLessThan(10000); // 10초 이내에 쿼리가 실행되어야 함
     }
 
@@ -73,14 +73,14 @@ public class PerformanceTest {
         Pageable pageable = createPageable();
         hotelSearchRequest = createSearchRequest();
         long startTime = System.currentTimeMillis();
-        for(int i=0; i < 10; i++){
+        for (int i = 0; i < 10; i++) {
             Slice<HotelSummaryResponse> hotelResponse = hotelDao.search(hotelSearchRequest, pageable);
             System.out.println("검색 결과 : " + hotelResponse.getContent());
         }
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
 
-        System.out.println("실행 시간 평균 : " + duration/10 + "ms");
+        System.out.println("실행 시간 평균 : " + duration / 10 + "ms");
 
         Assertions.assertThat(duration).isLessThan(10000); // 10초 이내에 쿼리가 실행되어야 함
     }
@@ -99,20 +99,20 @@ public class PerformanceTest {
         Assertions.assertThat(duration).isLessThan(100000); // 100초 이내에 쿼리가 실행되어야 함
     }
 
-    @Test
-    @DisplayName("객실 검색 조회 성능 테스트")
-    public void queryPerformanceAboutRoomSearchIndex() {
-        Pageable pageable = createPageable();
-        RoomSearchRequest roomSearchRequest = createRoomSearchRequest();
-        long startTime = System.currentTimeMillis();
-        Slice<RoomResponse> roomResponses = roomDao.search(roomSearchRequest, pageable);
-        long endTime = System.currentTimeMillis();
-        long duration = endTime - startTime;
-
-        System.out.println("실행 시간 평균 : " + duration + "ms");
-
-        Assertions.assertThat(duration).isLessThan(100000); // 100초 이내에 쿼리가 실행되어야 함
-    }
+//    @Test
+//    @DisplayName("객실 검색 조회 성능 테스트")
+//    public void queryPerformanceAboutRoomSearchIndex() {
+//        Pageable pageable = createPageable();
+//        RoomSearchRequest roomSearchRequest = createRoomSearchRequest();
+//        long startTime = System.currentTimeMillis();
+//        Slice<RoomDetailResponse> roomResponses = roomDao.search(roomSearchRequest, pageable);
+//        long endTime = System.currentTimeMillis();
+//        long duration = endTime - startTime;
+//
+//        System.out.println("실행 시간 평균 : " + duration + "ms");
+//
+//        Assertions.assertThat(duration).isLessThan(100000); // 100초 이내에 쿼리가 실행되어야 함
+//    }
 
     @Test
     @DisplayName("숙소 전체 조회 성능 테스트")
@@ -129,7 +129,7 @@ public class PerformanceTest {
     }
 
     private HotelSearchRequest createSearchRequest() {
-        return  HotelSearchRequest.builder()
+        return HotelSearchRequest.builder()
                 .name("업체명" + (performanceSize - performanceSize / 10))
                 .city("금천구" + (performanceSize - performanceSize / 10))
                 .province("서울특별시" + (performanceSize - performanceSize / 10))

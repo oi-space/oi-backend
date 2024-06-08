@@ -13,12 +13,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 public class RoomRequest {
-    @NotBlank
-    private long hotelId;
+
     @NotBlank
     private String name;
     @NotBlank
     private String description;
+    @NotBlank
+    private String mainImageUrl;
     @NotBlank
     private String precaution;
     @NotBlank

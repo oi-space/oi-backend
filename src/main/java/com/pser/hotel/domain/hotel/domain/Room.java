@@ -1,6 +1,5 @@
 package com.pser.hotel.domain.hotel.domain;
 
-import com.pser.hotel.domain.hotel.dto.response.RoomResponse;
 import com.pser.hotel.domain.model.WriteEventEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -51,6 +50,8 @@ public class Room extends WriteEventEntity {
     @NotBlank
     private String description;
 
+    private String mainImageUrl;
+
     private String precaution;
 
     @Column(nullable = false)
@@ -83,11 +84,13 @@ public class Room extends WriteEventEntity {
     private List<RoomImage> roomImages = new ArrayList<>();
 
     @Builder
-    public Room(Hotel hotel, String name, String description, String precaution, int price, LocalTime checkIn,
+    public Room(Hotel hotel, String name, String description, String mainImageUrl, String precaution, int price,
+                LocalTime checkIn,
                 LocalTime checkOut, int standardCapacity, int maxCapacity, int totalRooms) {
         this.hotel = hotel;
         this.name = name;
         this.description = description;
+        this.mainImageUrl = mainImageUrl;
         this.precaution = precaution;
         this.price = price;
         this.checkIn = checkIn;
@@ -96,12 +99,6 @@ public class Room extends WriteEventEntity {
         this.maxCapacity = maxCapacity;
         this.totalRooms = totalRooms;
         this.roomImages = new ArrayList<>();
-    }
-
-    public RoomResponse toDto() {
-        return RoomResponse.builder()
-                .name(this.name)
-                .build();
     }
 
     public void addImage(RoomImage roomImage) {

@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.validator.constraints.URL;
 
 @Getter
 @Setter
@@ -26,7 +25,6 @@ public class RoomImage extends BaseEntity {
     private Room room;
 
     @Column(nullable = false)
-    @URL
     private String imageUrl;
 
     @Builder
