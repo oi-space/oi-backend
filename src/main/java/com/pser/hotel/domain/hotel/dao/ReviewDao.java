@@ -2,11 +2,12 @@ package com.pser.hotel.domain.hotel.dao;
 
 import com.pser.hotel.domain.hotel.domain.Review;
 import com.pser.hotel.domain.hotel.dto.request.ReviewSearchRequest;
-import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
 public interface ReviewDao extends JpaRepository<Review, Long>, ReviewDaoCustom {
     @Override
@@ -18,4 +19,9 @@ public interface ReviewDao extends JpaRepository<Review, Long>, ReviewDaoCustom 
     @Override
     @NonNull
     Optional<Review> findById(@NonNull Long id);
+
+    @NonNull
+    Page<Review> findByReservationId(Long reservationId, Pageable pageable);
+
+    Optional<Review> findByIdAndReservationId(Long id, Long reservationId); // 반환 타입을 Optional<Review>로 변경
 }

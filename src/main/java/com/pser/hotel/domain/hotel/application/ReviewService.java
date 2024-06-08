@@ -35,21 +35,21 @@ public class ReviewService {
         return reviewMapper.toResponse(review);
     }
 
-    public Long save(ReviewCreateRequest request) {
+    public Long save(Long reservationId, ReviewCreateRequest request) {
         Review review = reviewMapper.toEntity(request);
         review = reviewDao.save(review);
         return review.getId();
     }
 
     @Transactional
-    public void update(Long id, ReviewUpdateRequest request) {
+    public void update(Long id, Long aLong, ReviewUpdateRequest request) {
         Review review = findById(id);
         reviewMapper.updateReviewFromDto(request, review);
         reviewDao.save(review);
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(Long id, Long aLong) {
         Review review = findById(id);
         reviewDao.delete(review);
     }
@@ -60,5 +60,14 @@ public class ReviewService {
             throw new EntityNotFoundException("존재하지 않는 리소스");
         }
         return review.get();
+    }
+
+    public Page<ReviewResponse> getAllByReservationId(Long reservationId, Pageable pageable) {
+        return reviewDao.findByReservationId(reservationId, pageable).map(reviewMapper::toResponse);
+    }
+
+    public Optional<ReviewResponse> getByIdAndReservationId(Long id, Long reservationId) {
+        return reviewDao.findByIdAndReservationId(id, reservationId)
+                .map(reviewMapper::toResponse);
     }
 }
