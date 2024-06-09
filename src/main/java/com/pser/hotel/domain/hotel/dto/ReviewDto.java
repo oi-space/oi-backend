@@ -26,5 +26,15 @@ public class ReviewDto {
 
     private List<String> reviewImages;
 
+    private Long hotelId;
+
+    private String reviewerName;
+
+    private String profileImageUrl;
+
+    private Long roomId;
+
+    private String roomName;
+
 
 }
