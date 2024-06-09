@@ -23,6 +23,8 @@ public interface ReviewMapper {
     ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
 
     @Mapping(target = "reviewImages", source = "imageUrls", qualifiedByName = "mapUrlsToReviewImages")
+    @Mapping(target = "roomId", source = "reservation.room.id")
+    @Mapping(target = "roomName", source = "reservation.room.name")
     Review toEntity(ReviewCreateRequest request);
 
     @Mapping(target = "imageUrls", source = "reviewImages", qualifiedByName = "mapReviewImagesToUrls")
