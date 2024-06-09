@@ -34,4 +34,12 @@ public class ReviewCreateRequest {
     private String profileImageUrl;
 
     private List<String> imageUrls;
+
+    @Null
+    @Schema(hidden = true)
+    private Long roomId;
+
+    @Null
+    @Schema(hidden = true)
+    private String roomName;
 }
