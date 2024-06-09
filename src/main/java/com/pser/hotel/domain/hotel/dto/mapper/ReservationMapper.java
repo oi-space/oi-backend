@@ -36,6 +36,7 @@ public interface ReservationMapper {
     @Mapping(source = "room.id", target = "roomId")
     ReservationResponse toResponse(Reservation reservation);
 
+    @Mapping(source = "room.price", target = "price")
     Reservation toEntity(ReservationCreateRequest request);
 
     @Mapping(source = "user.id", target = "userId")

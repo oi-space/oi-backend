@@ -1,6 +1,5 @@
 package com.pser.hotel.domain.hotel.dto.request;
 
-import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
 import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.member.domain.User;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,10 +36,6 @@ public class ReservationCreateRequest {
 
     @NotBlank
     @Min(0)
-    private Integer price;
-
-    @NotBlank
-    @Min(0)
     private Integer visitorCount;
 
     @NotBlank
@@ -58,7 +53,4 @@ public class ReservationCreateRequest {
     @NotBlank
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endAt;
-
-    @NotBlank
-    private ReservationStatusEnum status;
 }
