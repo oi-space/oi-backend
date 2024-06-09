@@ -33,4 +33,8 @@ public class ReviewResponse {
     private String profileImageUrl;
 
     private List<String> imageUrls;
+
+    private Long roomId;
+
+    private String roomName;
 }
