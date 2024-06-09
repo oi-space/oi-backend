@@ -15,4 +15,8 @@ public class ReviewUpdateRequest {
 
     private List<String> imageUrls;
 
+    private Long roomId;
+
+    private String roomName;
+
 }
