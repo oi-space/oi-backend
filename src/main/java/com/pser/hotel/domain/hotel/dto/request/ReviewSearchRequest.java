@@ -20,13 +20,15 @@ public class ReviewSearchRequest extends SearchQuery {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long reservationId;
+    private Long roomId;
+    private String roomName;
 
 
     @Builder
     public ReviewSearchRequest(String keyword, LocalDateTime createdAfter, LocalDateTime createdBefore,
                                LocalDateTime updatedAfter, LocalDateTime updatedBefore, GradeEnum grade, String detail,
                                LocalDateTime startDate, LocalDateTime endDate, double rating, String content,
-                               LocalDateTime createdAt, LocalDateTime updatedAt, Long reservationId) {
+                               LocalDateTime createdAt, LocalDateTime updatedAt, Long reservationId, Long roomId, String roomName) {
         super(keyword, createdAfter, createdBefore, updatedAfter, updatedBefore);
         this.grade = grade;
         this.detail = detail;
@@ -37,6 +39,9 @@ public class ReviewSearchRequest extends SearchQuery {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.reservationId = reservationId;
+        this.roomId = roomId;
+        this.roomName = roomName;
+
     }
 
 }
