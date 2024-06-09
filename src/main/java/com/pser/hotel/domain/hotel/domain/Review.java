@@ -12,6 +12,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -53,19 +54,25 @@ public class Review extends BaseEntity {
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImage> reviewImages = new ArrayList<>();
 
-    @Column(nullable = false)
-    private Long roomId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Room room;
 
     @Column(nullable = false)
     private String roomName;
 
     @Builder
     public Review(GradeEnum grade, String detail, Reservation reservation, Long hotelId, String reviewerName,
-                  String profileImageUrl, List<ReviewImage> reviewImages) {
+                  String profileImageUrl, List<ReviewImage> reviewImages, Room room, String roomName) {
         this.grade = grade;
         this.detail = detail;
         this.reservation = reservation;
+        this.hotelId = hotelId;
+        this.reviewerName = reviewerName;
+        this.profileImageUrl = profileImageUrl;
         this.reviewImages = reviewImages != null ? reviewImages : new ArrayList<>();
+        this.room = room;
+        this.roomName = roomName;
     }
 
     public void addReviewImageFile(ReviewImage reviewImage) {

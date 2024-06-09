@@ -2,6 +2,7 @@ package com.pser.hotel.domain.hotel.dto.request;
 
 import com.pser.hotel.domain.model.GradeEnum;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Data;
 
@@ -18,5 +19,18 @@ public class ReviewUpdateRequest {
     private Long roomId;
 
     private String roomName;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    private Long reservationId;
+
+    private Long hotelId;
+
+    private String reviewerName;
+
+    private String profileImageUrl;
+
 
 }

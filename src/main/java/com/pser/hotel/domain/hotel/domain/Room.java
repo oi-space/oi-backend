@@ -109,6 +109,7 @@ public class Room extends WriteEventEntity {
         this.roomImages.remove(roomImage);
     }
 
+
     @PrePersist
     private void validate() {
         if (standardCapacity > maxCapacity) {

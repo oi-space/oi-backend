@@ -2,7 +2,10 @@ package com.pser.hotel.domain.hotel.dto.request;
 
 import com.pser.hotel.domain.model.GradeEnum;
 import com.pser.hotel.global.common.request.SearchQuery;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Null;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,15 +23,30 @@ public class ReviewSearchRequest extends SearchQuery {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long reservationId;
-    private Long roomId;
-    private String roomName;
 
+    @Null
+    private Long hotelId;
+
+    private String reviewerName;
+
+    private String profileImageUrl;
+
+    private List<String> imageUrls;
+
+    @Null
+    @Schema(hidden = true)
+    private Long roomId;
+
+    @Null
+    @Schema(hidden = true)
+    private String roomName;
 
     @Builder
     public ReviewSearchRequest(String keyword, LocalDateTime createdAfter, LocalDateTime createdBefore,
                                LocalDateTime updatedAfter, LocalDateTime updatedBefore, GradeEnum grade, String detail,
                                LocalDateTime startDate, LocalDateTime endDate, double rating, String content,
-                               LocalDateTime createdAt, LocalDateTime updatedAt, Long reservationId, Long roomId, String roomName) {
+                               LocalDateTime createdAt, LocalDateTime updatedAt, Long reservationId, Long hotelId,
+                               String reviewerName, String profileImageUrl, List<String> imageUrls, Long roomId, String roomName) {
         super(keyword, createdAfter, createdBefore, updatedAfter, updatedBefore);
         this.grade = grade;
         this.detail = detail;
@@ -39,9 +57,11 @@ public class ReviewSearchRequest extends SearchQuery {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.reservationId = reservationId;
+        this.hotelId = hotelId;
+        this.reviewerName = reviewerName;
+        this.profileImageUrl = profileImageUrl;
+        this.imageUrls = imageUrls;
         this.roomId = roomId;
         this.roomName = roomName;
-
     }
-
 }

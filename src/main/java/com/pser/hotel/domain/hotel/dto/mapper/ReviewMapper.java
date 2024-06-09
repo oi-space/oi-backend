@@ -2,6 +2,7 @@ package com.pser.hotel.domain.hotel.dto.mapper;
 
 import com.pser.hotel.domain.hotel.domain.Review;
 import com.pser.hotel.domain.hotel.domain.ReviewImage;
+import com.pser.hotel.domain.hotel.domain.Room;
 import com.pser.hotel.domain.hotel.dto.request.ReviewCreateRequest;
 import com.pser.hotel.domain.hotel.dto.request.ReviewUpdateRequest;
 import com.pser.hotel.domain.hotel.dto.response.ReviewResponse;
@@ -22,9 +23,8 @@ public interface ReviewMapper {
 
     ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
 
+    @Mapping(target = "room", source = "request", qualifiedByName = "mapRoom")
     @Mapping(target = "reviewImages", source = "imageUrls", qualifiedByName = "mapUrlsToReviewImages")
-    @Mapping(target = "roomId", source = "reservation.room.id")
-    @Mapping(target = "roomName", source = "reservation.room.name")
     Review toEntity(ReviewCreateRequest request);
 
     @Mapping(target = "imageUrls", source = "reviewImages", qualifiedByName = "mapReviewImagesToUrls")
@@ -51,5 +51,17 @@ public interface ReviewMapper {
         return urls.stream()
                 .map(ReviewImage::new)
                 .collect(Collectors.toList());
+    }
+
+    @Named("mapRoom")
+    default Room mapRoom(ReviewCreateRequest request) {
+        // roomId를 사용하여 Room 객체를 조회하는 로직을 구현합니다.
+        // 예: Room room = roomRepository.findById(request.getRoomId()).orElseThrow(...);
+        // return room;
+
+        // 예제 코드에서는 Room 객체를 직접 생성하여 반환합니다.
+        Room room = new Room();
+        room.setId(request.getRoomId());
+        return room;
     }
 }

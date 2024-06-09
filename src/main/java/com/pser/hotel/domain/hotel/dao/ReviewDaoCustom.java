@@ -12,4 +12,9 @@ public interface ReviewDaoCustom {
     Slice<Review> findAllByReservationId(long reservationId, Long idAfter, Pageable pageable);
 
     Slice<Review> findAllByUserId(long userId, Long idAfter, Pageable pageable);
+
+    Page<Review> findAllByRoomId(long roomId, Pageable pageable);
+
+    Page<Review> findAllByRoomName(String roomName, Pageable pageable);
+
 }
