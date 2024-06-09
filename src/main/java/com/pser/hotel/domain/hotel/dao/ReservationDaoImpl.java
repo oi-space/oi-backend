@@ -19,13 +19,16 @@ public class ReservationDaoImpl implements ReservationDaoCustom {
     @Override
     public int countOverlappingReservations(ReservationCreateRequest request) {
         QReservation reservation = QReservation.reservation;
-        long count = Optional.ofNullable(queryFactory.select(reservation.count())
-                        .where(
-                                reservation.room.id.eq(request.getRoomId()),
-                                buildOverlappingCondition(reservation, request),
-                                matchScheduledStatusCondition(reservation, request)
-                        )
-                        .fetchOne())
+        long count = Optional.ofNullable(
+                        queryFactory.select(reservation.count())
+                                .from(reservation)
+                                .where(
+                                        reservation.room.id.eq(request.getRoomId()),
+                                        buildOverlappingCondition(reservation, request),
+                                        matchScheduledStatusCondition(reservation, request)
+                                )
+                                .fetchOne()
+                )
                 .orElse(0L);
         return (int) count;
     }

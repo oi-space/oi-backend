@@ -186,7 +186,7 @@ public class ReservationService {
         }
 
         int overlappingCount = reservationDao.countOverlappingReservations(request);
-        if (overlappingCount >= room.getMaxCapacity()) {
+        if (overlappingCount >= room.getTotalRooms()) {
             throw new IllegalArgumentException("해당 객실은 요청 일자에 비어 있지 않습니다");
         }
     }
