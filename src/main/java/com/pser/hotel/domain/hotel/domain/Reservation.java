@@ -91,8 +91,8 @@ public class Reservation extends StatusHolderEntity<ReservationStatusEnum> {
         this.childCount = childCount;
     }
 
-    public void updateImpUid(String merchantUid) {
-        this.merchantUid = merchantUid;
+    public void updateImpUid(String impUid) {
+        this.impUid = impUid;
     }
 
     @PrePersist
