@@ -69,9 +69,15 @@ public class ReservationService {
     public void refund(long reservationId) {
         Reservation reservation = reservationDao.findById(reservationId)
                 .orElseThrow();
-        int price = reservation.getPrice();
+        ReservationStatusEnum status = reservation.getStatus();
         LocalDate reservationStartDate = reservation.getStartAt();
-        int refundPrice = calculateRefundPrice(price, reservationStartDate);
+        int price = reservation.getPrice();
+        int refundPrice = price;
+
+        if (!status.equals(ReservationStatusEnum.CREATED)) {
+            refundPrice = calculateRefundPrice(price, reservationStartDate);
+        }
+
         RefundDto refundDto = RefundDto.builder()
                 .impUid(reservation.getImpUid())
                 .merchantUid(reservation.getMerchantUid())
