@@ -59,7 +59,7 @@ public class ReservationPaymentValidationCheckedConsumer {
     }
 
     private Void refund(PaymentDto paymentDto) {
-        reservationService.refund(paymentDto.getMerchantUid());
+        reservationService.refund(paymentDto);
         return null;
     }
 }

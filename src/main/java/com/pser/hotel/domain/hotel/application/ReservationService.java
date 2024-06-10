@@ -95,6 +95,36 @@ public class ReservationService {
     }
 
     @Transactional
+    public void refund(PaymentDto paymentDto) {
+        Reservation reservation = reservationDao.findByMerchantUid(paymentDto.getMerchantUid())
+                .orElseThrow();
+        ReservationStatusEnum status = reservation.getStatus();
+        List<ReservationStatusEnum> validationBypassStatus = List.of(ReservationStatusEnum.CREATED,
+                ReservationStatusEnum.PAYMENT_VALIDATION_REQUIRED);
+        LocalDate reservationStartDate = reservation.getStartAt();
+        int price = paymentDto.getAmount();
+        int refundPrice = price;
+
+        if (!validationBypassStatus.contains(status)) {
+            refundPrice = calculateRefundPrice(price, reservationStartDate);
+        }
+
+        RefundDto refundDto = RefundDto.builder()
+                .impUid(reservation.getImpUid())
+                .merchantUid(reservation.getMerchantUid())
+                .amount(refundPrice)
+                .build();
+
+        reservation.addOnUpdatedEventHandler(unused -> reservationStatusProducer.produceRefundRequired(refundDto));
+
+        StatusUpdateDto<ReservationStatusEnum> statusUpdateDto = StatusUpdateDto.<ReservationStatusEnum>builder()
+                .id(reservation.getId())
+                .targetStatus(ReservationStatusEnum.REFUND_REQUIRED)
+                .build();
+        updateStatus(statusUpdateDto);
+    }
+
+    @Transactional
     public void refund(long reservationId) {
         Reservation reservation = reservationDao.findById(reservationId)
                 .orElseThrow();
