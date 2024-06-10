@@ -1,4 +1,5 @@
-import com.pser.hotel.domain.hotel.dao.ReviewDaoCustom;
+package com.pser.hotel.domain.hotel.dao;
+
 import com.pser.hotel.domain.hotel.domain.QReview;
 import com.pser.hotel.domain.hotel.domain.QRoom;
 import com.pser.hotel.domain.hotel.domain.Review;
@@ -14,15 +15,19 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-@RequiredArgsConstructor
 @Repository
+@RequiredArgsConstructor
 public class ReviewDaoImpl implements ReviewDaoCustom {
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public Page<Review> findAllByHotelId(long hotelId, Pageable pageable) {
+        return null;
+    }
 
     @Override
     public Page<Review> search(ReviewSearchRequest request, Pageable pageable) {
@@ -225,5 +230,48 @@ public class ReviewDaoImpl implements ReviewDaoCustom {
         LocalDateTime endOfDay = startOfDay.plusDays(1);
         return review.updatedAt.between(startOfDay, endOfDay)
                 .or(review.updatedAt.eq(startOfDay));
+    }
+
+
+    private BooleanExpression matchHotelId(Long hotelId) {
+        if (hotelId == null) {
+            return null;
+        }
+        QReview review = QReview.review;
+        return review.hotelId.eq(hotelId);
+    }
+
+
+    private BooleanExpression matchReviewerName(String reviewerName) {
+        if (reviewerName == null) {
+            return null;
+        }
+        QReview review = QReview.review;
+        return review.reviewerName.eq(reviewerName);
+    }
+
+
+    private BooleanExpression matchProfileImageUrl(String profileImageUrl) {
+        if (profileImageUrl == null) {
+            return null;
+        }
+        return QReview.review.profileImageUrl.eq(profileImageUrl);
+    }
+
+
+    private BooleanExpression matchRoomId(Long roomId) {
+        if (roomId == null) {
+            return null;
+        }
+        QReview review = QReview.review;
+        return review.roomId.eq(roomId);
+    }
+
+    private BooleanExpression matchRoomName(String roomName) {
+        if (roomName == null) {
+            return null;
+        }
+        QReview review = QReview.review;
+        return review.roomName.eq(roomName);
     }
 }

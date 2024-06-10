@@ -83,6 +83,7 @@ public class Room extends WriteEventEntity {
             CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<RoomImage> roomImages = new ArrayList<>();
 
+
     @Builder
     public Room(Hotel hotel, String name, String description, String mainImageUrl, String precaution, int price,
                 LocalTime checkIn,
@@ -99,6 +100,7 @@ public class Room extends WriteEventEntity {
         this.maxCapacity = maxCapacity;
         this.totalRooms = totalRooms;
         this.roomImages = new ArrayList<>();
+
     }
 
     public void addImage(RoomImage roomImage) {

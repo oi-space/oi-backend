@@ -1,5 +1,7 @@
 package com.pser.hotel.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
@@ -13,7 +15,6 @@ public enum GradeEnum {
     THREE_STARS(3), // 별점 3
     FOUR_STARS(4), // 별점 4
     FIVE_STARS(5); // 별점 5
-
 
     private static final Map<Integer, GradeEnum> valueToGrade =
             Collections.unmodifiableMap(Stream.of(values())
@@ -29,6 +30,7 @@ public enum GradeEnum {
         return valueToGrade.get(value);
     }
 
+    @JsonValue
     public int getValue() {
         return this.value;
     }

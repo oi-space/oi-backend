@@ -58,6 +58,9 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "room_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Room room;
 
+    @Column(name = "room_id", nullable = false)
+    private Long roomId;
+
     @Column(nullable = false)
     private String roomName;
 
