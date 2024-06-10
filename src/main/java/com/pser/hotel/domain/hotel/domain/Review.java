@@ -28,6 +28,9 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.data.annotation.Id;
 
+
+
+
 @Getter
 @Setter
 @Entity

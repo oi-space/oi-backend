@@ -100,7 +100,6 @@ public class Room extends WriteEventEntity {
         this.maxCapacity = maxCapacity;
         this.totalRooms = totalRooms;
         this.roomImages = new ArrayList<>();
-
     }
 
     public void addImage(RoomImage roomImage) {

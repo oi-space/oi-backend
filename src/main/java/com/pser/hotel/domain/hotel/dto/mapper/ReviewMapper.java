@@ -14,15 +14,12 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ReviewMapper {
-
-    ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
 
     @Mapping(target = "room", source = "request", qualifiedByName = "mapRoom")
     @Mapping(target = "reviewImages", source = "imageUrls", qualifiedByName = "mapUrlsToReviewImages")
