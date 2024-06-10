@@ -19,6 +19,7 @@ import com.pser.hotel.global.error.SameStatusException;
 import com.pser.hotel.global.error.ValidationFailedException;
 import io.vavr.control.Try;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,15 +67,15 @@ public class ReservationService {
     }
 
     @Transactional
-    public void refund(long reservationId) {
-        Reservation reservation = reservationDao.findById(reservationId)
-                .orElseThrow();
+    public void refund(Reservation reservation) {
         ReservationStatusEnum status = reservation.getStatus();
+        List<ReservationStatusEnum> validationBypassStatus = List.of(ReservationStatusEnum.CREATED,
+                ReservationStatusEnum.PAYMENT_VALIDATION_REQUIRED);
         LocalDate reservationStartDate = reservation.getStartAt();
         int price = reservation.getPrice();
         int refundPrice = price;
 
-        if (!status.equals(ReservationStatusEnum.CREATED)) {
+        if (!validationBypassStatus.contains(status)) {
             refundPrice = calculateRefundPrice(price, reservationStartDate);
         }
 
@@ -87,10 +88,24 @@ public class ReservationService {
         reservation.addOnUpdatedEventHandler(unused -> reservationStatusProducer.produceRefundRequired(refundDto));
 
         StatusUpdateDto<ReservationStatusEnum> statusUpdateDto = StatusUpdateDto.<ReservationStatusEnum>builder()
-                .id(reservationId)
+                .id(reservation.getId())
                 .targetStatus(ReservationStatusEnum.REFUND_REQUIRED)
                 .build();
         updateStatus(statusUpdateDto);
+    }
+
+    @Transactional
+    public void refund(long reservationId) {
+        Reservation reservation = reservationDao.findById(reservationId)
+                .orElseThrow();
+        refund(reservation);
+    }
+
+    @Transactional
+    public void refund(String merchantUid) {
+        Reservation reservation = reservationDao.findByMerchantUid(merchantUid)
+                .orElseThrow();
+        refund(reservation);
     }
 
     @Transactional
@@ -108,13 +123,13 @@ public class ReservationService {
 
             reservation.addOnUpdatedEventHandler(
                     unused -> reservationStatusProducer.producePaymentValidationRequired(paymentDto));
-            updateToPaymentValidationRequired(paymentDto);
+            updateToPaymentValidationRequired(reservationId, paymentDto);
         }
         return status;
     }
 
     @Transactional
-    public void updateToPaymentValidationRequired(PaymentDto paymentDto) {
+    public void updateToPaymentValidationRequired(long reservationId, PaymentDto paymentDto) {
         Try.run(() -> {
                     StatusUpdateDto<ReservationStatusEnum> statusUpdateDto = StatusUpdateDto.<ReservationStatusEnum>builder()
                             .merchantUid(paymentDto.getMerchantUid())
@@ -140,8 +155,14 @@ public class ReservationService {
 
     @Transactional
     public void updateStatus(StatusUpdateDto<ReservationStatusEnum> statusUpdateDto, Consumer<Reservation> validator) {
-        Reservation reservation = reservationDao.findById(statusUpdateDto.getId())
-                .orElseThrow();
+        Reservation reservation;
+        if (statusUpdateDto.getId() != null) {
+            reservation = reservationDao.findById(statusUpdateDto.getId())
+                    .orElseThrow();
+        } else {
+            reservation = reservationDao.findByMerchantUid(statusUpdateDto.getMerchantUid())
+                    .orElseThrow();
+        }
         ReservationStatusEnum targetStatus = statusUpdateDto.getTargetStatus();
 
         if (validator != null) {

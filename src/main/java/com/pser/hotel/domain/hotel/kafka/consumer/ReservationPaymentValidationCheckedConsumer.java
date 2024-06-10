@@ -4,7 +4,6 @@ import com.pser.hotel.domain.hotel.application.ReservationService;
 import com.pser.hotel.domain.hotel.domain.ReservationStatusEnum;
 import com.pser.hotel.domain.hotel.kafka.producer.ReservationStatusProducer;
 import com.pser.hotel.global.common.PaymentDto;
-import com.pser.hotel.global.common.RefundDto;
 import com.pser.hotel.global.common.StatusUpdateDto;
 import com.pser.hotel.global.config.kafka.KafkaTopics;
 import com.pser.hotel.global.error.SameStatusException;
@@ -29,15 +28,21 @@ public class ReservationPaymentValidationCheckedConsumer {
     @KafkaListener(topics = KafkaTopics.RESERVATION_PAYMENT_VALIDATION_CHECKED, groupId = "${kafka.consumer-group-id}", containerFactory = "paymentDtoValueListenerContainerFactory")
     public void updateToPaymentValidationChecked(PaymentDto paymentDto) {
         Try.run(() -> check(paymentDto))
-                .recover(SameStatusException.class, (e) -> null)
+                .recover(SameStatusException.class, (Void) null)
                 .recover(ValidationFailedException.class, (e) -> refund(paymentDto))
                 .get();
     }
 
     @DltHandler
     public void dltHandler(ConsumerRecord<String, PaymentDto> record) {
-        PaymentDto paymentDto = record.value();
-        refund(paymentDto);
+        Try.run(() -> {
+                    PaymentDto paymentDto = record.value();
+                    refund(paymentDto);
+                }).recover(Exception.class, e -> {
+                    log.error("dlt failed by error: " + e.getMessage());
+                    return null;
+                })
+                .get();
     }
 
     private void check(PaymentDto paymentDto) {
@@ -54,17 +59,7 @@ public class ReservationPaymentValidationCheckedConsumer {
     }
 
     private Void refund(PaymentDto paymentDto) {
-        StatusUpdateDto<ReservationStatusEnum> statusUpdateDto = StatusUpdateDto.<ReservationStatusEnum>builder()
-                .merchantUid(paymentDto.getMerchantUid())
-                .targetStatus(ReservationStatusEnum.REFUND_REQUIRED)
-                .build();
-        reservationService.updateStatus(statusUpdateDto);
-
-        RefundDto refundDto = RefundDto.builder()
-                .impUid(paymentDto.getImpUid())
-                .merchantUid(paymentDto.getMerchantUid())
-                .build();
-        reservationStatusProducer.produceRefundRequired(refundDto);
+        reservationService.refund(paymentDto.getMerchantUid());
         return null;
     }
 }
