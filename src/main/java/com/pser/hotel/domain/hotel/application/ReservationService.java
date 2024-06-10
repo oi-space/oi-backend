@@ -19,6 +19,7 @@ import com.pser.hotel.global.error.SameStatusException;
 import com.pser.hotel.global.error.ValidationFailedException;
 import io.vavr.control.Try;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,12 +67,18 @@ public class ReservationService {
     }
 
     @Transactional
-    public void refund(long reservationId) {
-        Reservation reservation = reservationDao.findById(reservationId)
-                .orElseThrow();
-        int price = reservation.getPrice();
+    public void refund(Reservation reservation) {
+        ReservationStatusEnum status = reservation.getStatus();
+        List<ReservationStatusEnum> validationBypassStatus = List.of(ReservationStatusEnum.CREATED,
+                ReservationStatusEnum.PAYMENT_VALIDATION_REQUIRED);
         LocalDate reservationStartDate = reservation.getStartAt();
-        int refundPrice = calculateRefundPrice(price, reservationStartDate);
+        int price = reservation.getPrice();
+        int refundPrice = price;
+
+        if (!validationBypassStatus.contains(status)) {
+            refundPrice = calculateRefundPrice(price, reservationStartDate);
+        }
+
         RefundDto refundDto = RefundDto.builder()
                 .impUid(reservation.getImpUid())
                 .merchantUid(reservation.getMerchantUid())
@@ -81,10 +88,54 @@ public class ReservationService {
         reservation.addOnUpdatedEventHandler(unused -> reservationStatusProducer.produceRefundRequired(refundDto));
 
         StatusUpdateDto<ReservationStatusEnum> statusUpdateDto = StatusUpdateDto.<ReservationStatusEnum>builder()
-                .id(reservationId)
+                .id(reservation.getId())
                 .targetStatus(ReservationStatusEnum.REFUND_REQUIRED)
                 .build();
         updateStatus(statusUpdateDto);
+    }
+
+    @Transactional
+    public void refund(PaymentDto paymentDto) {
+        Reservation reservation = reservationDao.findByMerchantUid(paymentDto.getMerchantUid())
+                .orElseThrow();
+        ReservationStatusEnum status = reservation.getStatus();
+        List<ReservationStatusEnum> validationBypassStatus = List.of(ReservationStatusEnum.CREATED,
+                ReservationStatusEnum.PAYMENT_VALIDATION_REQUIRED);
+        LocalDate reservationStartDate = reservation.getStartAt();
+        int price = paymentDto.getAmount();
+        int refundPrice = price;
+
+        if (!validationBypassStatus.contains(status)) {
+            refundPrice = calculateRefundPrice(price, reservationStartDate);
+        }
+
+        RefundDto refundDto = RefundDto.builder()
+                .impUid(reservation.getImpUid())
+                .merchantUid(reservation.getMerchantUid())
+                .amount(refundPrice)
+                .build();
+
+        reservation.addOnUpdatedEventHandler(unused -> reservationStatusProducer.produceRefundRequired(refundDto));
+
+        StatusUpdateDto<ReservationStatusEnum> statusUpdateDto = StatusUpdateDto.<ReservationStatusEnum>builder()
+                .id(reservation.getId())
+                .targetStatus(ReservationStatusEnum.REFUND_REQUIRED)
+                .build();
+        updateStatus(statusUpdateDto);
+    }
+
+    @Transactional
+    public void refund(long reservationId) {
+        Reservation reservation = reservationDao.findById(reservationId)
+                .orElseThrow();
+        refund(reservation);
+    }
+
+    @Transactional
+    public void refund(String merchantUid) {
+        Reservation reservation = reservationDao.findByMerchantUid(merchantUid)
+                .orElseThrow();
+        refund(reservation);
     }
 
     @Transactional
@@ -102,13 +153,13 @@ public class ReservationService {
 
             reservation.addOnUpdatedEventHandler(
                     unused -> reservationStatusProducer.producePaymentValidationRequired(paymentDto));
-            updateToPaymentValidationRequired(paymentDto);
+            updateToPaymentValidationRequired(reservationId, paymentDto);
         }
         return status;
     }
 
     @Transactional
-    public void updateToPaymentValidationRequired(PaymentDto paymentDto) {
+    public void updateToPaymentValidationRequired(long reservationId, PaymentDto paymentDto) {
         Try.run(() -> {
                     StatusUpdateDto<ReservationStatusEnum> statusUpdateDto = StatusUpdateDto.<ReservationStatusEnum>builder()
                             .merchantUid(paymentDto.getMerchantUid())
@@ -134,8 +185,14 @@ public class ReservationService {
 
     @Transactional
     public void updateStatus(StatusUpdateDto<ReservationStatusEnum> statusUpdateDto, Consumer<Reservation> validator) {
-        Reservation reservation = reservationDao.findById(statusUpdateDto.getId())
-                .orElseThrow();
+        Reservation reservation;
+        if (statusUpdateDto.getId() != null) {
+            reservation = reservationDao.findById(statusUpdateDto.getId())
+                    .orElseThrow();
+        } else {
+            reservation = reservationDao.findByMerchantUid(statusUpdateDto.getMerchantUid())
+                    .orElseThrow();
+        }
         ReservationStatusEnum targetStatus = statusUpdateDto.getTargetStatus();
 
         if (validator != null) {
@@ -186,7 +243,7 @@ public class ReservationService {
         }
 
         int overlappingCount = reservationDao.countOverlappingReservations(request);
-        if (overlappingCount >= room.getMaxCapacity()) {
+        if (overlappingCount >= room.getTotalRooms()) {
             throw new IllegalArgumentException("해당 객실은 요청 일자에 비어 있지 않습니다");
         }
     }

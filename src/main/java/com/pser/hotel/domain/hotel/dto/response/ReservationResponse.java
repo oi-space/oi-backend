@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ReservationResponse {
+    private Long id;
+
     private Long userId;
 
     private Long roomId;
