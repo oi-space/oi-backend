@@ -33,6 +33,4 @@ public interface ReviewDao extends JpaRepository<Review, Long>, ReviewDaoCustom 
 
     Page<Review> findByRoomIdAndRoomName(@NonNull Long roomId, @NonNull String roomName, @NonNull Pageable pageable);
 
-    Page<Review> findByImageUrlsContaining(@NonNull String imageUrl, @NonNull Pageable pageable);
-
 }

@@ -7,7 +7,9 @@ import com.pser.hotel.domain.hotel.dto.request.ReviewSearchRequest;
 import com.pser.hotel.domain.model.GradeEnum;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -53,29 +55,26 @@ public class ReviewDaoImpl implements ReviewDaoCustom {
 
     @Override
     public Slice<Review> findAllByReservationId(long reservationId, Long idAfter, Pageable pageable) {
-        QReview review = QReview.review;
-
-        BooleanBuilder booleanBuilder = new BooleanBuilder()
-                .and(review.reservation.id.eq(reservationId))
-                .and(matchIdAfter(idAfter, review));
-
-        List<Review> result = queryFactory.selectFrom(review)
-                .where(booleanBuilder)
-                .limit(pageable.getPageSize() + 1)
-                .orderBy(review.id.desc())
-                .fetch();
-        boolean hasNext = result.size() > pageable.getPageSize();
-        return new SliceImpl<>(result, pageable, hasNext);
+        BooleanBuilder booleanBuilder = createBooleanBuilder(reservationId, idAfter, QReview.review.reservation.id);
+        return executeQuery(booleanBuilder, pageable);
     }
 
     @Override
     public Slice<Review> findAllByUserId(long userId, Long idAfter, Pageable pageable) {
+        BooleanBuilder booleanBuilder = createBooleanBuilder(userId, idAfter, QReview.review.reservation.id);
+        return executeQuery(booleanBuilder, pageable);
+    }
+
+    private BooleanBuilder createBooleanBuilder(long id, Long idAfter, NumberPath<Long> path) {
         QReview review = QReview.review;
 
-        BooleanBuilder booleanBuilder = new BooleanBuilder()
-                .and(review.reservation.id.eq(userId))
+        return new BooleanBuilder()
+                .and(path.eq(id))
                 .and(matchIdAfter(idAfter, review));
+    }
 
+    private Slice<Review> executeQuery(BooleanBuilder booleanBuilder, Pageable pageable) {
+        QReview review = QReview.review;
         List<Review> result = queryFactory.selectFrom(review)
                 .where(booleanBuilder)
                 .limit(pageable.getPageSize() + 1)
@@ -84,7 +83,6 @@ public class ReviewDaoImpl implements ReviewDaoCustom {
         boolean hasNext = result.size() > pageable.getPageSize();
         return new SliceImpl<>(result, pageable, hasNext);
     }
-
     @Override
     public Page<Review> findAllByRoomId(long roomId, Pageable pageable) {
         QReview review = QReview.review;
@@ -99,13 +97,16 @@ public class ReviewDaoImpl implements ReviewDaoCustom {
                 .orderBy(review.id.desc())
                 .fetch();
 
-        long count = queryFactory
+        Long count = queryFactory
                 .select(review.count())
                 .from(review)
                 .where(booleanBuilder)
                 .fetchOne();
 
-        return new PageImpl<>(reviews, pageable, count);
+        // NullPointerException 방지를 위해 null 체크
+        long total = count != null ? count : 0;
+
+        return new PageImpl<>(reviews, pageable, total);
     }
 
     @Override
@@ -125,16 +126,16 @@ public class ReviewDaoImpl implements ReviewDaoCustom {
                 .orderBy(review.id.desc())
                 .fetch();
 
-        long count = queryFactory
-                .select(review.count())
-                .from(review)
-                .join(review.room, room)
-                .where(booleanBuilder)
-                .fetchOne();
+        Long count = Optional.ofNullable(queryFactory
+                        .select(review.count())
+                        .from(review)
+                        .join(review.room, room)
+                        .where(booleanBuilder)
+                        .fetchOne())
+                .orElse(0L);
 
         return new PageImpl<>(reviews, pageable, count);
     }
-
 
 
     private BooleanExpression matchIdAfter(Long idAfter, QReview review) {
