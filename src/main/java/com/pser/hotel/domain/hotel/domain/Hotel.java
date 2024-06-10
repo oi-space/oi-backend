@@ -31,7 +31,7 @@ import lombok.ToString;
 @ToString(of = {"name", "category", "description", "notice", "province", "city", "district", "detailedAddress",
         "latitude", "longitude", "businessNumber"})
 public class Hotel extends WriteEventEntity {
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String name;
     @Column(nullable = false)
     @Convert(converter = HotelCategoryConverter.class)

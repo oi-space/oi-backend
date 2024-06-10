@@ -20,7 +20,7 @@ public enum ReservationStatusEnum implements StatusEnum {
     PAYMENT_VALIDATION_REQUIRED(1) {
         @Override
         public List<StatusEnum> getNext() {
-            return List.of(BEFORE_CHECKIN);
+            return List.of(BEFORE_CHECKIN, REFUND_REQUIRED);
         }
     }, // 결제 검증 대기
     BEFORE_CHECKIN(2) {
