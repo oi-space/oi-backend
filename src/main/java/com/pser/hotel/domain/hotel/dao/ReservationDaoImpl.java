@@ -34,7 +34,6 @@ public class ReservationDaoImpl implements ReservationDaoCustom {
     }
 
     private BooleanBuilder buildOverlappingCondition(QReservation reservation, ReservationCreateRequest request) {
-        reservation.endAt.gt(request.getStartAt());
         return new BooleanBuilder()
                 .andNot(matchReservedAfterRequest(reservation, request))
                 .andNot(matchReservedBeforeRequest(reservation, request));
@@ -45,7 +44,7 @@ public class ReservationDaoImpl implements ReservationDaoCustom {
     }
 
     private Predicate matchReservedBeforeRequest(QReservation reservation, ReservationCreateRequest request) {
-        return reservation.endAt.goe(request.getStartAt());
+        return reservation.endAt.loe(request.getStartAt());
     }
 
     private Predicate matchScheduledStatusCondition(QReservation reservation, ReservationCreateRequest request) {
