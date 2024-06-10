@@ -15,9 +15,9 @@ import org.mapstruct.Named;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ReviewMapper {
@@ -66,6 +66,11 @@ public interface ReviewMapper {
 
     @Named("mapRoom")
     default Room mapRoom(ReviewCreateRequest request) {
+        throw new UnsupportedOperationException("Room mapping logic is not implemented.");
+    }
+
+    @Named("mapRoomId")
+    default Room mapRoomId(Long roomId) {
         throw new UnsupportedOperationException("Room mapping logic is not implemented.");
     }
 }
