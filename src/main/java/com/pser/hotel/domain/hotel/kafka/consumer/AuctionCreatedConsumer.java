@@ -22,7 +22,7 @@ public class AuctionCreatedConsumer {
     private final ReservationService reservationService;
     private final AuctionStatusProducer auctionStatusProducer;
 
-    @RetryableTopic(kafkaTemplate = "auctionDtoValueKafkaTemplate", attempts = "5")
+    @RetryableTopic(kafkaTemplate = "auctionDtoValueKafkaTemplate", attempts = "5", retryTopicSuffix = "-retry-${kafka.consumer-group-id}")
     @KafkaListener(topics = KafkaTopics.AUCTION_CREATED, groupId = "${kafka.consumer-group-id}", containerFactory = "auctionDtoValueListenerContainerFactory")
     public void onCreated(AuctionDto auctionDto) {
         long reservationId = auctionDto.getReservationId();

@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class ReservationRefundCheckedConsumer {
     private final ReservationService reservationService;
 
-    @RetryableTopic(kafkaTemplate = "paymentDtoValueKafkaTemplate", attempts = "5")
+    @RetryableTopic(kafkaTemplate = "paymentDtoValueKafkaTemplate", attempts = "5", retryTopicSuffix = "-retry-${kafka.consumer-group-id}")
     @KafkaListener(topics = KafkaTopics.RESERVATION_REFUND_CHECKED, groupId = "${kafka.consumer-group-id}", containerFactory = "paymentDtoValueListenerContainerFactory")
     public void onRefundChecked(PaymentDto paymentDto) {
         Try.run(() -> updateStatus(paymentDto))
