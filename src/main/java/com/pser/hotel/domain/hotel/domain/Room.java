@@ -83,6 +83,7 @@ public class Room extends WriteEventEntity {
             CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<RoomImage> roomImages = new ArrayList<>();
 
+
     @Builder
     public Room(Hotel hotel, String name, String description, String mainImageUrl, String precaution, int price,
                 LocalTime checkIn,
@@ -108,6 +109,7 @@ public class Room extends WriteEventEntity {
     public void removeImage(RoomImage roomImage) {
         this.roomImages.remove(roomImage);
     }
+
 
     @PrePersist
     private void validate() {

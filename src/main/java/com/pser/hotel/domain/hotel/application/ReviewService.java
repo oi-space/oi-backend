@@ -19,6 +19,9 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+
+
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
@@ -30,14 +33,16 @@ public class ReviewService {
     @Transactional
     public Long save(ReviewCreateRequest request) {
         Reservation reservation = reservationDao.findById(request.getReservationId())
-                .orElseThrow();
+                .orElseThrow(() -> new EntityNotFoundException("Reservation not found"));
         User reviewer = reservation.getUser();
         Profile profile = profileDao.findById(reviewer.getId())
-                .orElseThrow();
+                .orElseThrow(() -> new EntityNotFoundException("Profile not found"));
         request.setReservation(reservation);
         request.setProfileImageUrl(profile.getImageUrl());
         request.setReviewerName(reviewer.getUsername());
         request.setHotelId(reservation.getRoom().getHotel().getId());
+        request.setRoomId(reservation.getRoom().getId());
+        request.setRoomName(reservation.getRoom().getName());
 
         Review review = reviewMapper.toEntity(request);
         review = reviewDao.save(review);
@@ -63,7 +68,7 @@ public class ReviewService {
     }
 
     public Slice<ReviewResponse> getAllByUserId(Long userId, Long idAfter, Pageable pageable) {
-        return reviewDao.findAllByReservationId(userId, idAfter, pageable)
+        return reviewDao.findAllByUserId(userId, idAfter, pageable)
                 .map(reviewMapper::toResponse);
     }
 
@@ -79,4 +84,5 @@ public class ReviewService {
         }
         return review.get();
     }
+
 }

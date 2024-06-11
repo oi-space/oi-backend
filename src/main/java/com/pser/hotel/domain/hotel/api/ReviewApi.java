@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/users/{userId}/reviews")
+@RequestMapping("/reviews")
 @RequiredArgsConstructor
 public class ReviewApi {
 
     private final ReviewService reviewService;
 
-    @GetMapping
+    @GetMapping("/users/{userId}")
     public ResponseEntity<ApiResponse<Slice<ReviewResponse>>> getAll(Pageable pageable,
                                                                      @PathVariable Long userId,
                                                                      Long idAfter) {
