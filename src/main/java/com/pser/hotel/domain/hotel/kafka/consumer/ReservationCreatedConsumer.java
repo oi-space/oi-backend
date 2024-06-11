@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 public class ReservationCreatedConsumer {
     private final Scheduler scheduler;
 
-    @RetryableTopic(kafkaTemplate = "reservationDtoValueKafkaTemplate", attempts = "5")
+    @RetryableTopic(kafkaTemplate = "reservationDtoValueKafkaTemplate", attempts = "5", retryTopicSuffix = "-retry-${kafka.consumer-group-id}")
     @KafkaListener(topics = KafkaTopics.RESERVATION_CREATED, groupId = "${kafka.consumer-group-id}", containerFactory = "reservationDtoValueListenerContainerFactory")
     public void onCreated(ReservationDto reservationDto) throws SchedulerException {
         scheduleClosingJob(reservationDto);

@@ -24,7 +24,7 @@ public class AuctionBidRefusalConsumer {
     private final ReservationService reservationService;
     private final ReservationStatusProducer reservationStatusProducer;
 
-    @RetryableTopic(kafkaTemplate = "auctionDtoValueKafkaTemplate", attempts = "5")
+    @RetryableTopic(kafkaTemplate = "auctionDtoValueKafkaTemplate", attempts = "5", retryTopicSuffix = "-retry-${kafka.consumer-group-id}")
     @KafkaListener(topics = KafkaTopics.AUCTION_BID_REFUSAL, groupId = "${kafka.consumer-group-id}", containerFactory = "auctionDtoValueListenerContainerFactory")
     public void onAuctionBidRefusal(AuctionDto auctionDto) {
         long reservationId = auctionDto.getReservationId();

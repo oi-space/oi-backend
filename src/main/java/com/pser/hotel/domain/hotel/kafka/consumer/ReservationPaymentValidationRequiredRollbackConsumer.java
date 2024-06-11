@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class ReservationPaymentValidationRequiredRollbackConsumer {
     private final ReservationService reservationService;
 
-    @RetryableTopic(kafkaTemplate = "stringValueKafkaTemplate", attempts = "5")
+    @RetryableTopic(kafkaTemplate = "stringValueKafkaTemplate", attempts = "5", retryTopicSuffix = "-retry-${kafka.consumer-group-id}")
     @KafkaListener(topics = KafkaTopics.RESERVATION_PAYMENT_VALIDATION_REQUIRED_ROLLBACK, groupId = "${kafka.consumer-group-id}", containerFactory = "stringValueListenerContainerFactory")
     public void rollbackPaymentValidationRequired(String merchantUid) {
         StatusUpdateDto<ReservationStatusEnum> statusUpdateDto = StatusUpdateDto.<ReservationStatusEnum>builder()

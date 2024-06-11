@@ -20,7 +20,7 @@ public class AuctionPaidConsumer {
     private final ReservationStatusProducer reservationStatusProducer;
     private final ReservationService reservationService;
 
-    @RetryableTopic(kafkaTemplate = "auctionDtoValueKafkaTemplate", attempts = "5")
+    @RetryableTopic(kafkaTemplate = "auctionDtoValueKafkaTemplate", attempts = "5", retryTopicSuffix = "-retry-${kafka.consumer-group-id}")
     @KafkaListener(topics = KafkaTopics.AUCTION_PAID, groupId = "${kafka.consumer-group-id}", containerFactory = "auctionDtoValueListenerContainerFactory")
     public void onAuctionPaid(AuctionDto auctionDto) {
         Try.run(() -> refundEqualToBid(auctionDto))

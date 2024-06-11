@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 public class AuctionNoBidConsumer {
     private final ReservationService reservationService;
 
-    @RetryableTopic(kafkaTemplate = "auctionDtoValueKafkaTemplate", attempts = "5")
+    @RetryableTopic(kafkaTemplate = "auctionDtoValueKafkaTemplate", attempts = "5", retryTopicSuffix = "-retry-${kafka.consumer-group-id}")
     @KafkaListener(topics = KafkaTopics.AUCTION_NO_BID, groupId = "${kafka.consumer-group-id}", containerFactory = "auctionDtoValueListenerContainerFactory")
     public void onAuctionNoBid(AuctionDto auctionDto) {
         long reservationId = auctionDto.getReservationId();
